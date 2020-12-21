@@ -1,0 +1,98 @@
+### dev环境：
+
+权限测试访问：https://bplusdev.sinosun.com:18180/auth/realms/bizMateTest/verification_codes/test
+
+
+
+### sit环境：
+
+权限测试访问：https://bplusdev.sinosun.com:18180/auth/realms/bizmatesit/verification_codes/test
+
+
+
+### uat环境：
+
+远程链接：SH-ITS-JUP-003
+
+密码：sp.610527
+
+地址：https://k8smgr.sino.sz:30001/#](javascript:void(0))!/overview?namespace=bizmateuat
+令牌：eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJiaXptYXRldWF0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRldmVsb3BtZW50LXVzZXItdG9rZW4tdjdxa2YiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGV2ZWxvcG1lbnQtdXNlciIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImNlZDQ5Y2QzLTBkMTYtMTFlYi1iNDZkLTAwNTA1NjlhMzYxNiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpiaXptYXRldWF0OmRldmVsb3BtZW50LXVzZXIifQ.tdAqVNP7pLtH8BZ3doGSH-PByQZ-Yicae-Yi0DHCPOYIa1Ru9BVC7QyQr_EJOWzUj5JTAmhq5yJkYERe70BaZWuIP1oRswqDzl2_SBhTAEVmPxduoxpBG6I2g3dJmvGsEXlhF0hthezo9pU4G6cbyjTTjnZVXkOiWN51S_63oPp7cU_FJhXuYUp8iIhTEIJO8brEZcbrcBCv1Y3fQk0fbSFUM1_fNnJU7aeuAW5JCQIh9IMSlTOB8z1s0Gnso9Qh2sNNDbu0aDDI7z2XKe8qSX80-p-YmauK9IW957sAXGaCHMDh1vkGAAouNHN3cVJ8UFF5Uq0YkzhABsy8Rb8aEg
+
+
+
+### 上海私有云
+
+远程链接：SH-ITS-JUP-003
+
+密码：sp.610527
+
+k8s dashboard: [https://k8smgr.sino.sz:30001/#](javascript:void(0))!/overview?namespace=sinobankuat 
+k8s dashboard token: 
+eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJzaW5vYmFua3VhdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkZXZlbG9wbWVudC11c2VyLXRva2VuLWxkaHRrIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImRldmVsb3BtZW50LXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyYjBhMjcyMy0xZmZhLTExZWItYjQ2ZC0wMDUwNTY5YTM2MTYiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6c2lub2Jhbmt1YXQ6ZGV2ZWxvcG1lbnQtdXNlciJ9.JOStkwGeqSO2g4nKGqaleH9tfgGARN-I3rrHV8ixg9NtRrs5lTVvswxIcWwBAX6rHRITtPAyS7-1B_3NMoGKBj8un6OFFHgKpQYJLeaN_MB51etsmX7109O6I2VMCKyguMoIXlL5MiYX5BA-40s_0Q0CzPVNg9BDcmaMMoMzH0Pk_46O0Wi0m3d7tGoJToNVaRsTBlKrAezGbmTIysTbfu-316nyASaab95wUgfczHmb2ctO1d5hqTGimcjRUZW25XiFJqitBZbUrLk12WeD-rNsfJzu9PU9kqyo_2UpjOa8-mWxbs5BFbsgBZJB-EMv0Nze_pSeJhZqS7IhB7En8w
+
+
+
+### 上海pro环境(已弃用)：
+
+远程链接：SH-ITS-JUP-003
+
+密码：sp.610527
+
+地址：https://k8smgr.sino.sz:30001/#!/overview?namespace=bizmatepro
+令牌：eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJiaXptYXRlcHJvIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRldmVsb3BtZW50LXVzZXItdG9rZW4tNmo5ODYiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGV2ZWxvcG1lbnQtdXNlciIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjhlNDA5ZjAyLWY4MDQtMTFlYS1iNDZkLTAwNTA1NjlhMzYxNiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpiaXptYXRlcHJvOmRldmVsb3BtZW50LXVzZXIifQ.WHsgO8LVanxFMHZRrOEZanVKGQajDHUu2xAKfwycr6e4Sg1i_QzcKs4qLuNnN4oq2W5MOGaL2CtMazet5mkvOJOooVQ-zvEc0v3AMFrfCqkQrXq2SDF7vXPOcuClPKGEYwFvmLcT1y44wssEGPnPK2BinZqVekpcAy-nQ5CoL66-d37Ju8IsDm22kAP3j_NVIiiwoOE-QPwFC4nau3PpYYSOBmz1ASm-n6vET51dWPQzDSGeuMH_wB73Sc9__6kpRxqJ8plsCnQC0-Npe18KG_RakRVZr5P_VNz46VhOxZ6JSyjNFXRMAn1A6uK8lLgjCS3YwqeEZC5Mw4fWEHlYBw
+
+
+
+### 阿里云pro环境：
+
+网址：https://signin.aliyun.com/login.htm?spm=5176.12901015.yrepazatz.7.2236525c3YDJJE&callback=https%3A%2F%2Fwww.aliyun.com%2F%3Fspm%3D5176.3047821.0.0.576a70b4Yz4459#/login
+
+RAM用户登录：
+
+账号：peng.sun@sinosun.onaliyun.com
+
+密码：GYvrM5EngWH|b|YwuXDWn3l0n5gG)%Nr 
+
+
+
+### 运营管理系统：
+
+网址：[https://bizmatedev.sinosun.com:17280/bizmate/static/tcm/pages/welcome.html](javascript:void(0))
+
+账号：sunpeng
+
+密码：sp.610527
+
+
+
+### 前端：
+
+网址：http://pubweb.sino.sz/PRD/1/
+
+
+
+### 禅道：
+
+网址：http://zentao.sino.sz/index.php?m=my&f=index
+
+
+
+### etc：
+
+Xshell连接
+
+IP：10.1.6.11
+
+账户：root 
+
+密码：sinosun
+
+
+
+
+
+- 当有需求改模板了，在阿里云修改后，阿里云会生成新的阿里云编码。
+- 以前，这种对应关心写死在代码中，如果要修改，就要发布新版本
+- 现在，通过修改接口，可以更改对应的阿里云编码，这样就不必升级版本了
+
