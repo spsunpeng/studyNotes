@@ -719,7 +719,19 @@ public class Person {
 
 
 
+# 2020.12.23
 
+#### 1. 课堂记录
+
+1. 项目框架
+
+2. git\sourcetree\gitee
+
+   git@gitee.com:cpf100/msb-dongbao-mall.git
+
+3. mysql和duck
+
+4. lombok与代码生成器与mybatis-plu
 
 
 
