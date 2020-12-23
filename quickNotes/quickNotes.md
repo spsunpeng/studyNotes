@@ -678,3 +678,64 @@ jar -tf filename.jar
 #### 1.动态打印日志：tailf
 
 tailf  filename
+
+
+
+# 2020.12.22
+
+#### 1. 接口基本类型包装成对象不？
+
+```java
+public class Person {
+    private boolean bool;
+    private Boolean objectBool;
+}
+```
+
+- Person person = new Person();
+  - boolean 默认值为 false
+  - Boolean 为 null
+
+- 但如果在 Person person 在接口中
+
+  ```java
+  @RestController
+  public class MyController {
+      public void queryPerson(Person person);
+  }
+  ```
+
+  - Boolean：此时候Boolean可以接受原本可能的传参
+
+    传参：空、null、false、"false"、“”、“ ”      --> 接收：false
+
+    传参：true、”true“  --> 接受：true
+
+    传参：”abc“  --> 参数出错
+
+  - boolean：待验证
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
