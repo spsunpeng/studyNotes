@@ -1,5 +1,17 @@
 ## MySQl
 
+### 安装
+
+### 启动
+
+- window：我的电脑 --》管理 --》 服务和应用程序 --》 服务  --》 选中mysql，再点击启动
+
+  启动成功：
+
+  ![](pictures\mysql\mysql启动.png)
+
+
+
 ### 用户
 
 mysql -u root -p; 进入root用户

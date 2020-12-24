@@ -116,6 +116,8 @@ C语言在多个操作系统执行的方式
 
 - 修改类头的文档注释信息
 
+  ![](pictures/mashibing/类头部注释.png)
+
   ```java
   /**
   @author sunpeng
