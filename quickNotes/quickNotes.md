@@ -737,6 +737,61 @@ public class Person {
 
 
 
+# 2020.12.25
+
+#### 1. docker配置阿里镜像
+
+- 获取阿里云的容器配置
+
+  - 登录阿里云：https://cr.console.aliyun.com/cn-hangzhou/instances
+
+  - 获取阿里云在docker中配置文件：
+
+    ```json
+    {
+      "registry-mirrors": ["https://h45068lf.mirror.aliyuncs.com"]
+    }
+    ```
+
+- 在虚拟集中配置
+
+  - /etc/docker/daemon.json
+
+    ```json
+    {
+      "registry-mirrors": ["https://h45068lf.mirror.aliyuncs.com"]
+    }
+    ```
+
+  - 重启docker
+
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+
+#### 2. dockerhup
+
+https://hub.docker.com/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
