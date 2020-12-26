@@ -739,7 +739,46 @@ public class Person {
 
 # 2020.12.25
 
-#### 1. docker配置阿里镜像
+#### 1.虚拟机安装
+
+- VMware：好像需要破解
+- VirtualBox6.3：好像开源，Oracle的，官网下载
+
+#### 2.linux安装
+
+- CentOS-8.0：好像开源，下载地址：http://mirrors.163.com/【网易镜像地址】
+
+  安装：
+
+  - 虚拟机新建操作系统： 新建操作系统 -》设置内存、存储。
+  - 加载：选择要加载的镜像 -》加载
+  - 操作系统配置：选择存储、root用户设置 -》重启
+  - 个性化设置：等等。
+  - 网络设置：1.网络设置； 2.网络配置文件修改
+
+#### 3.docker安装
+
+##### 3.1 docker安装
+
+```sh
+yum install -y yum-utils device-mapper-persistent-data lvm2 wget
+wget -O /etc/yum.repos.d/docker-ce.repo https://download.docker.com/linux/centos/docker-ce.repo
+sed -i 's+download.docker.com+mirrors.tuna.tsinghua.edu.cn/docker-ce+' /etc/yum.repos.d/docker-ce.repo
+yum -y makecache fast
+yum -y install docker-ce-18.09.9
+```
+
+##### 3.2 docker启动
+
+```sh
+systemctl start docker
+systemctl enable docker
+systemctl stop docker
+```
+
+#### 4.其他软件安装
+
+##### 4.1.docker配置阿里镜像
 
 - 获取阿里云的容器配置
 
@@ -763,14 +802,27 @@ public class Person {
     }
     ```
 
-  - 重启docker
+    或者直接执行
 
+    tee /etc/docker/daemon.json <<-'EOF'
+    {
+      "registry-mirrors": ["https://registry.docker-cn.com"]
+    }d
+    EOF
+  
+  - 重启docker
+  
     sudo systemctl daemon-reload
     sudo systemctl restart docker
 
-#### 2. dockerhup
+##### 4.2 拉去镜像
 
-https://hub.docker.com/
+```sh
+docker search mysql
+docker pull mysql:5.7
+```
+
+
 
 
 
