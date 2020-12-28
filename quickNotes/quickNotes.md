@@ -771,12 +771,17 @@ yum -y install docker-ce-18.09.9
 ##### 3.2 docker启动
 
 ```sh
+#启动停止虚拟机命令
 systemctl start docker
 systemctl enable docker
 systemctl stop docker
+
+#关闭防火墙
+service firewalld status #查看防火墙状态
+service firewalld stop #关闭防火墙
 ```
 
-#### 4.其他软件安装
+#### 4.docker容器
 
 ##### 4.1.docker配置阿里镜像
 
@@ -804,11 +809,13 @@ systemctl stop docker
 
     或者直接执行
 
+    ```sh
     tee /etc/docker/daemon.json <<-'EOF'
     {
       "registry-mirrors": ["https://registry.docker-cn.com"]
     }d
     EOF
+    ```
   
   - 重启docker
   
@@ -818,8 +825,27 @@ systemctl stop docker
 ##### 4.2 拉去镜像
 
 ```sh
-docker search mysql
-docker pull mysql:5.7
+docker search 关键字 #查询可以镜像 eg：docker search mysql
+docker pull 镜像名:tag   #拉取镜像 eg：docker pull mysql:5.7
+docker images  #查看所有本地镜像
+docker rmi id #删除指定的本地镜像
+```
+
+##### 4.3 启动容器
+
+```sh
+#创建容器
+docker run -d --name mytomcat -p 8888:8080 tomcat #新建并启动容器
+docker ps #查询容器
+docker rm  容器名或id #删除容器
+#启动容器
+docker start  容器名或id #开启容器
+docker ps -a #查询正在运行的容器
+docker stop  容器名或id #关闭容器
+docker restart  容器名或id #重启容器
+#修改容器配置
+docker exec -it 容器名或id bash #进入容器
+exit #退出
 ```
 
 
