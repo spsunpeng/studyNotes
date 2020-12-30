@@ -852,7 +852,42 @@ exit #退出
 
 
 
+# 2020.12.30
 
+#### 1. centos测速
+
+```sh
+#安装git
+yum -y install git
+#git克隆speedtest
+git clone https://github.com/sivel/speedtest-cli.git
+#进入speedtest-cli
+cd speedtest-cli
+#修改speedtest.py，由于现在一般python都是python3，所以#!/usr/bin/env python -》 #!/usr/bin/env python3
+vi speedtest.py
+#执行speedtest-cli
+./speedtest-cli
+```
+
+可能报错：./speedtest-cli执行失败，没有python
+
+```sh
+#检查python版本
+python -version
+python3 -version
+#安装python3
+dnf install python3
+```
+
+设置全局
+
+```sh
+#增加读写执行权限及移动到全局操作目录
+chmod +rx speedtest.py
+sudo mv speedtest.py /usr/local/bin/speedtest-cli
+sudo chown root:root /usr/local/bin/speedtest-cli
+speedtest.py #任意位置执行
+```
 
 
 

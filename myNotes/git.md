@@ -131,3 +131,21 @@ git checkout -b hotfix-issue-#001 master  在master分支上创建一个hotfix�
 
 （1）master  develop  feature  feature/v1将项目逐步细分，可以让项目条例层次清晰，权限控制强力，版本跟新稳定。
 （2）release和hotfix用于开发完成的调试和发布后的调试，它们不会阻塞后面的开发。
+
+
+
+
+
+### 2020.12.30
+
+1.当又文件修改时，在什么分支上commit则算这个分支的版本 ，而非在哪个分支上修改
+
+2.idea对于未追踪远程分支的本地分支，会在远程自动创建相应的分支，并追踪
+
+```sh
+git branch
+#-a  查看所有远程
+#-v  查看本地分支
+#-vv 查看本地分支追踪的远程分支
+```
+
