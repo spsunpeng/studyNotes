@@ -891,7 +891,17 @@ speedtest.py #任意位置执行
 
 
 
+# 2020.12.31
 
+#### 1. maven
+
+- maven 程序、配置文件(setting.xml)、仓库(repository) 互不相关
+- maven 配置环境变量，但不知道是不是一定要配置
+- idea工程后的setting只对此工程起作用，要想全部工程生效需要在启动页面上设置Configure
+- 工程类型
+  - POM工程：父级工程，子model集成，用作jar包的版本控制
+  - JAR工程：常用于本地工程的调用
+  - WAR工程：发布到服务器上的工程
 
 
 

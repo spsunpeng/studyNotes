@@ -149,3 +149,54 @@ git branch
 #-vv 查看本地分支追踪的远程分支
 ```
 
+3.冲突
+
+![](pictures/git/冲突.png)
+
+遗留：
+
+1.出现冲突，不予解决会怎么样，develop|merging 会作为一个新的分支一直存在吗，git branch查询分支
+
+2.新建的仓库如何退到远程
+
+
+
+### 2020.12.30
+
+#### 1.  git
+
+- git config --global user.name "sunpengHome"
+
+- git config --global user.email "476567162@qq.com"
+
+- git init
+
+- git add
+
+- git commit
+
+- git status
+
+- git log
+
+- git log --oneline
+
+- git reflog
+
+- git reset --hard 版本的索引号/HEAD
+
+  --mixed 回退本地仓库和暂存区
+
+  --soft 仅回退本地仓库
+
+- git reset --hard 
+
+- git  diff  无/版本索引/head  filename ：比较暂存区的其它文件的目录
+
+  - 无比较的本地与暂存区
+
+- 
+
+hard：重(zhong)（操作）
+
+reset ：重置
