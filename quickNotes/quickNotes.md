@@ -905,7 +905,15 @@ speedtest.py #任意位置执行
 
 
 
+#### 2. linxu命令
 
+```sh
+ip addr #查询ip
+ifconfig  #查询ip
+uname -v #查询虚拟机内核版本
+ps -ef    #查询进程
+jmap -heap pid   #查询堆内存
+```
 
 
 

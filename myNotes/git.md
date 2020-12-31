@@ -138,9 +138,13 @@ git checkout -b hotfix-issue-#001 master  在master分支上创建一个hotfix�
 
 ### 2020.12.30
 
-1.当又文件修改时，在什么分支上commit则算这个分支的版本 ，而非在哪个分支上修改
+##### 1.commit
 
-2.idea对于未追踪远程分支的本地分支，会在远程自动创建相应的分支，并追踪
+当又文件修改时，在什么分支上commit则算这个分支的版本 ，而非在哪个分支上修改
+
+##### 2.查询分支
+
+dea对于未追踪远程分支的本地分支，会在远程自动创建相应的分支，并追踪
 
 ```sh
 git branch
@@ -149,9 +153,13 @@ git branch
 #-vv 查看本地分支追踪的远程分支
 ```
 
-3.冲突
+##### 3.冲突
 
 ![](pictures/git/冲突.png)
+
+##### 4.idea集成git
+
+![](pictures/git/idea集成git.png)
 
 遗留：
 
@@ -200,3 +208,6 @@ git branch
 hard：重(zhong)（操作）
 
 reset ：重置
+
+
+
