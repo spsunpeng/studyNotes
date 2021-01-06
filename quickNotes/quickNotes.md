@@ -948,5 +948,3 @@ explain select * from t_basedata_dictdata where bd_type = 2;
 
 
 
-
-
