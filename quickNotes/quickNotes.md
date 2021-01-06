@@ -921,7 +921,20 @@ jmap -heap pid   #查询堆内存
 
 
 
+# 2020.1.04
 
+#### 1. 联合主键索引
+
+t_basedata_dictdata (PK: bd_type, bd_code)
+
+```sql
+explain select * from t_basedata_dictdata where bd_code = 1010000 and bd_type = 2;
+explain select * from t_basedata_dictdata where bd_type = 2 and bd_code = 1010000;
+explain select * from t_basedata_dictdata where bd_code = 1010000;
+explain select * from t_basedata_dictdata where bd_type = 2;
+```
+
+![](pictures/quickNotes/联合主键索引.png)
 
 
 

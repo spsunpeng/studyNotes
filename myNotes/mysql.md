@@ -140,6 +140,21 @@ SELECT * FROM students cross join classes; 《=》 SELECT * FROM students, class
 
 
 
+### 索引
+
+```sql
+//添加普通索引
+alter table table_name add index index_name (column1, column2, column3) ;
+//添加唯一索引
+alter table table_name add unique (column1, column2, column3) ;
+//删除索引
+alter table table_name drop index index_name ;
+```
+
+
+
+
+
 ### 锁
 
 乐观锁：乐观锁是一种思想，表中有一个版本字段，第一次读的时候，获取到这个字段。处理完业务逻辑开始更新的时候，需要再次查看该字段的值是否和第一次的一样。如果一样更新，反之拒绝。之所以叫乐观，因为这个模式没有从数据库加锁。数据版本记录机制的实现。
