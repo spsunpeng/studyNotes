@@ -140,18 +140,42 @@ SELECT * FROM students cross join classes; 《=》 SELECT * FROM students, class
 
 
 
+### count
+
+```sql
+#查询总数目
+select count(*) from t_basedata_dictdata;
+#统计parent_bd_code不同的个数
+select count(distinct(parent_bd_code)) from t_basedata_dictdata; 
+#统计bd_type相同的个数
+select bd_type, count(*) from t_basedata_dictdata group by bd_type; 
+```
+
+
+
 ### 索引
 
 ```sql
-//添加普通索引
+#添加普通索引
 alter table table_name add index index_name (column1, column2, column3) ;
-//添加唯一索引
+#添加唯一索引
 alter table table_name add unique (column1, column2, column3) ;
-//删除索引
+#删除索引
 alter table table_name drop index index_name ;
 ```
 
 
+
+### sql优化
+
+- 添加索引
+  - 主键索引
+  - 普通索引
+  - 唯一索引
+  - 联合索引
+- 不添加索引
+  - 筛选条件 =  >  <
+  - 筛选顺序 like
 
 
 

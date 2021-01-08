@@ -50,8 +50,6 @@ HEAD指针：本地仓库每个分支上的代码的修改都会生成一个comm
 
 ### 2. github使用和上传
 
-github是远程代码托管仓库，任意人都可以查看clone，但要修改就需要权限，公司的是私密的，因为是购买的。github和git bash的连接如下：
-
 #### 2.1 生辰公钥：
 
 ssh-keygen -t rsa -C "邮箱账号"，生成公钥的保存在id_rsa.pub文件上；
@@ -62,15 +60,29 @@ github登录 -> setting -> SSH and GPG keys -> new SSH key ->粘贴公钥。
 
 #### 2.3 git clone
 
-克隆代码，后面就可以查看、修改和更改代码了。其作用有三：
+```sh
+#克隆，默认master分支
+git clone https://github.com/spsunpeng/studyNotes.git
+#克隆develop分支
+git clone -b develop https://github.com/spsunpeng/studyNotes.git
 
-（1）把指定的远程仓库代码拉取到本地
+#使用ssh协议
+git clone git@github.com:spsunpeng/studyNotes.git
+```
 
-（2）自动创建远程仓库名称origin
+clone: 将指定的远程仓库代码拉取到本地，生成本仓库，生成一个创建（自动追踪远程分支的）本地分支
 
-（3）自动生成本仓库，本地生成一个默认的主干分支master，追踪远程的主干分支
+- 默认创建追踪origin/master的本地分支，-b可以指定其他分支
 
- 
+- https协议克隆时不校验，push/pull时才让输入github的密码。
+
+- ssh协议克隆时就会校验，必须先没有配置公私钥。
+
+  - 生成公钥：ssh-keygen -t rsa -C "邮箱账号"
+
+    注意此步设置的密码并非github要校验的密码，把公钥配置到github中已经表明权限足够，所以为了之后pull/push方便，建议直接回车，表示无密码
+
+  - 配置公钥：将id_rsa.pub上的公钥配置到github上
 
 ### 3.gitflow研发流程
 
@@ -208,6 +220,53 @@ git branch
 hard：重(zhong)（操作）
 
 reset ：重置
+
+
+
+### 2021.01.06
+
+#### 1. 创建/追踪分支
+
+```sh
+git branch -a
+#develop
+#origin/develop
+#origin/master
+#origin/release
+
+#根据develop创建develop1分支，目的是开发的新功能不希望影响develop分支
+git checkout -b develop1 develop
+
+#根据origin/release创建release分支，并且release追踪origin/release分支，目的是为release创建独立的开发版本
+git checkout -b release origin/release
+
+#根据origin/develop创建origin/feature，此步一般不在本地操作。
+git checkout -b origin/feature origin/develop
+
+#综上所述：
+#1.创建分支时要明确根据哪个分支创建
+#2.肆意切换远程分支可能导致不兼容
+```
+
+#### 2. 查看/切换/删除分支
+
+```sh
+#查看分支
+git branch
+#-a  查看所有远程
+#-v  查看本地分支
+#-vv 查看本地分支追踪的远程分支
+
+#切换分支
+git checkout develop 
+
+#删除分支
+git branch -d develop
+#强制删除分支
+git branch -D develop
+```
+
+
 
 
 

@@ -163,6 +163,77 @@ spring-boot-maven-plugin打包出来的jar是不可依赖的
 
 2.环境、密码脱敏、注册登录
 
-测试
 
-测试2
+
+### 2020.01.06
+
+#### 一、错误
+
+##### 错误1：请求方式出错
+
+报错：postman {“status": 405,  "error": "Method Not Allowed"}
+
+原因：代码get接口，请求post接口
+
+##### 错误2：找不到Mapper的配置文件
+
+报错：org.apache.ibatis.binding.BindingException: Invalid bound statement (not found): com...ums...selectByName
+
+原因：在service-ums模块下配置的mapper-locations没有起作用，必须在web模块下配置
+
+#### 二、知识点
+
+##### 知识点1：配置文件不在rescourse下打包
+
+比如Mapper.xml文件不在rescourse目录下，而在java目录下，所以在pom.xml文件下需要加入build标签
+
+```xml
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+        </resource>
+        <resource>
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.xml</include>
+            </includes>
+        </resource>
+    </resources>
+</build>
+```
+
+##### 知识点2：密码脱敏
+
+依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-crypto</artifactId>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-crypto</artifactId>
+    <scope>compile</scope>
+</dependency>
+```
+
+使用
+
+```java
+BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+//加密
+umsMember.setPassword(bCryptPasswordEncoder.encode(umsMember.getPassword()));
+//密码验证
+boolean bool = passwordEncoder.matches("密码", "加密过的密码");
+
+//md5加密法，但是由于每次同一个密码每次加密的结果都是一样的，所以通过彩虹吗可以破解md5加密
+DigestUtils.md5DigestAsHex(sourceString.getBytes());
+```
+
+
+
+
+
