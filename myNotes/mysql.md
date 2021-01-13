@@ -157,6 +157,8 @@ select bd_type, count(*) from t_basedata_dictdata group by bd_type;
 
 ```sql
 #添加普通索引
+create INDEX index_name ON index table_name (column1, column2, column3) ;
+#添加普通索引
 alter table table_name add index index_name (column1, column2, column3) ;
 #添加唯一索引
 alter table table_name add unique (column1, column2, column3) ;
