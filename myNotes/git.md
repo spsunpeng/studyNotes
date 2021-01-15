@@ -54,6 +54,8 @@ HEAD指针：本地仓库每个分支上的代码的修改都会生成一个comm
 
 ssh-keygen -t rsa -C "邮箱账号"，生成公钥的保存在id_rsa.pub文件上；
 
+ssh-keygen -t rsa -C “peng.sun@sinosun.com.cn”
+
 #### 2.2 开通权限：
 
 github登录 -> setting -> SSH and GPG keys -> new SSH key ->粘贴公钥。

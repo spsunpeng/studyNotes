@@ -940,6 +940,31 @@ explain select * from t_basedata_dictdata where bd_type = 2;
 
 
 
+# 2020.1.15
+
+#### 1.坑
+
+- 场景
+  - aliyunCode字段 数据库中 不能为空
+  - aliyunCode字段 接口中 不是必传， 
+  - template 和mapper两个表关联
+
+- 结果
+  - 每次必须判断aliyunCode为不为空，为空要么不增，要么给默认值
+  - 两张表结合导致 复杂度 指数上升
+  - 导致3个bug：都是因为数据库为空
+
+- 补充：如果就是这种场景应用，记得，不但需要入参的aliyunCode为不为空，还需要判断数据库中查询大的结果是否为空
+
+
+
+#### 2.工作总结
+
+- 全文替换
+
+- 流的使用
+- 单元测试
+
 
 
 
