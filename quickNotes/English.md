@@ -13,7 +13,7 @@
 | environment         | 环境         | 环境        |
 | properties/property | 所有物、财产 | 属性、参数  |
 | Constructor         | 构造器       | 构造器      |
-| field               | 属性         | 属性        |
+| field               | 属性、字段   | 属性、字段  |
 | declared            | 宣告、公开   | 公开private |
 | modifier            | 修饰符       | 修饰符      |
 | execute             | 执行         | 执行        |
@@ -79,6 +79,7 @@
 | jdk      | Java Development Kit     | java开发工具包 |
 | Terminal | 终端                     | 终端           |
 | script   | 脚本                     | 脚本           |
+|          |                          |                |
 
 
 
