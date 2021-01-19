@@ -942,7 +942,7 @@ explain select * from t_basedata_dictdata where bd_type = 2;
 
 # 2020.1.15
 
-#### 1.坑
+#### 1.坑0
 
 - 场景
   - aliyunCode字段 数据库中 不能为空

@@ -134,7 +134,9 @@ C语言在多个操作系统执行的方式
 - 搜索
   - 搜索当前文件：alt + f
   - 搜索全部文件：alt + F
-- 
+- 替换
+  - 替换当前文件：alt + r
+  - 替换全部文件：alt + R
 
 
 
@@ -389,22 +391,23 @@ public class TestOuter {
   - 使用总结
 
     ```java
-    try{
-        Scanner sc = new Scanner(System.in);
-        System.out.println("请录入第一个数：");
-        int num1 = sc.nextInt();
-        System.out.println("请录入第二个数：");
-        int num2 = sc.nextInt();
-        System.out.println("商："+num1/num2);
-    }catch(ArithmeticException ex){
-        System.out.println("对不起，除数不可以为0");
-    }catch(InputMismatchException ex){
-        System.out.println("对不起，你录入的数据不是int类型的数据");
-    }catch(Exception ex){
-        System.out.println("对不起，你的程序出现异常");
-    }finally {
-        System.out.println("----谢谢你使用计算器111");
-    }
+     try{
+         //
+     } catch (IllegalAccessException e){
+         //1.什么都不做
+         //2.为用户打印信息
+         System.out.println("出现异常");
+         //3.为程序员打印详细信息
+         System.out.println(e);
+         System.out.println(e.getMessage());
+         e.printStackTrace(); //打印堆栈
+         //4.抛出
+         throw e;
+     }catch (InstantiationException ie){
+         //
+     }finally {
+         // 
+     }
     ```
 
 - throw：抛出

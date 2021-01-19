@@ -1,28 +1,28 @@
 ## 源码
 
-| 源码                | 原意         | 计算机术语  |
-| ------------------- | ------------ | ----------- |
-| proxy               | 处理         | 处理        |
-| invoke/invocation   | 调用         | 调用        |
-| target              | 目标         | 目标        |
-| abstract            | 抽象         | 抽象        |
-| aspect              | 方面         | 切面        |
-| injection           | 注射         | 注入        |
-| dependency          | 依赖         | 依赖        |
-| core                | 核心         | 核心        |
-| environment         | 环境         | 环境        |
-| properties/property | 所有物、财产 | 属性、参数  |
-| Constructor         | 构造器       | 构造器      |
-| field               | 属性         | 属性        |
-| declared            | 宣告、公开   | 公开private |
-| modifier            | 修饰符       | 修饰符      |
-| execute             | 执行         | 执行        |
-| instrance           | 实例         | 实例        |
-| specify             | 指明、指定   | 指明、指定  |
-| Wrapper             | 包装器       | 包装器      |
-|                     |              |             |
-|                     |              |             |
-|                     |              |             |
+| 源码                | 原意         | 计算机术语    |
+| ------------------- | ------------ | ------------- |
+| abstract            | 抽象         | 抽象          |
+| adapter             | 适配器       | 适配器        |
+| aspect              | 方面         | 切面          |
+| Conditional         | 有条件的     | 有条件的/判断 |
+| Constructor         | 构造器       | 构造器        |
+| core                | 核心         | 核心          |
+| declared            | 宣告、公开   | 公开          |
+| dependency          | 依赖         | 依赖          |
+| environment         | 环境         | 环境          |
+| execute             | 执行         | 执行          |
+| field               | 属性         | 属性          |
+| injection           | 注射         | 注入          |
+| instrance           | 实例         | 实例          |
+| invoke/invocation   | 调用         | 调用          |
+| modifier            | 修饰符       | 修饰符        |
+| properties/property | 所有物、财产 | 属性、参数    |
+| proxy               | 处理         | 处理          |
+| specify             | 指明、指定   | 指明、指定    |
+| structure           | 结构         | 结构          |
+| target              | 目标         | 目标          |
+| Wrapper             | 包装器       | 包装器        |
 
 ## 异常
 
@@ -34,14 +34,6 @@
 | Random      | 随机   | 随机       |
 | bound       | 受约束 | 绑定       |
 | available   | 可用的 | 可用的     |
-
-## 注解
-
-| 注解          | 原意             | 计算机术语    |
-| ------------- | ---------------- | ------------- |
-| Conditional   | 有条件的         | 有条件的/判断 |
-| Configuration | 布置，构造，配置 | 配置          |
-|               |                  |               |
 
 ## 工作
 
