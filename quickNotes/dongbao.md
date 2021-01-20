@@ -237,3 +237,142 @@ DigestUtils.md5DigestAsHex(sourceString.getBytes());
 
 
 
+### 2021.01.12
+
+#### 课堂笔记
+
+1.序列化
+
+2.@Builder 注解 链式调用
+
+set返回void
+
+builder返回对象
+
+404 资源找不到，url出错
+
+把json当成页面去查了，没有就报了404？
+
+如果是controller spring默认找的是界面
+
+405 请求方法错误，get/post
+
+3.integer可以表示 没有，这在接口中就比较重要
+
+4.springboot异常处理：解决最终抛到到controller层的异常
+
+#### 主要内容
+
+1.统一返回
+
+2.异常处理
+
+3.参数校验
+
+
+
+### 2021.01.16
+
+#### 1. 统一返回
+
+使用lombok注解@Builder
+
+- 作用：简化set，由于设置字段时，需要多次set，而.builder()和.build()方法可以简化这种操作，因为返回的是原对象，即链式调用
+
+```java
+@Data
+@Builder
+public class ResultWrapper<T> implements Serializable {
+
+    private Integer code;
+    private String msg;
+    private T data;
+
+    //使用lombok注解@Builder
+    public static ResultWrapper.ResultWrapperBuilder getSuccess(){
+        return ResultWrapper.builder().code(StatusErrorEnums.SUCCESS.getCode()).msg(StatusErrorEnums.SUCCESS.getMsg());
+    }
+    
+    //不使用lombok注解@Builder
+    public static ResultWrapper.ResultWrapperBuilder getSuccess2(){
+        ResultWrapper result = ResultWrapper();
+        result.setCode(StatusErrorEnums.SUCCESS.getCode());
+        result.setMsg(tatusErrorEnums.SUCCESS.getMsg());
+        return result;
+    }  
+}
+```
+
+#### 2. 异常处理
+
+- 方法1：在类上使用注解表明此类是处理异常的类，在方法上使用注解表示处理哪个类
+
+```java
+//表明这个类是处理异常的类
+@RestControllerAdvice
+public class GlobalExceptionHandle {
+
+    //处理哪一种异常注解
+    @ExceptionHandler(ArithmeticException.class)
+    public ResultWrapper customException(){
+        return ResultWrapper.builder().code(301).msg("服务异常").build();
+    }
+}
+```
+
+- 方法2：在类上使用注解表明此类是处理异常的类，同类还继承第三方方法，再重写需要更改的方法
+
+```java
+@ControllerAdvice
+public class ValidateHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex
+            , HttpHeaders headers
+            , HttpStatus status
+            , WebRequest request) {
+
+        //把第一个字段错误取出返回，ex.getBindingResult().getFieldErrors()是参数校验的错误
+        String msg = "";
+        for(FieldError fieldError : ex.getBindingResult().getFieldErrors()){
+            msg = fieldError.getDefaultMessage();
+            break;
+        }
+
+        return new ResponseEntity(ResultWrapper.builder().code(102).msg(msg).build(), HttpStatus.OK);
+    }
+
+}
+```
+
+#### 3. 参数校验
+
+坐标
+
+```xml
+<!--spring validation 校验-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+```
+
+使用
+
+```java
+@Valid
+@NotNull
+@Size(min="", max="", message="")
+```
+
+
+
+
+
+
+
+
+
+
+

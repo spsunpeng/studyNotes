@@ -967,7 +967,13 @@ explain select * from t_basedata_dictdata where bd_type = 2;
 
 
 
+# 2021.01.16
 
+#### 1. postman
+
+账户：476567162@qq.com
+
+密码：sp602157
 
 
 
