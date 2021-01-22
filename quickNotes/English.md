@@ -36,17 +36,19 @@
 
 ## 工作
 
-| 工作      | 原意       | 计算机术语   |
-| --------- | ---------- | ------------ |
-| authory   | 权威       | 权限         |
-| balance   | 平衡、余额 | 余额         |
-| calendar  | 日历       |              |
-| security  | 安全       |              |
-| transfer  | 转让       |              |
-| Approval  | 审批       | 审批         |
-| multiple  | 多种多样的 |              |
-| broadcast | 广播       | 广播（群发） |
-|           |            |              |
+| 工作      | 原意                   | 计算机术语   |
+| --------- | ---------------------- | ------------ |
+| authory   | 权威                   | 权限         |
+| balance   | 平衡、余额             | 余额         |
+| calendar  | 日历                   |              |
+| security  | 安全                   |              |
+| transfer  | 转让                   |              |
+| Approval  | 审批                   | 审批         |
+| multiple  | 多种多样的             |              |
+| broadcast | 广播                   | 广播（群发） |
+| launch    | 发射、发起、发动、开展 | 发起         |
+| flow      | 流                     | 流水         |
+| bis       | business缩写：商业     | 业务         |
 
 ## idea
 

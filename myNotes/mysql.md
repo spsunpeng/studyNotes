@@ -224,3 +224,9 @@ Hibermate：是对jpa规范的实现；
 springData：不是jpa规范的实现，仅是抽象上的含义。
 
 jdba：是访问数据库的规范(解决各个数据库使用的差异)与实现
+
+
+
+## Druid
+
+Druid是一个JDBC组件

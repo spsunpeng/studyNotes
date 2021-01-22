@@ -368,6 +368,107 @@ public class ValidateHandler extends ResponseEntityExceptionHandler {
 
 
 
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLlrZnpuY8iLCJleHAiOjE2MTExMDY4Nzh9.h_Sl4EqS3wvZe5iSL7N-CIg5ZQQQNGpGnG_gxvDBekp
+
+
+
+### 2021.01.20
+
+#### 1. Jwt
+
+##### 1.1 pom依赖
+
+```xml
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.7.0</version>
+</dependency>
+```
+
+##### 1.2 创建与解析token
+
+```java
+public class JwtUtil {
+
+    //加密的“盐”
+    private static final String secret = "abcdef";
+
+	//创建
+    public static String createToken(String subject){
+
+        String token = Jwts.builder().setSubject(subject)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+
+        return token;
+    }
+
+	//解析
+    public static String parseToken(String token){
+        Claims body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        String subject = body.getSubject();
+        return subject;
+    }
+}
+```
+
+- 翻译：token【代币、符记、象征】、secret【秘密】、parse【解析】、subject【主题】、Expiration【过期】、compact【契约】
+
+- 加解密分析：
+
+  eyJhbGciOiJIUzI1NiJ9                                                                                 --》HS256通过base64编码的结果
+
+  .eyJzdWIiOiJ4aWFvaG9uZyIsImV4cCI6MTYxMTEwNzYyM30              --》subject和Expiration通过base64编码的结果
+
+  .R6cl12yY4x59F4rBph-Lu3SCcK0jhH6XN5w0wXd1Lys                       --》根据secret对subject加密的结果，无法解析
+
+##### 1.3 使用
+
+```java
+public static void main(String[] args) throws InterruptedException {
+    String name = "孙鹏";
+    String token = createToken(name);
+    System.out.println(token);
+
+    TimeUnit.SECONDS.sleep(2);
+
+    String subject = parseToken(token);
+    System.out.println(subject);
+}
+```
+
+token过期
+
+异常：ExpiredJwtException
+
+##### 1.4 Jwt的特点与作用
+
+- 作用：为登录的用户返回一个token，后续访问就不需要密码。此外，还有其他解决方案，比如为登录的用户分配一个对应的id，但这里就需要存储对应关系了。
+- 特点/优势：自加密解析，不用存储，可以保证token自身的安全，但无法保证携带的信息的安全
+- 遗留：如何保护携带的信息的安全
+
+#### 2 加密
+
+base64：编解码，不是加密，所以可以反解码
+
+散列算法：md5【不可反解码，但由于对于主题的加密结果一样，可以通过彩虹表（对应表）破解】
+
+对称加密：两方持有相同的密钥，加解密只需要密钥即可
+
+非对称加密：公加私解，私加公解
+
+
+
+
+
+
+
+
+
+
+
 
 
 
