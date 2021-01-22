@@ -293,7 +293,7 @@ C语言在多个操作系统执行的方式
 
 内部类：成员内部类 (静态的，非静态的) 和  局部内部类（位置：方法内，块内，构造器内）
 
-**局部内部类**
+#### 8.1 局部内部类
 
 - 作用：如果类B在整个项目中只使用一次，那么就没有必要单独创建一个B类，使用内部类就可以了
 - 在局部内部类中访问到的变量必须是被final修饰的
@@ -338,6 +338,88 @@ public class TestOuter {
             }
         };
         System.out.println(com.compareTo("abc"));
+    }
+}
+```
+
+#### 8.2 实例：排序时compare自定义
+
+##### 8.2.1 java
+
+```java
+public class Demo {
+    //内部类
+    public void SortTransClass(List<Person> persons) {
+        Collections.sort(persons,new Comparator<Person>() {
+            @Override
+            public int compare(Person p1,Person p2) {
+                if(p1.getAge() > p2.getAge()) return 1;
+                else if (p1.getAge() == p2.getAge()) return 0;
+                else return -1;
+            }
+        });
+    }
+    //lambda
+    public void SortTransLambda(List<Person> persons) {
+        Collections.sort(persons,(Person p1,Person p2) -> p1.getAge().compareTo(p2.getAge()));
+    }
+}
+```
+
+##### 8.2.2 C++
+
+实现方式：函数指针、函数对象（原理是小括号运算符重载）、lambda表达式（原理未知？）
+
+```c++
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<numeric>
+#include<iostream>
+using namespace std;
+
+//1.函数指针实现
+bool Compare(int a, int b)
+{
+	return a<b;
+}
+//2.函数对象实现
+class ClassCompare
+{
+public:
+	bool operator()(int a, int b)
+	{
+		return a>b;
+	}
+};
+
+//测试
+void Test(int* arr, len){
+ 	sort(arr, len, Compare);                //1.函数指针
+	sort(arr, len, ClassCompare());         //2.仿函数
+	auto f = [](int a, int b){return a>b;};  //3.lambda	
+	sort(arr, len, f);                       //[]中可以捕获多余的参数   
+}
+
+//补充：sort自己实现
+template<typename T>
+void sort(int *arr, int len, T &fun)
+{
+    int i, j;
+    int tmp;
+    int m = 0;
+    for (i = 0; i < len; i++)
+    {
+        m = i;
+        for (j = i + 1; j < len; j++)
+        {
+            if (fun(arr[j], arr[m]))  //3.fun(arr[j], arr[m])这里限制了可调用对象
+            {                         //函数对象和函数指针的缺点
+                tmp = arr[m];
+                arr[m] = arr[j];
+                arr[j] = tmp;
+            }
+        }
     }
 }
 ```

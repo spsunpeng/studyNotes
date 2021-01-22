@@ -86,65 +86,7 @@ clone: 将指定的远程仓库代码拉取到本地，生成本仓库，生成�
 
   - 配置公钥：将id_rsa.pub上的公钥配置到github上
 
-### 3.gitflow研发流程
 
-![](\pictures\git\gitflow研发流程.png)
-
-#### 3.0 创建仓库 master
-
-​    项目开始，在github中创建仓库，主分支。
-
-#### 3.1 创建开发分支develop
-
-创建develop分支，master分支存储了正式发布的历史，而develop分支保存功能的集成历史。
-git branch develop             创建develop分支
-git push -u origin develop    本地develop push到服务器，-u表示远端没有则创建之
-git clone                                                           
-
-#### 3.2 创建功能分支 feature
-
-常见功能分支feature，这才是研发这开发代码的地方。
-git checkout -b feature-1 develop    # 本地创建功能分支（基于develop分支）
-
-#### 3.3创建小功能分支 feature/v1
-
-   若feature过大，则再拆分之。
-git checkout -b feature/v1 develop    # 基于develop分支创建feature/v1分支
-git push -u origin feature/v1         # 将feature/v1分支提交到远端
-
-#### 3.4 开发完成 push
-
-开发者需要Pull Request请求，审核通过后，管理员merge与push。
-git merge –no-ff feature-1            # develop分支合并功能分支
-git push                          # 推送本地develop分支到服务器
-
-#### 3.5准备发布 release
-
-创建release分支用于测试和修复，为了不影响后面的开发。
-git checkout -b release-0.1 develop    # 从develop分支创建release-0.1分支并发布
-
-#### 3.6 完成发布
-
-测试和修复完成后将release 分支merge到master分支和develop分支。
-git checkout master                     # 本地切换到master分支
-git merge --no-ff release-0.1           # master分支合并release-0.1分支
-git push                                # 推送master分支到服务器
-git checkout develop                    # 本地切换到develop分支
-git merge –-no-ff release-0.1           # develop分支合并release-0.1分支
-git push                                # 推送develop分支到服务器
-git branch -d release-0.1               # 删除release-0.1分支
-git tag -a 0.1 -m "Initial public release" master   # 本地master分支上打0.1版本的tag
-git push --tags                           # 推送到远端服务器
-
-#### 3.7 发布后bug hotfix
-
-开发后的bug在hotfix上调试，为了不影响后面的开发。
-git checkout -b hotfix-issue-#001 master  在master分支上创建一个hotfix分支用来解决bug
-
-#### 3.8总结
-
-（1）master  develop  feature  feature/v1将项目逐步细分，可以让项目条例层次清晰，权限控制强力，版本跟新稳定。
-（2）release和hotfix用于开发完成的调试和发布后的调试，它们不会阻塞后面的开发。
 
 
 
@@ -187,41 +129,33 @@ git branch
 
 #### 1.  git
 
-- git config --global user.name "sunpengHome"
+```sh
+#配置user.name和user.email
+git config --global user.name "sunpengHome"
+git config --global user.email "476567162@qq.com"
+#初始化
+git init
+#提交
+git add
+git commit
+#查看状态
+git status
+#查看提交记录
+git log
+git log --oneline
+git reflog
+#回退
+git reset --hard 版本的索引号/HEAD   #整体回退
+git reset --mixed 版本的索引号/HEAD  #回退本地仓库和暂存区
+git reset --soft 版本的索引号/HEAD   #仅回退本地仓库
+#查看差异
+git  diff  无/版本索引/head  filename #比较暂存区的其它文件的目录
+git  diff  无  filename 				#比较的本地与暂存区
+```
 
-- git config --global user.email "476567162@qq.com"
-
-- git init
-
-- git add
-
-- git commit
-
-- git status
-
-- git log
-
-- git log --oneline
-
-- git reflog
-
-- git reset --hard 版本的索引号/HEAD
-
-  --mixed 回退本地仓库和暂存区
-
-  --soft 仅回退本地仓库
-
-- git reset --hard 
-
-- git  diff  无/版本索引/head  filename ：比较暂存区的其它文件的目录
-
-  - 无比较的本地与暂存区
-
-- 
-
-hard：重(zhong)（操作）
-
-reset ：重置
+- 翻译：
+  - hard：重(zhong)（操作）
+  - reset ：重置
 
 
 
@@ -294,11 +228,37 @@ git branch -D develop
   - 回退多个版本：由于中间版本的影响，产生的冲突需要merge
   - 回退几十个版本：新建分支或tag，然后再回退，解决冲突时直接选择“right”
 
+#### 2. git回退
+
+```sh
+git reset --hard 版本的索引号/HEAD   #整体回退
+git reset --mixed 版本的索引号/HEAD  #回退本地仓库和暂存区
+git reset --soft 版本的索引号/HEAD   #仅回退本地仓库
+```
 
 
 
 
 
+### 2021.01.22
+
+```sh
+#1.初始化
+git init
+#2.远程新建仓库
+#3.远程新建分支，也可以在github上自己建
+git branch -M ${OriginBranceName}
+#3.重命名远程仓库
+git remote add orgin ${url}
+git remote -v #查看
+#4.推送
+git push orgin master
+#5.追踪远程（本地与远程建立联系）,如果本地没有追踪远程的话
+git branch -u origin ${BranceName}
+git branch -vv
+```
+
+- remote：遥远的
 
 
 
