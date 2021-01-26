@@ -56,16 +56,29 @@
 
 基本注解
 
-@Component  原意是组件，它是spring最基本的注解，作用是将类注入到bean中
+@Component  原意是组件，它是spring最基本的注解，作用是将类注入到bean
 
-MVC各层注解
+@Controller @Service @Respository 都是组件的注解，没有区别
 
-@Controller 控制层注解，作用是@Component和表明他是控制层(后者好像没有实际意义)
+@RestController 由@Controller + @ResponseBody组成，此外，ServiceComb
 
-@Service 服务层注解，作用是@Component和表明他是服务层(后者好像没有实际意义）
 
-@Respository 持久层注解，作用是@Component和表明他是持久层(后者好像没有实际意义）
 
-其他注解
 
-@RestController 由@Controller和@ResponseBody组成，此外，ServiceComb
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

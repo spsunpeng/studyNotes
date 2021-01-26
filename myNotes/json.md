@@ -1,5 +1,14 @@
 json
 
+- ObjectNode: put/set/setAll
+  - string: put
+  - objectNode: set/setAll , 那么，object如何转objectNode
+  - arrayNode：set , 那么，array如何转arrayNode
+  - list/Map/object：先转成writeValueAsString，再put
+- JsonNode: get
+- objectNode->JsonNode: JsonNode jsonNode2 = objectMapper.readTree(objectNode.toString());
+- JsonNode->objectNode: setAll
+
 ```java
 package com.example.json;
 

@@ -13,6 +13,7 @@
 | environment         | 环境         | 环境          |
 | execute             | 执行         | 执行          |
 | field               | 属性         | 属性          |
+| framework           | 框架         | 框架          |
 | injection           | 注射         | 注入          |
 | instrance           | 实例         | 实例          |
 | invoke/invocation   | 调用         | 调用          |

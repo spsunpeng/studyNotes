@@ -435,7 +435,9 @@ jdbc.url=jdbc:mysql://127.0.0.1:3306/msb_dongbao
 
 #### 7. SpEL
 
-- Spring Expression Language
+##### 7.1 SpEL
+
+- SpEL：Spring Expression Language，spring表达语言
 
 ```xml
 <!--SpEL-->
@@ -456,7 +458,11 @@ jdbc.url=jdbc:mysql://127.0.0.1:3306/msb_dongbao
 </bean>
 ```
 
+##### 7.2 EL
 
+- EL定义：表示你从另外一个页面传过来的参数的值，比如你从另外一个页面传了一个name为name，value为value的参数，在本页面写${name }就会显示value，它会从page，request，session，application中取值。
+- eg1：在request中setAttribute（“name”，“测试”），那么${name} 就会得到值为测试。
+- eg2：在application.properties中 name=测试 ， 那么${name} 就会得到值为测试。
 
 #### 8. 其他bean标签
 
@@ -467,6 +473,48 @@ scope：scope="singleton" / "prototype"
 
 
 ### 三、注解
+
+1.组件注解
+
+@Component  原意是组件，它是spring最基本的注解，作用是将类注入到bean
+
+@Controller @Service @Respository 都是组件的注解，没有区别
+
+@RestController 由@Controller + @ResponseBody组成
+
+2.xml
+
+```xml
+<context:component-scan base-package="com.mashibing">
+    <!-- exclude：排除，type="assignable"：类型是类，expression="完全限定名"
+	<context:exclude-filter type="assignable" expression="com.mashibing.bean.Person"></context:exclude-filter>
+	-->
+</context:component-scan>
+```
+
+3.使用
+
+单例@Scope(scopeName="prototype")
+
+```java
+//根据id,默认类名小写，这样貌似就设置不了多个bean了，比如person1、person2
+@Component(value = "person2")
+
+//默认单例singleton
+@Scope(scopeName="prototype")
+```
+
+
+
+@Resource
+
+
+
+
+
+
+
+
 
 
 
