@@ -474,25 +474,13 @@ scope：scope="singleton" / "prototype"
 
 ### 三、注解
 
-1.组件注解
+#### 1. 使用注解的方式注册bean到IOC容器中
 
 @Component  原意是组件，它是spring最基本的注解，作用是将类注入到bean
 
 @Controller @Service @Respository 都是组件的注解，没有区别
 
 @RestController 由@Controller + @ResponseBody组成
-
-2.xml
-
-```xml
-<context:component-scan base-package="com.mashibing">
-    <!-- exclude：排除，type="assignable"：类型是类，expression="完全限定名"
-	<context:exclude-filter type="assignable" expression="com.mashibing.bean.Person"></context:exclude-filter>
-	-->
-</context:component-scan>
-```
-
-3.使用
 
 单例@Scope(scopeName="prototype")
 
@@ -504,17 +492,118 @@ scope：scope="singleton" / "prototype"
 @Scope(scopeName="prototype")
 ```
 
+#### 2. 定义扫描包时要包含的类和不要包含的类
+
+```xml
+<context:component-scan base-package="com.mashibing">
+    <!-- exclude：排除，type="assignable"：类型是类，expression="完全限定名"
+	<context:exclude-filter type="assignable" expression="com.mashibing.bean.Person"></context:exclude-filter>
+	-->
+</context:component-scan>
+```
 
 
-@Resource
 
+#### 3、使用@AutoWired进行自动注入
 
+注意：当使用AutoWired注解的时候，自动装配的时候是根据类型实现的。
 
+​		1、如果只找到一个，则直接进行赋值，
 
+​		2、如果没有找到，则直接抛出异常，
 
+​		3、如果找到多个，那么会按照变量名作为id继续匹配,
 
+​				1、匹配上直接进行装配
 
+​				2、如果匹配不上则直接报异常
 
+- @Resource：javac包中的注解，和spring中@AutoWired功能一样
+
+- 启动类中不能使用@AutoWired，不生效
+
+  
+
+#### 4. 泛型依赖注入
+
+service
+
+```java
+public class BaseService<T> {
+    @Autowired
+    BaseDao<T> baseDao;
+
+    public void save(){
+        System.out.println("自动注入的对象："+baseDao);
+        baseDao.save();
+    }
+}
+```
+
+```java
+@Service
+public class StudentService extends BaseService<Student> {
+}
+```
+
+```java
+@Service
+public class TeacherService extends BaseService<Teacher> {
+}
+```
+
+dao
+
+```java
+public class BaseDao <T> {
+    public void save(){}
+}
+```
+
+```java
+@Repository
+public class StudentDao<T> extends BaseDao<Student> {
+    public void save(){
+        System.out.println("StudentDao save success");
+    }
+}
+```
+
+```java
+@Repository
+public class TeacherDao extends BaseDao<Teacher> {
+    public void save(){
+        System.out.println("TeacherDao save success");
+    }
+}
+```
+
+Test
+
+```java
+public class MyTest {
+
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("ioc.xml");
+    
+    @Test
+    public void test2(){
+        StudentService studentService = context.getBean("studentService", StudentService.class);
+        studentService.save();
+
+        TeacherService teacherService = context.getBean("teacherService", TeacherService.class);
+        teacherService.save();
+
+    }
+     /**
+     * 自动注入的对象：com.mashibing.dao.StudentDao@2fd6b6c7
+     * StudentDao save success
+     * 自动注入的对象：com.mashibing.dao.TeacherDao@5bfa9431
+     * TeacherDao save success
+     */
+}
+```
+
+loader: 装载机
 
 
 
