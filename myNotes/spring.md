@@ -4,6 +4,105 @@
 
 
 
+### OneNote
+
+#### 1、源码实现
+
+```java
+package com.southwind.untils;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+
+public class MyInvocationHandler implements InvocationHandler {
+
+    private Object object = null;
+
+    public Object bind(Object object){
+        this.object = object;
+        return Proxy.newProxyInstance(object.getClass().getClassLoader(), object.getClass().getInterfaces(),this);
+        //类加载器,类的所有结构
+    }
+
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable { //1.代理的所有放过发都会设这个，不过Object proxy有什么用，和this一样吗
+        System.out.println(method.getName()+"参数是："+ Arrays.toString(args));
+        Object res = method.invoke(this.object,args);//2.方法的调用method.invoke(this.object,args),这里是方法调用对象 method.invoke(this.object,args) 就是这个意思 this.object.method.invoke(args)
+        System.out.println(method.getName()+"结果是："+res);
+        return res;
+    }
+}
+```
+
+#### 2、切面
+
+```java
+@Aspect
+@Component
+public class LoggerAspect {
+
+    @Before("execution(public int com.southwind.untils.impl.CalImpl.*(..))")
+    public void before(JoinPoint joinPoint){
+        String name = joinPoint.getSignature().getName();
+        String args = Arrays.toString(joinPoint.getArgs());
+        System.out.println(name+"的参数是："+args);
+    }
+
+    @After(value = "execution(public int com.southwind.untils.impl.CalImpl.*(..))")
+    public void after(JoinPoint joinPoint){
+        String name = joinPoint.getSignature().getName();
+        System.out.println(name+"执行完成");
+    }
+
+    @AfterReturning(value = "execution(public int com.southwind.untils.impl.CalImpl.*(..))",returning = "result")
+    public void afterReturning(JoinPoint joinPoint, Object result){
+        String name = joinPoint.getSignature().getName();
+        System.out.println(name+"执行的结果是："+ result);
+    }
+
+    @AfterThrowing(value = "execution(public int com.southwind.untils.impl.CalImpl.*(..))",throwing = "exception")
+    public void afterThrowing(JoinPoint joinPoint,Exception exception){
+        String name = joinPoint.getSignature().getName();
+        System.out.println(name+"方法抛出异常："+exception);
+    }
+}
+```
+
+名词解释：
+- 切面：横切关注点被模块化的抽象对象。
+- 通知：切面对象完成的工作。
+- 目标：被通知的对象，即被横切的对象。
+- 代理：切面、通知、目标混合之后的对象。
+- 连接点：通知要插入业务代码的具体位置。
+- 切点：AOP 通过切点定位到连接点。
+
+#### 3、配置
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	">
+
+    <!-- 自动扫描 -->
+    <context:component-scan base-package="com.southwind"></context:component-scan>
+
+    <!-- 是Aspect注解生效，为目标类自动生成代理对象 -->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+</beans>
+```
+
+
+
+
+
 
 
 

@@ -137,9 +137,15 @@ C语言在多个操作系统执行的方式
 - 替换
   - 替换当前文件：alt + r
   - 替换全部文件：alt + R
-
 - 光标到行首/尾：Home / End
 - 上下移动代码：ctrl+shift+上/下
+- alt+数字(小键盘不可用)：显示左侧菜单，如：alt+7显示代码结构，alt+1显示工程
+
+### 3、调试
+
+- 监视：alt+F8
+
+
 
 # 第四阶段：面向对象
 
@@ -722,7 +728,7 @@ System.out.println(r2.nextDouble());//在 0.0 和 1.0 之间均匀分布的 doub
 
 ```java
 Class cls = Student.class;
-//获取对象
+//获取实例
 Object o = cls.newInstance();
 //获取参数并赋值
 Field score = cls.getField("score");

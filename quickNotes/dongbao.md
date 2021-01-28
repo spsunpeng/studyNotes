@@ -461,20 +461,201 @@ base64：编解码，不是加密，所以可以反解码
 
 
 
-### 2021.1.27
+### 2020.1.28
 
-- 对比工作：beyond
-- 修改接口
+#### 1、token校验
 
-- 拦截器
-  - 注解
-  - 拦截器
-  - 错误日志
+##### 1、拦截器
 
-- https://italk.mashibing.com/question/qc_00002001
+###### 1.1 拦截器
 
-- token过期
-- 单点登录（服务器、客户端）
+```java
+public class AuthInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        System.out.println("进入拦截器");
+        //有没有token
+        String token = request.getHeader("token");
+        if(null == token){
+            throw new TokenException("token为空");
+        }
+
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        Method method = handlerMethod.getMethod();
+        //有没有注解
+        if(method.isAnnotationPresent(TokenCheck.class)){
+            TokenCheck annotation = method.getAnnotation(TokenCheck.class);
+            //注解中的请求是否为true
+            if(annotation.required()) {
+                try {
+                    //校验token
+                    JwtUtil.parseToken(token);
+                    return true;
+                } catch (Exception e) {
+                    throw new TokenException("token校验错误");
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
+    }
+}
+```
+
+###### 1.2 拦截器配置
+
+```java
+@Configuration
+public class InterceptorConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor()).addPathPatterns("/**").excludePathPatterns("/user-member/login");
+    }
+
+    @Bean
+    public AuthInterceptor authInterceptor(){
+        return new AuthInterceptor();
+    }
+}
+```
+
+##### 2、注解
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface TokenCheck {
+    //检验是否校验token
+    boolean required() default false;
+}
+```
+
+##### 3、使用
+
+```java
+@PostMapping("/edit")
+@TokenCheck(required = true)
+public ResultWrapper edit(@RequestBody UmsMember umsMember){
+    return umsMemberService.edit(umsMember);
+}
+```
+
+##### 4、异常处理
+
+###### 4.1 定义异常
+
+```java
+public class TokenException extends  Exception{
+    public TokenException(String msg) {
+        super(msg);
+    }
+}
+```
+
+###### 4.2 统一异常返回
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandle {
+    @ExceptionHandler(TokenException.class)
+    public ResultWrapper loginException(Exception e){
+        return ResultWrapper.getFailBuilder().code(501).msg(e.getMessage()).build();
+    }
+}
+```
+
+##### 5、补充
+
+问：这里功能的实现可以不使用注解吗？
+
+答：可以
+
+- 首先，拦截器配置中可以添加需要校验的类
+
+- 然后，拦截器实现中如果不去解析注解的话
+
+- 那么，不适用注解可以完成功能
+
+  
+
+#### 2、日志切面
+
+```java
+@Aspect
+@Componet
+public class WebLogAscept{
+    
+    //不加注解
+    @Pointcut("execution(* com.sinosun.bizmate.backend.basedata.endpoint..*(..))")
+    //加注解
+    @Pointcut("@annotation(* com.sinosun.bizmate.backend.aspect.WebLog)")
+    public void weblog(){}
+    
+    @Before("webLog()")
+    public void doBefore(JoinPoint joinPoint) throws Throwable{
+        //方法前执行
+    }
+    
+    @Around("webLog()")
+    public object doAround(ProceedingJoinPoint proceedingjoinPoint) throws Throwable{
+        //方法后执行
+    }
+    
+    @After("webLog()")
+    public void doAfter() throws Throwable{
+        //方法后执行
+    }
+}
+```
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface WebLog {
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
