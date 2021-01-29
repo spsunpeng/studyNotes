@@ -242,25 +242,32 @@ git reset --soft 版本的索引号/HEAD   #仅回退本地仓库
 
 ### 2021.01.22
 
+#### 1、本地与远程连接
+
+- 必须：本地仓库(init)、本地分支(master)、远程仓库(github)、远程分支(origin master)
+- 不是必须的必须：远程url重命名为origin，master追踪origin master
+
 ```sh
 #1.初始化
 git init
-#2.远程新建仓库
-#3.远程新建分支，也可以在github上自己建
-git branch -M ${OriginBranceName}
-#3.重命名远程仓库
+#2.本地提交
+git add .
+git commit -m "init"
+git branch #此时查看才会出现分支
+#3.远程新建仓库
+#4.重命名远程仓库
 git remote add orgin ${url}
 git remote -v #查看
-#4.推送
-git push orgin master
-#5.追踪远程（本地与远程建立联系）,如果本地没有追踪远程的话
-git branch -u origin ${BranceName}
+#5.远程新建分支
+git branch -M ${OriginBranceName}
+#也可以在github上自己建
+#还可以不创建，推送时没有自动创建
+#6.推送
+git push orgin master #此步，系统可能会自动创建远程，可能会自动追送，没有的话就需要手动
+#7.追踪远程（本地与远程建立联系）
+git branch -u origin/${BranceName}
 git branch -vv
 ```
-
-- remote：遥远的
-
-
 
 
 

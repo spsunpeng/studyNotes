@@ -706,6 +706,203 @@ loader: 装载机
 
 
 
+### 四、AOP
+
+- AOP就是代理，代理就是包装一层，并非真的取切面
+- AOP和代理只能在首尾上切面
+- endpoint层是前端在调用，所以代理在实现的调用上有所不同
+- 配套自定义注解什么都没有做，只是加了一层判断
+
+#### 1、代理与AOP
+
+##### 1.1 源程序
+
+```java
+//源程序
+methodA{
+    //业务
+}
+```
+
+##### 1.2 加入日志
+
+- 问：现在我想要在头尾加入日志
+- 答：那就加呗！
+
+```java
+methodA{
+    System.out.println("开始");
+    //业务
+    System.out.println("结束");
+}
+```
+
+##### 1.3 代理与AOP
+
+- 问：现在我们不想要在程序中加入日志语句，太乱了，我想要去掉他们！我想要切面编程！！！
+- 答：使用代理，新建methodB，在methodB中的头尾执行打印语句，并调用methodA
+
+```java
+//代理
+methodB{
+    System.out.println("开始");
+    methodA;
+    System.out.println("结束");
+}
+```
+
+##### 1.4 使用
+
+- 问：感觉有什么不对！！！这算什么解决方法？AOP高冷的人设瞬间都没了。
+- 问：合着就套了层皮，methodA变成methodB，那么我原先调用methodA的语句要改成methodB了？
+- 答：并不用，只要接口做的好！！！JDk用静态方法，而spring-aop在使用时和平常一模一样
+
+```java
+//JDk-代理
+Calculator calculator = CalculatorProxy.getCalculator(new MyCalculatorImpl());
+//注意一：不难看出，接口Calculator的实现用的是代理，继而调用代理方法，所以JDk-代理必须需要接口
+//spring-AOP
+Calculator calculator = context.getBean( Calculator.class);
+```
+
+##### 1.5 补充
+
+- 问：还有，这么做不是只能在头尾添加日志了，还是没有实现切面吧！！！
+- 答：是的，只能在头尾添加，切面编程还能真的把一个连贯的程序切开，人家叫一个好听的名字不行吗？
+- 问：。。。。。。
+
+#### 2、实现
+
+##### 2.1 JDk-代理：
+
+```java
+public class CalculatorProxy {
+    public static Calculator getCalculator(final Calculator calculator){
+        Class cls = calculator.getClass();
+        InvocationHandler invocationHandler = new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                Object result = null;
+                try{
+                    LogUtil.start(method, args);
+                    result = method.invoke(calculator, args);
+                    LogUtil.stop(method, result);
+                }catch (Exception e){
+                    LogUtil.exception(method, e);
+                }finally {
+                    LogUtil.end(method);
+                }
+                return result;
+            }
+        };
+        Object o = Proxy.newProxyInstance(cls.getClassLoader(), cls.getInterfaces(), invocationHandler);
+        return (Calculator) o;
+    }
+}
+```
+
+这里使用LogUtil打印日志，也可以直接在里面System.out.println("开始/结束");
+
+##### 2.2 spring-AOP
+
+```java
+package com.mashibing.util;
+
+import org.aspectj.lang.annotation.*;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
+/**
+ * @author sunpeng
+ * @Date 2021-01-29 13:22
+ */
+@Aspect
+@Component
+public class LogUtilAnnotation {
+
+    @Before("execution( public int com.mashibing.service.MyCalculatorImpl.*(Integer,Integer) )")
+    public static void start(){
+        System.out.println("方法开始：");
+    }
+
+    @AfterReturning("execution( public int com.mashibing.service.MyCalculatorImpl.*(Integer,Integer) )")
+    public static void stop(){
+        System.out.println("方法stop：");
+    }
+
+    @AfterThrowing("execution( public int com.mashibing.service.MyCalculatorImpl.*(Integer,Integer) )")
+    public static void exception(){
+        System.out.println("方法异常：");
+    }
+
+    @After("execution( public int com.mashibing.service.MyCalculatorImpl.*(Integer,Integer) )")
+    public static void end(){
+        System.out.println("方法end...");
+    }
+
+}
+```
+
+#### 3、使用场景
+
+- 使用场景：service层的日志打印、endpoint层的拦截器、endpoint层的日志打印
+- 不同点：endpoint层和其他层不同，他的调用是前端在调，所以jdk代理在实现上稍有不同，注解在实现上还是一样
+
+#### 4、配套自定义注解
+
+##### 4.1 应用场景
+
+问：为什么要加自定义注解，有哪些应用场景
+
+答：反射取出程序的注解，通过是否添加了注解，直接值是否为ture，判断是否使用代理
+
+问：就这！！！
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface TokenCheck {
+    //检验是否校验token
+    boolean required() default false;
+}
+```
+
+##### 4.2 实现
+
+问：如何实现
+
+答：如果通过代理程序实现，只需在程序中判断注解；如果通过@aspect注解实现，只需设置@aspect中的参数值
+
+```java
+//通过代理程序实现
+//是否有自定义注解
+if(method.isAnnotationPresent(TokenCheck.class)){
+    TokenCheck annotation = method.getAnnotation(TokenCheck.class);
+    //注解中的请求是否为true
+    if(annotation.required()) {}
+}
+
+//通过@aspect注解
+//不加注解
+@Pointcut("execution(* com.sinosun.bizmate.backend.basedata.endpoint..*(..))")
+//加注解
+@Pointcut("@annotation(* com.sinosun.bizmate.backend.aspect.WebLog)")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1263,9 +1263,11 @@ FilterInputStream\ FilterOutputStream \BufferedInputStream\BufferedOutputStream�
     - **ArrayList** 读快改慢
 
   - Vector
-    - **Stack**
-
+    
+  - **Stack**
+    
   - Queue
+    
     - **LinkedList**
 
 - Map
@@ -1303,6 +1305,26 @@ public void fun1(Collection c) {
 ##### 9.4 常用算法Collections  
 
 Collections中的算法只对List实现，因为List是有序的数据结构，且都是静态方法。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
