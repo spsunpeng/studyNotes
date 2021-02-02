@@ -25,6 +25,7 @@
 |      | invoke/invocation                         | 调用                     | 调用           |
 |      | jdk                                       | Java Development Kit     | java开发工具包 |
 |      | lifecycle                                 | 生命周期                 | 生命周期       |
+| 2    | manager                                   | 经理                     | 管理器         |
 |      | modifier                                  | 修饰符                   | 修饰符         |
 |      | placeholder                               | 占位符                   | 占位符         |
 |      | properties/property                       | 所有物、财产             | 属性、参数     |
@@ -41,10 +42,11 @@
 |      | Wrapper                                   | 包装器                   | 包装器         |
 ## 低频
 
-| 频次 | java   | 原意         | 计算机术语  |
-| ---- | ------ | ------------ | ----------- |
-|      | Auth   | 验证码、认证 | 验证码      |
-| 1    | remote | 遥远的       | 远程（git） |
+| 频次 | java         | 原意         | 计算机术语  |
+| ---- | ------------ | ------------ | ----------- |
+| 1    | Auth         | 验证码、认证 | 验证码      |
+| 1    | remote       | 遥远的       | 远程（git） |
+| 1    | tool/ToolBox | 工具/工具箱  | 工具/工具箱 |
 
 ## 工作
 
