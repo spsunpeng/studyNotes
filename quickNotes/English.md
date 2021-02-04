@@ -14,15 +14,16 @@
 |      | declared                                  | 宣告、公开               | 公开           |
 |      | dependency                                | 依赖                     | 依赖           |
 |      | environment                               | 环境                     | 环境           |
-|      | execute                                   | 执行                     | 执行           |
+| 2    | execute/execution                         | 执行                     | 执行           |
 |      | field                                     | 属性                     | 属性           |
 |      | framework                                 | 框架                     | 框架           |
+| 1    | Handler                                   | 处理程序                 | 处理程序       |
 |      | illegal                                   | 非法的                   | 非法的         |
 |      | install                                   | 安装                     | 安装           |
 |      | injection                                 | 注射                     | 注入           |
 |      | instrance                                 | 实例                     | 实例           |
 |      | interceptor                               | 拦截器                   | 拦截器         |
-|      | invoke/invocation                         | 调用                     | 调用           |
+| 2    | invoke/invocation                         | 调用                     | 调用           |
 |      | jdk                                       | Java Development Kit     | java开发工具包 |
 |      | lifecycle                                 | 生命周期                 | 生命周期       |
 | 2    | manager                                   | 经理                     | 管理器         |
@@ -47,6 +48,7 @@
 | 1    | Auth         | 验证码、认证 | 验证码      |
 | 1    | remote       | 遥远的       | 远程（git） |
 | 1    | tool/ToolBox | 工具/工具箱  | 工具/工具箱 |
+| 1    | ref          | 参考         | 引用        |
 
 ## 工作
 

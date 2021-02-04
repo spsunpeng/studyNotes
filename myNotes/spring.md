@@ -1,110 +1,10 @@
-### 遗留问题：
+### 前言：
 
-- @PropertySource(value = {"classpath:person.yaml"})   不起作用
+- 代码：git@github.com:spsunpeng/spring.git
 
+- 学习进度：第11阶段:SSM框架的应用 -》spring(连老师版本) -》 8.SpringAOP声明式事务及源码讲解 -》 00:40:00
 
-
-### OneNote
-
-#### 1、源码实现
-
-```java
-package com.southwind.untils;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
-
-public class MyInvocationHandler implements InvocationHandler {
-
-    private Object object = null;
-
-    public Object bind(Object object){
-        this.object = object;
-        return Proxy.newProxyInstance(object.getClass().getClassLoader(), object.getClass().getInterfaces(),this);
-        //类加载器,类的所有结构
-    }
-
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable { //1.代理的所有放过发都会设这个，不过Object proxy有什么用，和this一样吗
-        System.out.println(method.getName()+"参数是："+ Arrays.toString(args));
-        Object res = method.invoke(this.object,args);//2.方法的调用method.invoke(this.object,args),这里是方法调用对象 method.invoke(this.object,args) 就是这个意思 this.object.method.invoke(args)
-        System.out.println(method.getName()+"结果是："+res);
-        return res;
-    }
-}
-```
-
-#### 2、切面
-
-```java
-@Aspect
-@Component
-public class LoggerAspect {
-
-    @Before("execution(public int com.southwind.untils.impl.CalImpl.*(..))")
-    public void before(JoinPoint joinPoint){
-        String name = joinPoint.getSignature().getName();
-        String args = Arrays.toString(joinPoint.getArgs());
-        System.out.println(name+"的参数是："+args);
-    }
-
-    @After(value = "execution(public int com.southwind.untils.impl.CalImpl.*(..))")
-    public void after(JoinPoint joinPoint){
-        String name = joinPoint.getSignature().getName();
-        System.out.println(name+"执行完成");
-    }
-
-    @AfterReturning(value = "execution(public int com.southwind.untils.impl.CalImpl.*(..))",returning = "result")
-    public void afterReturning(JoinPoint joinPoint, Object result){
-        String name = joinPoint.getSignature().getName();
-        System.out.println(name+"执行的结果是："+ result);
-    }
-
-    @AfterThrowing(value = "execution(public int com.southwind.untils.impl.CalImpl.*(..))",throwing = "exception")
-    public void afterThrowing(JoinPoint joinPoint,Exception exception){
-        String name = joinPoint.getSignature().getName();
-        System.out.println(name+"方法抛出异常："+exception);
-    }
-}
-```
-
-名词解释：
-- 切面：横切关注点被模块化的抽象对象。
-- 通知：切面对象完成的工作。
-- 目标：被通知的对象，即被横切的对象。
-- 代理：切面、通知、目标混合之后的对象。
-- 连接点：通知要插入业务代码的具体位置。
-- 切点：AOP 通过切点定位到连接点。
-
-#### 3、配置
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
-	">
-
-    <!-- 自动扫描 -->
-    <context:component-scan base-package="com.southwind"></context:component-scan>
-
-    <!-- 是Aspect注解生效，为目标类自动生成代理对象 -->
-    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
-</beans>
-```
-
-
-
-
-
-
-
+  
 
 ### 一、入门搭建1（不使用maven）
 
@@ -221,7 +121,7 @@ public class Test1 {
 
 
 
-### 二、配置
+### 二、ioc_xml
 
 - maven优势：maven管理jar包的优势：简单方便，此外，在导入时会自动导入相关的jar包，比如只导入context，会自动导入bean、core、exception，还会自动导入common
 
@@ -571,7 +471,7 @@ scope：scope="singleton" / "prototype"
 
 
 
-### 三、注解
+### 三、ioc_注解
 
 #### 1. 使用注解的方式注册bean到IOC容器中
 
@@ -712,6 +612,7 @@ loader: 装载机
 - AOP和代理只能在首尾上切面
 - endpoint层是前端在调用，所以代理在实现的调用上有所不同
 - 配套自定义注解什么都没有做，只是加了一层判断
+- aop用途：日志、拦截器、事务管理器
 
 #### 1、代理与AOP
 
@@ -891,26 +792,313 @@ if(method.isAnnotationPresent(TokenCheck.class)){
 @Pointcut("@annotation(* com.sinosun.bizmate.backend.aspect.WebLog)")
 ```
 
+#### 5、aop
+
+```java
+package com.mashibing.util;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.*;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+import javax.swing.*;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
+/**
+ * @author sunpeng
+ * @Date 2021-01-29 13:22
+ */
+
+/**
+ * "execution( public int com.mashibing.service.*.*(Integer,Integer) )")
+ * execution( public * com.mashibing.service.*.*(..) )")
+ * "execution( * *(..) )")
+ */
+@Aspect
+@Component
+//@Order(2) 多切面时的执行顺序
+public class LogUtilAnnotation {
+
+    @Pointcut("execution( public * com.mashibing.service.*.*(..) )")
+    public void myPointcut(){}
+
+    @Before("myPointcut(){}")
+    public void start(JoinPoint joinPoint){
+        String name = joinPoint.getSignature().getName();
+        Object[] args = joinPoint.getArgs();
+        System.out.println(name+"方法开始："+Arrays.asList(args));
+    }
+
+    @AfterReturning(value = "myPointcut(){}", returning = "result") //try里
+    public void stop(JoinPoint joinPoint, Integer result){
+        String name = joinPoint.getSignature().getName();
+        System.out.println(name+"方法AfterReturning："+result);
+    }
+
+
+    @AfterThrowing(value = "myPointcut(){}", throwing = "e")
+    public void exception(JoinPoint joinPoint, Exception e){
+        String name = joinPoint.getSignature().getName();
+        System.out.println(name+"方法异常："+"e");
+    }
+
+    @After(value = "myPointcut(){}") //try外,没有参数returning
+    private int end(JoinPoint joinPoint){         //private int stop不影响，没用
+        String name = joinPoint.getSignature().getName();
+        System.out.println(name+"方法After...");
+        return 1;
+    }
+
+    @Around(value = "myPointcut(){}")
+    public Object around(ProceedingJoinPoint joinPoint) {
+        String name = joinPoint.getSignature().getName();
+        Object result = "";
+        try {
+            System.out.println(name+"(around)方法开始："+Arrays.asList(joinPoint.getArgs()));
+            result = joinPoint.proceed();
+            System.out.println(name+"(around)方法AfterReturning："+result);
+        } catch (Throwable throwable) {
+            System.out.println(name+"(around)方法异常："+"e");
+            throwable.printStackTrace();
+        }
+        System.out.println(name+"(around)方法After...");
+        return result;
+    }
+
+}
+```
+
+##### 5.1切入点表达式
+
+```java
+@Pointcut("execution( public int com.mashibing.service.*.*(Integer,Integer) )") 
+@Pointcut("execution( public * com.mashibing.service.*.*(..) )") //常用
+@Pointcut("execution( * *(..) )") 
+```
+
+##### 5.2 参数
+
+```java
+public class LogUtilAnnotation {
+
+    @Pointcut("execution( public * com.mashibing.service.*.*(..) )")
+    public void myPointcut(){}
+
+    @Before("myPointcut(){}")
+    public void start(JoinPoint joinPoint){
+        String name = joinPoint.getSignature().getName(); //代理的方法名
+        Object[] args = joinPoint.getArgs();  //代理的参数
+    }
+
+    @AfterReturning(value = "myPointcut(){}", returning = "result") //代理的结果
+    public void stop(JoinPoint joinPoint, Integer result){}
+
+
+    @AfterThrowing(value = "myPointcut(){}", throwing = "e") //代理的异常
+    public void exception(JoinPoint joinPoint, Exception e){}
+
+    @After(value = "myPointcut(){}") 
+    private int end(JoinPoint joinPoint){}//它本身 修饰符（private）、返回类型（int）、方法名（stop）随便
+```
+
+##### 5.3 AfterReturning和After
+
+```java
+ public static Calculator getCalculator(final Calculator calculator){ 
+        InvocationHandler invocationHandler = new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                Object result = null;
+                try {
+                    //start
+                    result = method.invoke(calculator, args);
+                    //AfterReturning
+                } catch (Throwable throwable) {
+                    //AfterThrowing
+                }
+                //After
+                return result; 
+            }
+        };
+     	Class cls = calculator.getClass();
+        Object o = Proxy.newProxyInstance(cls.getClassLoader(), cls.getInterfaces(), invocationHandler);
+        return (Calculator) o;
+    }
+```
+
+- 区别一：AfterReturning在try{}里面，After在外面
+
+- 区别二：所以，AfterReturning不一定能执行到，After一定能执行到
+
+- 区别三：所以，AfterReturning有返回参数，恰恰因为它不一定能执行到，所以它的返回结果才一定是是有用
+
+##### 5.4 Around
+
+```java
+    @Around(value = "myPointcut(){}")
+    public Object around(ProceedingJoinPoint joinPoint) {
+        String name = joinPoint.getSignature().getName();
+        Object result = "";
+        try {
+            System.out.println(name+"(around)方法开始："+Arrays.asList(joinPoint.getArgs()));
+            result = joinPoint.proceed();
+            System.out.println(name+"(around)方法AfterReturning："+result);
+        } catch (Throwable throwable) {
+            System.out.println(name+"(around)方法异常："+"e");
+            throwable.printStackTrace();
+        }
+        System.out.println(name+"(around)方法After...");
+        return result;
+    }
+```
+
+@Around就是 spring_Proxy，它在使用上等同于 jdk_Proxy，所以它可以一个注解就可以代替@start、@AfterReturning、@AfterThrowing、@After
+
+问：同时有@Around 和 @start、@AfterReturning、@AfterThrowing、@After，他们谁先执行
+
+答：@Around注解在外，四个注解在里
+
+```
+add(around)方法开始：[1, 2]
+add方法开始：[1, 2]
+add方法AfterReturning：3
+add方法After...
+add(around)方法AfterReturning：3
+add(around)方法After...
+```
+
+##### 5.5 多个代理
+
+问：多个代理的执行顺序？如何改变他们的执行顺序？答：
+
+- 默认按照代理类名的字母顺序
+- 可用 @Order(数字)  注解表明第几个执行
+- 先执行的在外，后执行的在里
+
+#### 6、jdk与CGLIB
+
+```java
+@Test
+public void test3(){
+    ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+    //jdk
+    Calculator calculator = context.getBean( Calculator.class);
+    calculator.add(1,2);
+    System.out.println(calculator); //com.mashibing.service.MyCalculatorImpl@783a467b
+    System.out.println(calculator.getClass()); //class com.sun.proxy.$Proxy18
+
+    //CGLIB
+    MyCalculator bean = context.getBean(MyCalculator.class);
+    bean.add(1, 2);
+    System.out.println(bean); //com.mashibing.service.MyCalculator@7db12bb6
+    System.out.println(bean.getClass()); //class com.mashibing.service.MyCalculator$$EnhancerBySpringCGLIB$$6dad0c00
+}
+```
+
+结论：
+
+- 用bean.getClass()验证：接口用jdk，类用CGLIB
+- 打印：System.out.println(bean)就是打印bean.tostring()，如果不重写tostring打印的就是全限定名，即bean.getClass()，但这里不一样。
+
+- System.out.println(bean); 还调用了方法After，为什么就只能看源码了
+
+  
+
+#### 7、aop配置方法
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+">
+    
+    <bean id="myCalculator" class="com.mashibing.service.MyCalculatorImpl"></bean>
+    <bean id="logUtil" class="com.mashibing.util.LogUtil"></bean>
+    
+    <aop:config>
+        <aop:aspect ref="logUtil">
+            <aop:pointcut id="mypointcut" expression="execution(public * com.mashibing.service.*.*(..))"/>
+            <aop:before method="start" pointcut-ref="mypointcut"></aop:before>
+            <aop:after-returning method="stop" pointcut-ref="mypointcut" returning="result"></aop:after-returning>
+            <aop:after-throwing method="exception" pointcut-ref="mypointcut" throwing="e"></aop:after-throwing>
+            <aop:after method="end" pointcut-ref="mypointcut"></aop:after>
+            <aop:around method="around" pointcut-ref="mypointcut"></aop:around>
+        </aop:aspect>
+    </aop:config>
+
+</beans>
+```
 
 
 
+#### 8、事务管理器 @Transactional
 
+##### 8.1 事务管理器
 
+```java
+@Transactional(timeout = 10)
+public void checkout(String username,int id){
+    bookDao.updateStock(id);
+    //int i = 1/0；
+    int price = bookDao.getPrice(id);
+    bookDao.updateBalance(username,price);
+}
+```
 
+- 事务：成功则一起成功，保证一致性
 
+##### 8.2 事务管理器的属性
 
+例如：@Transactional(timeout = 10)
 
+| 属性名           | 说明                                                         |
+| :--------------- | :----------------------------------------------------------- |
+| name             | 当在配置文件中有多个 TransactionManager , 可以用该属性指定选择哪个事务管理器。 |
+| propagation      | 事务的传播行为，默认值为 REQUIRED。                          |
+| isolation        | 事务的隔离度，默认值采用 DEFAULT。                           |
+| timeout          | 事务的超时时间，默认值为-1。如果超过该时间限制但事务还没有完成，则自动回滚事务。 |
+| read-only        | 指定事务是否为只读事务，默认值为 false；为了忽略那些不需要事务的方法，比如读取数据，可以设置 read-only 为 true。 |
+| rollback-for     | 用于指定能够触发事务回滚的异常类型，如果有多个异常类型需要指定，各类型之间可以通过逗号分隔。 |
+| no-rollback- for | 抛出 no-rollback-for 指定的异常类型，不回滚事务。            |
 
+##### 8.3 事务的传播特性
 
+例如：@Transactional(propagation = Propagation.REQUIRED)
 
+| 事务传播行为类型          | 说明                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| PROPAGATION_REQUIRED      | 如果当前没有事务，就新建一个事务。如果已经存在一个事务中，加入到这个事务中。(常用) |
+| PROPAGATION_REQUIRES_NEW  | 新建事务，如果当前存在事务，把当前事务挂起。                 |
+| PROPAGATION_NESTED        | 如果当前没有事务，就新建一个事务。如果已经存在一个事务中，则在**嵌套**事务内执行。 |
+|                           |                                                              |
+| PROPAGATION_SUPPORTS      | 支持当前事务，如果当前没有事务，就以非事务方式执行。（加不加都一样） |
+| PROPAGATION_NOT_SUPPORTED | 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起 （有事务就挂起） |
+| PROPAGATION_NEVER         | 以非事务方式执行，如果当前存在事务，则抛出异常。（有事务就抛异常） |
+| PROPAGATION_MANDATORY     | 使用当前的事务，如果当前没有事务，就抛出异常。 （必须有事务） |
 
+总结：
 
+```tex
+1、事务传播级别是REQUIRED，当checkout()被调用时（假定被另一类中commit()调用），如果checkout()中的代码抛出异常，即便被捕获，commit()中的其他代码都会roll back
 
+2、是REQUIRES_NEW，如果checkout()中的代码抛出异常，并且被捕获，commit()中的其他代码不会roll back；如果commit()中的其他代码抛出异常，而且没有捕获，不会导致checkout()回滚
 
+3、是NESTED，如果checkout()中的代码抛出异常，并且被捕获，commit()中的其他代码不会roll back；如果commit()中的其他代码抛出异常，而且没有捕获，会导致checkout()回滚
 
-
-
-
+    PROPAGATION_REQUIRES_NEW 启动一个新的, 不依赖于环境的 "内部" 事务. 这个事务将被完全 commited 或 rolled back 而不依赖于外部事务, 它拥有自己的隔离范围, 自己的锁, 等等. 当内部事务开始执行时, 外部事务将被挂起, 内务事务结束时, 外部事务将继续执行. 
+    另一方面, PROPAGATION_NESTED 开始一个 "嵌套的" 事务,  它是已经存在事务的一个真正的子事务. 嵌套事务开始执行时,  它将取得一个 savepoint. 如果这个嵌套事务失败, 我们将回滚到此 savepoint. 潜套事务是外部事务的一部分, 只有外部事务结束后它才会被提交. 
+    由此可见, PROPAGATION_REQUIRES_NEW 和 PROPAGATION_NESTED 的最大区别在于, PROPAGATION_REQUIRES_NEW 完全是一个新的事务, 而 PROPAGATION_NESTED 则是外部事务的子事务, 如果外部事务 commit, 嵌套事务也会被 commit, 这个规则同样适用于 roll back. 
+```
 
 
 
