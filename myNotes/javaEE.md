@@ -4,7 +4,7 @@
 
 
 
-### 一、javaWeb
+### 一、以前
 
 #### 1、概念
 
@@ -94,11 +94,11 @@
 
   - 启动类：file -> settins -> bulid -> Applicaton server -> '+' -> Tomcat Server -> 选择Tomcat 安装的路径
 
-  ![启动类tomcat](\pictures\spring\启动服务器tomcat.png)
+  ![启动服务器tomcat](pictures\javaWeb\启动服务器tomcat.png)
 
   - 导包：servlet.jar、jsp.jar
 
-  ![idea导包方式3](pictures\spring\idea导包方式3.png)
+  ![idea导包方式3](pictures\javaWeb\idea导包方式3.png)
 
 ##### 4.2 继承HttpServlet
 
@@ -148,15 +148,23 @@ public class HelloServlet extends HttpServlet {
 </html>
 ```
 
-多都素
 
 
 
 
+### 二、javaEE
 
+1、http
 
+- 场景：web，浏览器和服务器之间传输数据
 
+- http：超文本传输协议。解决不同浏览器向服务器传输数据时的差异
 
+- servlet：Server applet，web的小服务程序。解决动态(实时)数据相应的问题，固定的页面可以直接返回，但多数情况都不是预想配置好的页面，这时就需要将数据转化为页面，这个转化的功能就叫Server applet。
+
+客户端请求服务端
+
+![客户端请求服务端](pictures\javaWeb\客户端请求服务端.png)
 
 
 

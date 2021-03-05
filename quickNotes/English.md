@@ -18,6 +18,7 @@
 |      | environment                               | 环境                     | 环境             |
 | 2    | execute/execution                         | 执行                     | 执行             |
 |      | field                                     | 属性                     | 属性             |
+| 2    | filter                                    | 筛选                     | 过滤器           |
 |      | framework                                 | 框架                     | 框架             |
 | 2    | Handler                                   | 处理程序                 | 处理程序         |
 |      | illegal                                   | 非法的                   | 非法的           |
@@ -50,10 +51,11 @@
 | ---- | ------------ | ------------ | ----------- |
 | 1    | Auth         | 验证码、认证 | 验证码      |
 | 1    | Broswer      | 浏览器       | 浏览器      |
+| 1    | generator    | 发电机       | 生成器      |
 | 1    | remote       | 遥远的       | 远程（git） |
 | 1    | tool/ToolBox | 工具/工具箱  | 工具/工具箱 |
 | 1    | ref          | 参考         | 引用        |
-|      |              |              |             |
+| 1    | Session会话  | 会话         |             |
 
 ## 工作
 
@@ -68,6 +70,7 @@
 |      | flow      | 流                     | 流水         |
 |      | launch    | 发射、发起、发动、开展 | 发起         |
 |      | multiple  | 多种多样的             |              |
+| 1    | scheme    | 方案                   | 方案         |
 |      | security  | 安全                   |              |
 |      | transfer  | 转让                   |              |
 

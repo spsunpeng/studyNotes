@@ -1,4 +1,4 @@
-### 二、以前
+### 以前
 
 Spring MVC 是目前主流的实现 MVC 设计模式的企业级开发框架，Spring 框架的一个子模块，无需整合，开发起来更加便捷。
 
@@ -228,7 +228,7 @@ public String index(@RequestParam("name") String myname, int id){}
 
 
 
-### 三、springMVC
+### 一、springMVC
 
 #### 1、什么是MVC？
 
@@ -247,3 +247,269 @@ public String index(@RequestParam("name") String myname, int id){}
 
 
 DAO的全名為Data Access Object
+
+
+
+
+
+### 二、web_Servlet项目
+
+- git@github.com:spsunpeng/javaWeb.git
+
+#### 1、web_Servlet项目
+
+##### 1.1 新建工程
+
+- 方法一：new Project/Model -> Java Enterprise，选择Tomcat，选中Web Application（简单，因为Enterprise是企业版） 
+
+- 方法二：平民版
+
+  - 新建项目：new Project/Model -> Java，选中Web Application 
+
+  - 启动类：file -> settins -> bulid -> Applicaton server -> '+' -> Tomcat Server -> 选择Tomcat 安装的路径
+
+  ![启动服务器tomcat](D:\Git\gitRepository\studyNotes\myNotes\pictures\javaWeb\启动服务器tomcat.png)
+
+  - 导包：servlet.jar、jsp.jar
+
+  ![idea导包方式3](D:\Git\gitRepository\studyNotes\myNotes\pictures\javaWeb\idea导包方式3.png)
+
+##### 1.2 继承HttpServlet
+
+```java
+public class HelloServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = req.getParameter("username");
+        req.getSession().setAttribute("username", username);
+        //转发
+        req.getRequestDispatcher("index.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+
+```
+
+##### 1.3 web.xml配置 
+
+```xml
+    <servlet>
+        <servlet-name>helloServlet</servlet-name>
+        <servlet-class>com.mahsibing.Controller.HelloServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>helloServlet</servlet-name>
+        <url-pattern>/hello</url-pattern>
+    </servlet-mapping>
+```
+
+##### 1.4 index.hsp视图 
+
+```jsp
+<html>
+  <head>
+    <title>$Title$</title>
+  </head>
+  <body>
+  ${username}
+  </body>
+</html>
+```
+
+
+
+### 三、入门demo
+
+#### 1、入门demo
+
+- 多个web.xml文件
+- 多了在idea中使用时的一堆配置：导包、启动tomcat、tomcat识别prom（tomcat是真的麻烦）
+
+##### 1.1 新建项目
+
+- 方法一：新建maven项目  --》 选择 org.apache.maven.archetypes:maven-archetype-webapp
+- 方法二：
+  - 新建maven项目
+  - 右键项目名称 --》 添加框架支持 --> 选择web（出现web文件夹）
+
+##### 1.2 导包
+
+```xml
+<dependencies>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.2.3.RELEASE</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>5.2.3.RELEASE</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>5.2.3.RELEASE</version>
+    </dependency>
+</dependencies>
+```
+
+##### 1.3 编写web.xml文件
+
+```xml
+	<!--配置DispatcherServlet-->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--关联springmvc的配置文件-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:springmvc.xml</param-value>
+        </init-param>
+    </servlet>
+    <!--匹配servlet的请求，/标识匹配所有请求-->
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <!--/*和/都是拦截所有请求，/会拦截的请求不包含*.jsp,而/*的范围更大，还会拦截*.jsp这些请求-->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+```
+
+##### 1.4 配置文件：springmvc.xml
+
+```xml
+<bean id="/hello" class="com.mashibing.controller.HelloController"></bean>
+
+<!--视图解析器-->
+<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <!--配置前缀-->
+    <property name="prefix" value="/WEB-INF/jsp/"></property>
+    <!--配置后缀-->
+    <property name="suffix" value=".jsp"></property>
+</bean>
+```
+
+##### 1.5 HelloController.java
+
+###### 1.5.1 导包
+
+![idea导包方式3](D:\Git\gitRepository\studyNotes\myNotes\pictures\javaWeb\idea导包方式3.png)
+
+###### 1.5.1 HelloController.java
+
+```java
+public class HelloController implements Controller {
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+        System.out.println("aaaaaaaaaaaaaa");
+        //创建模型和视图对象
+        ModelAndView mv = new ModelAndView();
+        //将需要的值传递到model中
+        mv.addObject("msg","hello world");
+        //设置要跳转的视图，
+        mv.setViewName("hello");
+        return mv;
+    }
+}
+```
+
+##### 1.6 创建hello.jsp页面
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+  <head>
+    <title>$Title$</title>
+  </head>
+  <body>
+  $END$
+  </body>
+</html>
+```
+
+##### 1.7 启动：tomcat
+
+###### 1.7.1 启动：tomcat
+
+![启动服务器tomcat](D:\Git\gitRepository\studyNotes\myNotes\pictures\javaWeb\启动服务器tomcat.png)
+
+###### 1.7.2 web编译时导包
+
+tomcat启动时不能找到prom.xml导入的包，需要为编译后的字节码文件标明位置
+
+![web编译时导包](pictures\springMVC\web编译时导包.png)
+
+
+
+### 四、注解版demo
+
+#### 1、spring.xml
+
+```xml
+<!--自动扫描包，由IOC容器进行控制管理-->
+<context:component-scan base-package="com.mashibing"></context:component-scan>
+
+<bean id="/hello" class="com.mashibing.controller.HelloController"></bean>
+
+<!--视图解析器-->
+<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <!--配置前缀-->
+    <property name="prefix" value="/WEB-INF/jsp/"></property>
+    <!--配置后缀-->
+    <property name="suffix" value=".jsp"></property>
+</bean>
+```
+
+#### 2、HiController
+
+```java
+@Controller
+public class HiController {
+
+    @RequestMapping(value = "hi", params = {"msg"})
+    public String hi(Map<String, String> map, String msg){ //Map会给视图解析器中的参数赋值
+        map.put("msg", msg);
+        return "hello";
+    }
+}
+
+```
+
+##### 2.1 参数
+
+ * url：params = {"msg"} 表示请求的url中必须要有msg
+ * 方法：String msg 表示方法接受参数
+ * 视图：Map<String, String> map; map.put("msg", msg); 表示讲参数放到视图解析器中
+ 
+
+##### 2.2 头headers 
+
+可以设置token，浏览器等，比如浏览器
+
+headers = {"User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

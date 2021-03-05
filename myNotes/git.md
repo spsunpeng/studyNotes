@@ -249,13 +249,12 @@ git reset --soft 版本的索引号/HEAD   #仅回退本地仓库
 
 ```sh
 #1.新建本地仓库
-git init
+git init #
 #2.创建本地分支
 #创建.gitgnore文件
 git add .
-git commit -m "init"
-git branch #提交到本地仓库，并自动创建分支本地分支master
-git branch -M ${OriginBranceName} #一般是master、develop
+git commit -m "init" #提交到本地仓库，并自动创建分支本地分支master
+git branch -M ${BranceName} #重命名当前分支：一般是master、develop（不用）
 #3.新建远程仓库：github上创建
 git remote add orgin ${url} #在本地重命名远程仓库
 git remote -v #查看

@@ -1,3 +1,12 @@
+# 遗留
+
+- servlet
+- springmvc
+
+
+
+# 一、以前
+
 ### 1.问题
 
 问1：springboot 简化 spring
@@ -357,6 +366,175 @@ E:\IDEAProject\spring-boot-02\target>java -jar spring-boot-02-0.0.1-SNAPSHOT.jar
 没有/config/application.properties和/application.properties，因为打jar包只会打包：src、External Libraries
 
 ![](\图片\打jar包.png)
+
+
+
+# 二、springboot入门
+
+### 1、rest风格
+
+rest是一种设计模式，指从资源的角度去考虑问题，而非操作的角度，体现在url上就是有post、get等之分。
+
+
+
+### 2、springboot项目打包执行
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+</build>
+```
+
+如果没有spring-boot-maven-plugin组件依赖，那么打包时就没有下面红框中的文件，在cmd中执行时（java -jar），会报错：没有主文件
+
+![spring-booot-maven-plugin](pictures\springboot\spring-booot-maven-plugin.png)
+
+### 3、springboot与spring
+
+#### 3.1 yaml文件
+
+springboot推荐使用yaml文件，spring不能识别yaml文件，只能用properties
+
+#### 3.2 外部文件
+
+spring在使用外部配置文件时，需要在ioc.xml文件中声明。
+
+```xml
+<context:property-placeholder location="classpath:userConfig.properties"></context:property-placeholder>
+```
+
+### 4、配置文件优先级
+
+file:./config/   >   file:./   >   classpath:./config/   >  classfile:./
+
+### 5、配置文件与环境
+
+application.yml
+
+application-dev.yml
+
+application-sit.yml
+
+```yaml
+spring:
+  profiles:
+    active: sit
+```
+
+### 6、springboot整合servlet
+
+#### 6.1 http
+
+```java
+@WebServlet(name = "myServlet",urlPatterns = "/servlet")
+public class HelloServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("123");
+        super.doGet(req, resp);
+    }
+}
+```
+
+```java
+@ServletComponentScan
+```
+
+#### 6.2 过滤器
+
+```java
+@WebFilter(filterName = "MyFilter", urlPatterns = "/*")
+public class MyFilter implements Filter {
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("init");
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("doFilter");
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    @Override
+    public void destroy() {
+        System.out.println("destroy");
+    }
+}
+```
+
+```java
+    @Bean
+    public ServletRegistrationBean<HelloServlet> getServletRegistrationBean(){
+        ServletRegistrationBean<HelloServlet> bean = new ServletRegistrationBean<>(new HelloServlet());
+        ArrayList<String> url = new ArrayList<>();
+        url.add("/helloServlet");
+        bean.setUrlMappings(url);
+        bean.setLoadOnStartup(1);
+        return bean;
+    }
+```
+
+#### 6.3 监听器
+
+```java
+public class MyListen implements HttpSessionListener {
+
+    public static int online=0;
+
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        online++;
+        System.out.println("创建+1");
+    }
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        System.out.println("销毁-1");
+    }
+}
+```
+
+```java
+@Bean
+public ServletListenerRegistrationBean listenerRegist(){
+    ServletListenerRegistrationBean srb = new ServletListenerRegistrationBean();
+    srb.setListener(new MyListen());
+    System.out.println("listener");
+    return srb;
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

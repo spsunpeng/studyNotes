@@ -1189,7 +1189,12 @@ char[] c = {'h','e','l','l','o'};
 String str5 = new String(c);
 String str6 = new String(c,0,2);
 
+//改变指向
+s = "hello2"; //改变执行
+s += "world"; //内在是改变了指向，外在表现是尾增
+
 //增删查改，内存不可变，无法增删
+s += "world"; //外在表现是尾增，内在是改变了指向
 s.replace('value1','value2'); //改：把String元素中的1替换成2
 s.chatAt(pos) //查：根据位置查值
 s.indesOf(values) //查：根据值查询位置，没有返回-1
@@ -1332,9 +1337,25 @@ Collections中的算法只对List实现，因为List是有序的数据结构，�
 
 
 
+# 2021.02.23
 
+-  mstp
 
+  - http://接口域名/mstp/message/v2/push  --> 消息推送接口
 
+  - http://接口域名/mstp/message/v2/batchPush  --> 根据channelId/tag进行批量消息推送
+
+  - http://接口域名/mstp/notification/v2/push
+
+  - http://接口域名/mstp/notification/v2/batchPush
+
+    
+
+- message调用mstp
+  - pushMessage
+    - 普通推送 --》 push  
+    - 广播 --》batchPush(chenneId=(etc配置)bizmate.tid)
+  - pushNotification
 
 
 
