@@ -62,16 +62,19 @@
 | 频次 | 工作      | 原意                   | 计算机术语   |
 | ---- | --------- | ---------------------- | ------------ |
 |      | Approval  | 审批                   | 审批         |
+| 1    | access    | 使用权、对接           | 对接         |
 |      | authory   | 权威                   | 权限         |
 |      | balance   | 平衡、余额             | 余额         |
 |      | bis       | business缩写：商业     | 业务         |
 |      | broadcast | 广播                   | 广播（群发） |
 |      | calendar  | 日历                   |              |
+| 1    | channel   | 渠道                   | 渠道         |
 |      | flow      | 流                     | 流水         |
 |      | launch    | 发射、发起、发动、开展 | 发起         |
 |      | multiple  | 多种多样的             |              |
 | 1    | scheme    | 方案                   | 方案         |
 |      | security  | 安全                   |              |
+| 1    | supplier  | 供应商                 | 供应商       |
 |      | transfer  | 转让                   |              |
 
 
