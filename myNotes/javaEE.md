@@ -154,7 +154,7 @@ public class HelloServlet extends HttpServlet {
 
 ### 二、javaEE
 
-1、http
+##### 1、http
 
 - 场景：web，浏览器和服务器之间传输数据
 
@@ -166,13 +166,36 @@ public class HelloServlet extends HttpServlet {
 
 ![客户端请求服务端](pictures\javaWeb\客户端请求服务端.png)
 
+myTomcat
+
+![](pictures\javaWeb\手动实现tomcat容器.png)
 
 
 
+##### jsp
 
+- jsp：Java Server Pages，java服务器页面，是一种动态网页开发技术。它**使用JSP标签在HTML网页中插入Java代码**。（java代码与html页面的交互）
 
+作用1：帮助浏览器转发，并且可以设置访问方式
 
+页面访问：127.0.0.1/method.jsp
 
+转发：127.0.0.1/method（post方法）
+
+method.jsp
+
+```jsp
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <form action="method" method="post">
+        <input type="submit" value="转发">
+    </form>
+</body>
+</html>
+```
 
 
 
