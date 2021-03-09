@@ -197,7 +197,15 @@ method.jsp
 </html>
 ```
 
+##### servlet
 
+404 资源错误
+
+405 方法错误
+
+500 服务内部错误
+
+HttpServlet源码中也是通过service调用doGet/doPost
 
 
 
