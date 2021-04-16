@@ -1363,3 +1363,275 @@ Collections中的算法只对List实现，因为List是有序的数据结构，�
 
 
 
+# 2021.03.18
+
+- 启动类：idea和gradle都可以启动gvm，用哪个自己选择，公司本地启动使用idea
+- runWith：启动前执行一个gradle小程序，把gradle文件生成为application.properties
+- 打tar包：公司代码也可以打包，执行，生成的文件中含有application.properties，其他环境会直接覆盖这个文件。
+- base组件：（1）可以在服务启动时做点什么，只需要继承一个接口.（2）日志级别设置；（3）敏感字段加密：一个类的to/from方法。
+
+
+
+
+
+# 2021.03.20
+
+1、异常处理
+
+```java
+try {
+    response = Jsoup
+            .connect(url)
+            .timeout(60 * 1000)
+            .method(method)
+            .header("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.toString())
+            .header("Accept", ContentType.APPLICATION_JSON.toString())
+            .data(map)
+            .followRedirects(true)
+            .ignoreContentType(true)
+            .execute();
+    System.out.println(response.body());
+} catch (IOException e) {
+    Logger.error("http error", e)
+}
+```
+
+1.1 打印堆栈
+
+- Logger.error("http error", e) 中的e打印的就是堆栈，且先打印堆栈，再打印自己的描述信息
+
+- Logger.error("http error", e) 中的e没用，打印堆栈就是帮助定位信息，描述信息已经很清晰地定位到信息了
+
+- 那么会不会不清楚try{}中哪一行的错误？不会。因为IOException只会捕捉IOException，不过异常类型不明确的话另说。
+
+- java或框架的自动异常处理（打印堆栈）
+
+  - 打印堆栈是为了帮助定位错误，用于不发预见的执行时异常
+
+  - 检查异常需要自己处理，打印时我觉得就没必要打印堆栈了，直接打印描述信息不香吗
+
+  - 至于检查异常在自己没有打印堆栈时，仍打印堆栈，这都是因为后面的代码要用到，但是前面的已经异常了，没有生产出数据，还使用的话就空指针了
+
+  - springboot统一异常处理会捕捉异常（实现一个接口就行），这样代码就不会再往下执行，也就不会再打印堆栈了。
+
+  - serviceComb框架内会先于springboot统一异常处理，处理异常，所以，一有异常serviceComb就会打印异常堆栈，往往把正常的业务情况打印出来，建议关掉。
+
+    
+
+    
+
+    
+
+# 2021.03.24
+
+#### 1、时区
+
+token更新时，本地和数据库时区不一样
+
+数据库配置，设定时区
+
+#### 2、jsoup
+
+.data(map) 中map的值不能为空
+
+解决：
+
+注解：@JsonInclude(JsonInclude.Include.NON_NULL)
+
+可以在 new ObjectMapper().convertValue(object, Map.class)时，不将object中的空转换
+
+#### 3、string和list<>之间的转换
+
+String strList = objectMapper.writeValueAsString(arrayList);
+
+List<Student> students = objectMapper.readValue(listJsonStr, new TypeReference<List<Student>>()
+
+#### 4、重名
+
+尽量防止重名，
+
+注入失败
+
+
+
+# 2021.03.25
+
+#### 1、mysql 根据条件删除数据
+
+```sql
+#查询
+select * from t_basedata_dictdata where bd_type=6 and parent_bd_code=-1 and bd_code not in (select bd_code from t_basedata_dictdata where bd_type=7 and parent_bd_code=-1)
+
+#删除
+Delete from t_basedata_dictdata where bd_type=6 and parent_bd_code=-1 and bd_code not in (select bd_code from (select bd_code from t_basedata_dictdata where bd_type=7 and parent_bd_code=-1) bc)
+```
+
+删除的不同点，多包装了一层
+
+(select bd_code from (select bd_code from t_basedata_dictdata where bd_type=7 and parent_bd_code=-1) bc)
+
+将查询到的bd_code重命名为bc，然后再查询。但不明白为社么这么做
+
+
+
+#### 2、token错误
+
+- 情景1：时区不同，本地和dev的时区不一样，导致token的过期时间
+
+- 情景2：数据库不同，dev和sit环境数据库不同，导致token错误
+
+  强制删除接口
+
+
+
+
+
+# 2021.03.26
+
+#### 1、http访问
+
+get/post/put/delete
+
+exchange/getForEntity/postForEntity
+
+
+
+# 2021.04.02
+
+#### 1、springboot配置
+
+```java
+public class myConfig{
+    private String name;
+    
+	@Value("${supplier-access.nmyvirtual}")
+	private String hobby;
+}
+
+@ConfigurationProperties(prefix = "supplier-access.nmyvirtual") //正确
+@ConfigurationProperties(prefix = "supplier-access.nmyVirtual") //错误  
+```
+
+```properties
+supplier-access.nmyvirtual.name=sunpeng   //可以不配置
+supplier-access.nmyvirtual.hobby=women    //必须配置 
+```
+
+- @ConfigurationProperties中不能出现大小字母
+
+- @Value必须配置，不然就会启动失败
+
+  
+
+#### 2、异常：类找不到
+
+- ClassNotfoundException 编译时找不到类（常见）
+  - 注入时的，找不到配置，找不到配置等等。
+
+- NoClassDefFoundError 运行时找不到类（不常见）
+  - 一种情况就是因为静态变量加载不到原因
+  - 工程里没有将jar添加到classpath，maven项目的，需要根据项目情况排查
+
+
+
+
+
+# 2021.04.14
+
+1、restTemplate
+
+1.1 返回类型
+
+```java
+//确定类型
+Class<T> clazz;
+ResponseEntity<T> = restTemplate(url, clazz);
+//可以传入object, object[]
+
+//不确定类型
+ResponseEntity<Object> = restTemplate(url, Object.class);
+```
+
+
+
+# 2021.04.16
+
+1、postman
+
+1.1 切换环境实现不同环境下的测试
+
+- 切换环境达到不同环境
+- 在请求中通过变量{{supplier-access}}达到不同服务
+
+图1：不同环境
+
+![postman不同服务url](pictures\quickNotes\postman不同环境.png)
+
+图2：不同服务
+
+![postman不同服务](pictures\quickNotes\postman不同服务.png)
+
+图3：不同接口
+
+![postman不同接口](pictures\quickNotes\postman不同接口.png)
+
+
+
+
+
+#### 2、日记账 Journal
+
+**增**
+
+- 账套名称 -》 后端查询账套接口
+- 收入/支出/内部转账 -》 后端 -》**收支 IEType**
+  - 查询 收入类别/支出类别/内部转账 
+  - 新增 收入类别/支出类别/内部转账 
+
+- 服务/支出收入(金额)  -》 前端参数
+- 日期  -》 前端参数
+- 摘要  -》 前端参数
+- 选择账户 -》 后端 -》**账户** **CDAccount**
+  - 查询：现金/账户2
+- 往来单位 -》 后端 -》 **辅助核算**  **AssistingAccounting**
+  - 查询 客户/供应商/职员 
+- 结算方式 -》 前端 （固定不会变）
+  - 查询 现金/转账/支票
+
+**查**
+
+- 查询列表
+- 查询单个日记账
+
+**改**
+
+**删**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

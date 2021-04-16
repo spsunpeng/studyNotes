@@ -1,4 +1,4 @@
-json
+#### 1、jackson
 
 - ObjectNode: put/set/setAll
   - string: put
@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,8 +108,53 @@ class JsonApplicationTests {
 
         JsonNode jsonNode2 = objectMapper.readTree(str);
         System.out.println(jsonNode2.get("arrayNode"));
+        
+        //json字符串转list
+            List<Student> students = objectMapper.readValue(listJsonStr, new TypeReference<List<Student>>() {
+            });
     }
 
 
 }
 ```
+
+
+
+#### 2、string转list
+
+##### 2.1 jackson 
+
+```java
+//json字符串转list
+            List<Student> students = objectMapper.readValue(listJsonStr, new TypeReference<List<Student>>() {
+            });
+    }
+```
+
+注意：string转list时，如果str为空 , 会抛异常，所以需要先，判断StringUtil.isBlank(str)
+
+##### 2.2 fastjson
+
+```java
+//json字符串转list
+List<NmyAccountSetInfo> nmyAccountSetInfos = JSONArray.parseArray(string, NmyAccountSetInfo.class)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

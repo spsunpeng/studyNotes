@@ -162,7 +162,19 @@ public class HelloServlet extends HttpServlet {
 
 - servlet：Server applet，web的小服务程序。解决动态(实时)数据相应的问题，固定的页面可以直接返回，但多数情况都不是预想配置好的页面，这时就需要将数据转化为页面，这个转化的功能就叫Server applet。
 
-客户端请求服务端
+  java与网络
+
+![java与网络](pictures\javaEE\java与网络.png)
+
+http请求报文
+
+![http请求报文](pictures\javaEE\http请求报文.png)
+
+http响应报文
+
+![http相应报文](pictures\javaEE\http相应报文.png)
+
+客户端到服务端
 
 ![客户端请求服务端](pictures\javaWeb\客户端请求服务端.png)
 

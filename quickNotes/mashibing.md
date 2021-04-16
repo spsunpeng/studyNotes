@@ -121,7 +121,7 @@ C语言在多个操作系统执行的方式
   ```java
   /**
   @author sunpeng
-  @Date ${YEAR}-${MONTH}-${DAY} ${TIME}
+  @date ${YEAR}-${MONTH}-${DAY} ${TIME}
   */
   ```
 
