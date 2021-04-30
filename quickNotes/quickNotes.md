@@ -1556,7 +1556,7 @@ ResponseEntity<Object> = restTemplate(url, Object.class);
 
 # 2021.04.16
 
-1、postman
+#### 1、postman
 
 1.1 切换环境实现不同环境下的测试
 
@@ -1581,37 +1581,64 @@ ResponseEntity<Object> = restTemplate(url, Object.class);
 
 #### 2、日记账 Journal
 
-**增**
+#### sp4
 
-- 账套名称 -》 后端查询账套接口
-- 收入/支出/内部转账 -》 后端 -》**收支 IEType**
-  - 查询 收入类别/支出类别/内部转账 
-  - 新增 收入类别/支出类别/内部转账 
+##### 凭证
 
-- 服务/支出收入(金额)  -》 前端参数
-- 日期  -》 前端参数
-- 摘要  -》 前端参数
-- 选择账户 -》 后端 -》**账户** **CDAccount**
-  - 查询：现金/账户2
-- 往来单位 -》 后端 -》 **辅助核算**  **AssistingAccounting**
-  - 查询 客户/供应商/职员 
-- 结算方式 -》 前端 （固定不会变）
-  - 查询 现金/转账/支票
+新增凭证         增加辅助核算项信息
 
-**查**
+查询凭证          增加辅助核算项信息
 
-- 查询列表
-- 查询单个日记账
+修改凭证           Voucher
 
-**改**
-
-**删**
+删除凭证           Voucher
 
 
 
+新增科目           AccountSubject
+
+- 测试，注意没有传 null 或 ""
+
+查询科目           AccountSubject
+
+- 测试，新增字段
+
+获取科目code规则
+
+##### 账套
+
+获取辅助核算项列表    AssistingAccounting
+
+- assisting_name 七种、汉字
+- show_detail 非必传、true/false
+
+获取币种列表
+
+获取期间列表
+
+##### 日记账
+
+查询日记账  Transfer
+
+创建日记账内部转账  Transfer
+
+- 转入账户、转出账户、时间、摘要、金额
+
+查询日记账内部转账
 
 
 
+
+
+#### sp5
+
+修改日记账                 Journal
+
+删除日记账                 Journal
+
+修改日记账内部转账  Transfer
+
+新增日记账内部转账  Transfer
 
 
 
