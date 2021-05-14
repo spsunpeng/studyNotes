@@ -154,7 +154,7 @@ public class HelloServlet extends HttpServlet {
 
 ### 二、javaEE
 
-##### 1、http
+#### 1、web和tomcat
 
 - 场景：web，浏览器和服务器之间传输数据
 
@@ -166,25 +166,25 @@ public class HelloServlet extends HttpServlet {
 
 ![java与网络](pictures\javaEE\java与网络.png)
 
-http请求报文
+##### 1.1 http请求报文
 
 ![http请求报文](pictures\javaEE\http请求报文.png)
 
-http响应报文
+##### 1.2 http响应报文
 
 ![http相应报文](pictures\javaEE\http相应报文.png)
 
-客户端到服务端
+##### 1.3 客户端到服务端
 
 ![客户端请求服务端](pictures\javaWeb\客户端请求服务端.png)
 
-myTomcat
+##### 1.4 myTomcat
 
 ![](pictures\javaWeb\手动实现tomcat容器.png)
 
 
 
-##### jsp
+##### 1.5 jsp
 
 - jsp：Java Server Pages，java服务器页面，是一种动态网页开发技术。它**使用JSP标签在HTML网页中插入Java代码**。（java代码与html页面的交互）
 
@@ -209,15 +209,281 @@ method.jsp
 </html>
 ```
 
-##### servlet
+#### 2、servlet
 
 404 资源错误
 
-405 方法错误
+405 请求方法错误
 
 500 服务内部错误
 
 HttpServlet源码中也是通过service调用doGet/doPost
+
+##### 2.1 request
+
+```java
+//请求行
+request.getMethod();      // 请求方式：GET
+request.getRequestURL();  // 完整地址：http://localhost:8090/servlet/request
+request.getRequestURI(); // 资源路径：/servlet/request
+request.getScheme();     // 请求协议：http
+
+//请求头
+request.getHeader("Accept");
+Enumeration<String> headerNames = request.getHeaderNames();
+while (headerNames.hasMoreElements()){
+    String key = headerNames.nextElement();
+    String value = request.getHeader(key);
+    System.out.println(key+":"+value);
+}
+
+//请求体
+request.getParameter("name");
+Enumeration<String> parameterNames = request.getParameterNames();
+while (parameterNames.hasMoreElements()){
+    String key = parameterNames.nextElement();
+    String[] parameterValues = request.getParameterValues(key); //允许key重复
+    for(String value : parameterValues){
+        System.out.print(key+": "+value+ " ");
+    }
+}
+
+//获取远程地址、ip、端口号
+request.getRemoteAddr();  //获取远程地址
+request.getRemoteHost(); //ip
+request.getRemotePort(); //端口号
+request.getLocalAddr();  //获取本地地址
+
+```
+
+##### 2.2 response
+
+```java
+//相同key，后面的会覆盖
+resp.setHeader("name", "sunpeng");
+resp.setHeader("name", "sunyue");
+//key可以重复
+resp.addHeader("like", "nv");
+resp.addHeader("like", "neinv");
+
+//响应体和响应体的格式
+resp.setHeader("Content-Type","text/plain");
+//resp.sendError(404, "not found");
+resp.getWriter().write("<b>java is easy</b>");
+```
+
+##### 2.3 乱码
+
+```java
+request.setCharacterEncoding("utf-8");
+response.setCharacterEncoding("gbk");
+```
+
+
+
+#### 3、请求转发和重定向
+
+##### 3.1 请求转发
+
+```java
+request.getRequestDispatcher("hello").forward(req, resp);
+```
+
+![请求转发](pictures\javaEE\请求转发.png)
+
+- 共享数据
+
+  ```java
+  request.setAttribute("key", value);
+  request.getAttribute("key");
+  ```
+
+##### 3.2 重定向
+
+```java
+response.sendRedirect("hello");
+```
+
+![](pictures\javaEE\重定向.png)
+
+##### 3.3 请求转发和重定向
+
+|              | 请求转发                  | 重定向                                           |
+| ------------ | ------------------------- | ------------------------------------------------ |
+| 定义         | 服务区转到给另一个servlet | 服务区重定向一个地址返回给客户端，再由客户端访问 |
+| 请求次数     | 1                         | 2                                                |
+| 地址栏信息   | 不变                      | 变话                                             |
+| 是否共享数据 | 是                        | 否                                               |
+| 跳转限制     | 本站资源                  | 任意url                                          |
+| 发生行为     | 服务端                    | 客户端                                           |
+
+#### 4、servlet的数据交互技术
+
+##### 4.1 cookie
+
+- 作用：解决客户端发送多次请求且需要相同的请求参数的时候
+
+- Cookie是一种在服务端生成，在客户端保持HTTP状态信息的技术，通过请求头和响应头以key-value形式传输
+- 一个web站点可以给浏览器发送多个cookie，一个浏览器也可以存储多个站点的cookie
+
+```java
+//创建cookie
+Cookie cookie = new Cookie("002", "xian"); //创建cookie
+cookie.setPath("/cookie/getCookie");       //设置路径，不然不同网站之间的cookie就混乱了
+cookie.setMaxAge(7*24*3600);   //设置过期时间，不设置会保存在内存中，一关闭浏览器就会消失
+response.addCookie(cookie);            
+
+//获取cookie
+Cookie[] cookies = request.getCookies();
+if(cookies != null){
+    for(Cookie cookie : cookies){
+        String name = cookie.getName();
+        String value = cookie.getValue();
+        System.out.println(name+":"+value);
+    }
+}
+```
+
+##### 4.2 session
+
+- 作用：解决相同用户发送不同请求时的数据共享问题
+- 特点
+  - 服务器端存储共享数据的技术
+  - session需要依赖cookie技术
+  - 每个用户对应一个独立的session对象
+  - 每个session对象的有效时长是30分钟
+  - 每次关闭浏览器的时候，重新请求都会开启一个新的session对象，因为返回的JSESSIONID保存在浏览器的内存中，是临时cookie，所以关闭之后自然消失
+- 使用
+  - session的id是自动生成的，不用自己管理
+  - 初次生成：Set-Cookie: JSESSIONID=00134762B4551AFC08FC4ECFFF56CD17; Path=/session; HttpOnly
+
+```java
+HttpSession session = request.getSession();
+session.setAttribute("name", "sunpeng");  
+String str = (String)session.getAttribute("name");
+```
+
+##### 4.3 servletContext
+
+- 作用特点：解决不同用户需要在服务端共享数据
+
+  - 由服务器创建，每一个web项目对应的是一个ServletContext
+
+   *          所有用户共享同一个ServletContext对象
+
+- 使用
+
+```java
+//创建ServletContext
+ServletContext servletContext = this.getServletContext();
+
+//创建key-value
+servletContext.setAttribute("101", "beijing");
+//获取key-value
+String str = (String)servletContext.getAttribute("101");
+
+//获取web,xml中配置的公共属性，设置见下xml文件
+String str1 = servletContext.getInitParameter("shanxi");
+//获取web,xml中配置的全部公共属性，设置见下xml文件
+Enumeration<String> initParameterNames = servletContext.getInitParameterNames();
+while (initParameterNames.hasMoreElements()){
+    String key = initParameterNames.nextElement();
+    String value = servletContext.getInitParameter(key);
+    System.out.println(key+":"+value);
+}
+
+//获取某个文件的绝对路径
+String path = servletContext.getRealPath("web.xml");
+//获取web项目的上下文路径（资源路径）
+String path2 = servletContext.getContextPath(); // 结果：/servletContext 
+```
+
+xml中配置的公共属性
+
+```xml
+<context-param>
+    <param-name>shanxi</param-name>
+    <param-value>xian</param-value>
+</context-param>
+```
+
+##### 4.4 servletConfig
+
+- 作用特点：解决同一个用户需要在服务端共享数据
+
+- 使用
+
+```java
+//创建ServletConfig
+ServletConfig servletConfig = this.getServletConfig();
+
+//获取自己单独的属性配置，创建见下面的xml配置
+String str = servletConfig.getInitParameter("shanxi");
+//获取自己单独的所有属性配置，创建见下面的xml配置
+Enumeration<String> initParameterNames = servletConfig.getInitParameterNames();
+while (initParameterNames.hasMoreElements()){
+    String key = initParameterNames.nextElement();
+    String value = servletConfig.getInitParameter(key);
+    System.out.println(key+":"+value);
+}
+```
+
+xml配置
+
+```xml
+<servlet>
+    <servlet-name>servletConfig</servlet-name>
+    <servlet-class>com.mashibing.ServletConfigServlet</servlet-class>
+    <init-param>
+        <param-name>shanxi</param-name>
+        <param-value>xian</param-value>
+    </init-param>
+    <init-param>
+        <param-name>hebei</param-name>
+        <param-value>shijiazhuang</param-value>
+    </init-param>
+</servlet>
+<servlet-mapping>
+    <servlet-name>servletConfig</servlet-name>
+    <url-pattern>/servletConfig</url-pattern>
+</servlet-mapping>
+```
+
+##### 4.5 总结
+
+| 技术         | cookie                            | session              | servletContext | servletConfig |
+| ------------ | --------------------------------- | -------------------- | -------------- | ------------- |
+| 数据存储位置 | 客户端（服务端设置）              | 客户端（依赖cookie） | 服务端         | 服务端        |
+| 用户         | 共享(无用，不同用户的key恰好一样) | 不共享               | 共享           | 不共享        |
+|              |                                   |                      |                |               |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

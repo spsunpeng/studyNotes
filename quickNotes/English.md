@@ -5,6 +5,7 @@
 |      | abstract                                  | 抽象                     | 抽象             |
 |      | adapter                                   | 适配器                   | 适配器           |
 |      | aspect                                    | 方面                     | 切面             |
+| 1    | attribute                                 | 属性                     | 属性             |
 |      | available                                 | 可用的                   | 可用的           |
 |      | bound                                     | 绑定                     | 绑定             |
 |      | Conditional                               | 有条件的                 | 有条件的/判断    |

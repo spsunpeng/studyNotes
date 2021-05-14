@@ -1618,33 +1618,60 @@ ResponseEntity<Object> = restTemplate(url, Object.class);
 
 ##### 日记账
 
-查询日记账  Transfer
+查询日记账内部转账  Transfer
 
 创建日记账内部转账  Transfer
 
 - 转入账户、转出账户、时间、摘要、金额
 
-查询日记账内部转账
-
-
-
 
 
 #### sp5
 
-修改日记账                 Journal
+修改日记账收支                 Journal
 
-删除日记账                 Journal
+删除日记账收支                 Journal
 
 修改日记账内部转账  Transfer
 
 新增日记账内部转账  Transfer
 
+获取供应商配置 supplier（supplierId，启停时间，用户token）
+
+- supplierId long-->string
+- 用户token：拆分、非必传
 
 
 
+供应商接入
+
+- 供应商信息：（已完成）
+
+  - 删除supplierEnum，调用供应商管理
+
+- 不校验供应商状态（已完成）
+
+  - 删除supplierStatusEnum
+
+- 获取供应商配置
+
+  - 获取供应商配置接口迁移到供应商管理
+
+  - etc页面地址迁移到供应商管理的json文本
+
+- 柠檬云生产环境
+  - id和密码
+  - k8s配置柠檬云生产域名
 
 
+
+供应商管理
+
+- 供应商信息（已完成）
+- 获取供应商配置
+- 供应商id由long转换成String 
+- 柠檬云生产环境
+  - 移动端url
 
 
 
