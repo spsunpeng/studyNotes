@@ -1630,7 +1630,11 @@ ResponseEntity<Object> = restTemplate(url, Object.class);
 
 修改日记账收支                 Journal
 
+- 同样猜测根据用户token、账套id、创建时间修改
+
 删除日记账收支                 Journal
+
+- 柠檬云要求所有字段必传，实测猜想根据用户token、账套id、创建时间删除
 
 修改日记账内部转账  Transfer
 
@@ -1677,7 +1681,11 @@ ResponseEntity<Object> = restTemplate(url, Object.class);
 
 
 
+http问题
 
+- restTemplate配置了过期时间，优化是删除还是修改
+- 域名正确，仍然访问不同，可能是 http 和 https 错误
+- 经过自己配置后的restTemplate没有捕获到 dev未配置时访问不通 的情况，返回返回异常，无法解析 [text/html]格式
 
 
 

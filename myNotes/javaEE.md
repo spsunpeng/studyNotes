@@ -457,9 +457,161 @@ xml配置
 | 用户         | 共享(无用，不同用户的key恰好一样) | 不共享               | 共享           | 不共享        |
 |              |                                   |                      |                |               |
 
+#### 5、过滤器和监听器
+
+##### 5.1 过滤器
+
+###### 5.1.1 代码
+
+- 实现Filter接口：初始化、执行、销毁
+
+- filterChain.doFilter(servletRequest, servletResponse); 表示执行下一个过滤器(根据配置文件中过滤器的顺序)或者servlet
+
+- servletRequest/servletResponse 和 request/response相似，对于没有的方法可以强转，比如
+
+  ((HttpServletResponse)servletResponse).sendRedirect("login.jsp");
+
+```java
+public class EncodeFilter implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("这是编码过滤器的init");
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("这是编码过滤器的执行");
+        servletRequest.setCharacterEncoding("utf-8");
+        servletResponse.setContentType("text/html;charset=utf-8");
+        //执行下一个过滤器(根据配置文件中过滤器的顺序)或者servlet
+        filterChain.doFilter(servletRequest, servletResponse);
+        System.out.println("这是编码过滤器的执行完成");
+    }
+
+    @Override
+    public void destroy() {
+        System.out.println("这是编码过滤器的销毁");
+    }
+}
+```
+
+###### 5.1.2 过滤器的配置文件
+
+- 执行顺序：过滤器的执行顺序是根据配置文件中过滤器的顺序，猜测有标签可以设置
+
+- 指定过滤请求
+  - /*: 匹配所有请求*
+  - *.do:  匹配所有后缀为do的请求
+  - /filter.do :匹配请求为filter.do的请求
+
+```xml
+<!--过滤器的执行顺序是根据配置文件中过滤器的顺序，猜测有标签可以设置-->
+    <filter>
+        <filter-name>EncodeFilter</filter-name>
+        <filter-class>com.mashibing.filter.EncodeFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodeFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>com.mashibing.filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+```
+
+##### 5.2 监听器
+
+###### 5.2.1 ServletRequest
+
+- 接口
+
+  - ServletRequestListener：监听request对象的创建和销毁
+
+    - requestDestroyed  request对象销毁时添加的逻辑代码
+
+    - requestInitialized request对象创建时添加的逻辑代码
+
+  - ServletRequestAttributeListener：监听request作用域属性的添加，删除和更改
+
+    - attributeAdded   属性添加时要做的事情
+
+    - attributeRemoved  属性删除时要做的事情
+
+    - attributeReplaced    属性更改时要做的事情
+
+- 代码
+
+```java
+package com.mashibing.listener;
+
+import javax.servlet.ServletRequestAttributeEvent;
+import javax.servlet.ServletRequestAttributeListener;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
 
 
+public class ListenerRequest implements ServletRequestListener, ServletRequestAttributeListener {
 
+    @Override
+    public void requestDestroyed(ServletRequestEvent sre) {
+        System.out.println("request对象被销毁");
+    }
+
+    @Override
+    public void requestInitialized(ServletRequestEvent sre) {
+        System.out.println("request对象被创建");
+    }
+
+    @Override
+    public void attributeAdded(ServletRequestAttributeEvent srae) {
+        String key = srae.getName();
+        Object value = srae.getValue();
+        Object source = srae.getSource();
+        System.out.println("request作用域中添加数据："+"key="+key+", "+"value="+value+", "+"source="+source);
+    }
+
+    @Override
+    public void attributeRemoved(ServletRequestAttributeEvent srae) {
+        String key = srae.getName();
+        Object value = srae.getValue();
+        Object source = srae.getSource();
+        System.out.println("request作用域中删除数据："+"key="+key+", "+"value="+value+", "+"source="+source);
+    }
+
+    @Override
+    public void attributeReplaced(ServletRequestAttributeEvent srae) {
+        String key = srae.getName();
+        Object value = srae.getValue(); //修改前原有的值
+        Object source = srae.getSource();
+        System.out.println("request作用域中修改数据："+"key="+key+", "+"value="+value+", "+"source="+source);
+    }
+
+}
+```
+
+- 配置xml
+
+  ```xml
+  <listener>
+      <listener-class>com.mashibing.listener.ListenerRequest</listener-class>
+  </listener>
+  ```
+
+###### 5.2.2 ServletContext
+
+- 接口：ServletContextListener、ServletContextAttributeListener
+
+###### 5.2.3 HttpSession
+
+- 接口：HttpSessionListener、HttpSessionAttributeListener、
+
+  ​			HttpSessionActivationListener、HttpSessionBindingListener
 
 
 
