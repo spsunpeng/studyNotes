@@ -576,6 +576,12 @@ void sort(int *arr, int len, T &fun)
 | DateToString | String format = df.format(new Date());                       | String format = df3.format(LocalDateTime.now());             |
 |              |                                                              |                                                              |
 
+DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");  //T必须带单引号
+
+DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");  //毫秒
+
 #### 2.3 math
 
 math类属于java.lang，不用导入

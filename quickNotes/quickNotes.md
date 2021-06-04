@@ -219,58 +219,6 @@ mysql中不等于 <>  和 != 都可以表示不等于，不过 <> 在所有的sq
 
 
 
-# 2020.09.14
-
-#### 1.Linux: 查看文件内容
-
-| 命令 | 解释                   | 常用                    | 解释             |
-| ---- | ---------------------- | ----------------------- | ---------------- |
-| cat  | 从第一行开始显示       | **cat filename**        | -n可以显示行号   |
-| tac  | 从最后一行开始显示     |                         |                  |
-| more | 一页一页的显示档案内容 |                         | d：向前翻页      |
-| less | 相比more，可以翻页     | shift+g 移动到最后一行  | b：向后翻页      |
-| head | 只看头几行             | head-n 20 filename      | 头10页，默认为10 |
-| tail | 只看尾巴几行           | **tail -n 20 filename** | 尾10页，默认为10 |
-
-#### 2.linux: cat
-
-1. 命令格式：
-
-   cat [选项] [文件]...
-
-2. 命令功能：
-
-   cat主要有三大功能：
-
-   1. 一次显示整个文件: cat filename
-
-   2. 从键盘创建一个文件: cat > filename 只能创建新文件,不能编辑已有文件.
-
-   3. 将几个文件合并为一个文件: cat file1 file2 > file
-
-3. 命令参数：
-
-   -n, --number   对输出的所有行编号,由1开始对所有输出的行数编号
-
-#### 3. grep 参数 "搜索条件" fileName
-
-eg：grep -rn "getDictData.*7," servicelog.log
-
-- 参数
-
-  - -r ：进入目录搜索
-  - -n :  显示行号
-
-- 搜索条件：支持正则表达式
-
-  - "getDictData" ： 搜索含有getDictData的
-
-  - "getDictData.*7,"：搜索含有 getDictData和7，的
-
-- fileName：文件，可以是文件，也可以是目录，注意目录要加 -r 
-
-
-
 # 2020.09.17 
 
 #### 1.Tyora：图片
@@ -468,33 +416,9 @@ private Boolean boss;
 
 
 
-# 2020.11.25
-
-#### 1. springMVC：传map
-
-#### 2. 新生代、老年代
-
-#### 3. k8s上linux命令：jmap、grep
-
 
 
 # 2020.12.02
-
-#### 1. vi：查看
-
-1）上下翻动：向上箭头、向下箭头：每次滚动一条日志，这条日这可能占据多行
-
-2）前后翻页：ctrl+f、ctrl+b：f就是forword，b就是backward
-
-3）首行末行：首行（gg），末行（shift+g）
-
-4）查找：?string：查找字符串，N向前，n向后
-
-5）分页分屏：k8s中的vi也支持分页/分屏操作
-
-
-
-
 
 # 编译打包运行：
 
@@ -673,12 +597,6 @@ jar -tf filename.jar
 
 
 
-# 2020.12.18
-
-#### 1.动态打印日志：tailf
-
-tailf  filename
-
 
 
 # 2020.12.22
@@ -714,24 +632,6 @@ public class Person {
     传参：”abc“  --> 参数出错
 
   - boolean：待验证
-
-
-
-
-
-# 2020.12.23
-
-#### 1. 课堂记录
-
-1. 项目框架
-
-2. git\sourcetree\gitee
-
-   git@gitee.com:cpf100/msb-dongbao-mall.git
-
-3. mysql和duck
-
-4. lombok与代码生成器与mybatis-plu
 
 
 
@@ -902,20 +802,6 @@ speedtest.py #任意位置执行
   - POM工程：父级工程，子model集成，用作jar包的版本控制
   - JAR工程：常用于本地工程的调用
   - WAR工程：发布到服务器上的工程
-
-
-
-#### 2. linxu命令
-
-```sh
-ip addr #查询ip
-ifconfig  #查询ip
-uname -v #查询虚拟机内核版本
-ps -ef    #查询进程
-jmap -heap pid   #查询堆内存
-```
-
-
 
 
 
@@ -1315,9 +1201,15 @@ Collections中的算法只对List实现，因为List是有序的数据结构，�
 
 # 2021.02.01
 
-#### 1、ps -ef | grep java
+#### 1、加密
 
-部署完查看部署的配置：ps -ef | grep java， 如堆内存占比
+base64：编解码，不是加密，所以可以反解码
+
+散列算法：md5【不可反解码，但由于对于主题的加密结果一样，可以通过彩虹表（对应表）破解】
+
+对称加密：两方持有相同的密钥，加解密只需要密钥即可
+
+非对称加密：公加私解，私加公解
 
 #### 2、非堆成加密
 
@@ -1335,48 +1227,20 @@ Collections中的算法只对List实现，因为List是有序的数据结构，�
 
 
 
-
-
-# 2021.02.23
-
--  mstp
-
-  - http://接口域名/mstp/message/v2/push  --> 消息推送接口
-
-  - http://接口域名/mstp/message/v2/batchPush  --> 根据channelId/tag进行批量消息推送
-
-  - http://接口域名/mstp/notification/v2/push
-
-  - http://接口域名/mstp/notification/v2/batchPush
-
-    
-
-- message调用mstp
-  - pushMessage
-    - 普通推送 --》 push  
-    - 广播 --》batchPush(chenneId=(etc配置)bizmate.tid)
-  - pushNotification
-
-
-
-
-
-
-
 # 2021.03.18
 
-- 启动类：idea和gradle都可以启动gvm，用哪个自己选择，公司本地启动使用idea
+##### 1、公司框架
+
+- 启动类：idea和gradle都可以启动jvm，用哪个自己选择，公司本地启动使用idea
 - runWith：启动前执行一个gradle小程序，把gradle文件生成为application.properties
 - 打tar包：公司代码也可以打包，执行，生成的文件中含有application.properties，其他环境会直接覆盖这个文件。
 - base组件：（1）可以在服务启动时做点什么，只需要继承一个接口.（2）日志级别设置；（3）敏感字段加密：一个类的to/from方法。
 
 
 
-
-
 # 2021.03.20
 
-1、异常处理
+#### 1、异常处理
 
 ```java
 try {
@@ -1396,7 +1260,7 @@ try {
 }
 ```
 
-1.1 打印堆栈
+##### 1.1 打印堆栈
 
 - Logger.error("http error", e) 中的e打印的就是堆栈，且先打印堆栈，再打印自己的描述信息
 
@@ -1686,6 +1550,77 @@ http问题
 - restTemplate配置了过期时间，优化是删除还是修改
 - 域名正确，仍然访问不同，可能是 http 和 https 错误
 - 经过自己配置后的restTemplate没有捕获到 dev未配置时访问不通 的情况，返回返回异常，无法解析 [text/html]格式
+
+
+
+未完：
+
+- 删除etc上供应商配置： 账号 --》 供应商管理 迁移 影响的相关接口
+- 数据库调整部署sit，flyWay
+- 柠檬云账号、密码、移动端生产地址
+
+- etc配置：flyWay、日志
+
+
+
+
+
+# 2021.05.25
+
+##### 1、删除module
+
+先移除再删除
+
+##### 2、yaml文档
+
+- 根据缩进判断等级
+- -代表数组
+
+##### 3、rpc协议
+
+什么是RPC协议？
+RPC是一种远程过程调用的协议，使用这种协议向另一台计算机上的程序请求服务，不需要了解底层网络技术的协议。
+
+在 RPC 中，发出请求的程序是客户程序，而提供服务的程序是服务器。
+
+HTTP是一种超文本传输协议。是WWW浏览器和WWW服务器之间的应用层通讯协议。
+
+RPC协议与HTTP协议的区别
+1、RPC是一种API，HTTP是一种无状态的网络协议。RPC可以基于HTTP协议实现，也可以直接在TCP协议上实现。
+
+2、RPC主要是用在大型网站里面，因为大型网站里面系统繁多，业务线复杂，而且效率优势非常重要的一块，这个时候RPC的优势就比较明显了。
+
+HTTP主要是用在中小型企业里面，业务线没那么繁多的情况下。
+
+3、HTTP开发方便简单、直接。开发一个完善的RPC框架难度比较大。
+
+4、HTTP发明的初衷是为了传送超文本的资源，协议设计的比较复杂，参数传递的方式效率也不高。开源的RPC框架针对远程调用协议上的效率会比HTTP快很多。
+
+5、HTTP需要事先通知，修改Nginx/HAProxy配置。RPC能做到自动通知，不影响上游。
+
+6、HTTP大部分是通过Json来实现的，字节大小和序列化耗时都比Thrift要更消耗性能。RPC，可以基于Thrift实现高效的二进制传输。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
