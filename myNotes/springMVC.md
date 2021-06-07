@@ -1,236 +1,4 @@
-### 以前
-
-Spring MVC 是目前主流的实现 MVC 设计模式的企业级开发框架，Spring 框架的一个子模块，无需整合，开发起来更加便捷。
-
-#### 什么是 MVC 设计模式？
-
-将应用程序分为 Controller、Model、View 三层，Controller 接收客户端请求，调用 Model 生成业务数据，传递给 View。
-
-Spring MVC 就是对这套流程的封装，屏蔽了很多底层代码，开放出接口，让开发者可以更加轻松、便捷地完成基于 MVC 模式的 Web 开发。
-
-#### Spring MVC 的核心组件
-
-- DispatcherServlet：前置控制器，是整个流程控制的核心，控制其他组件的执行，进行统一调度，降低组件之间的耦合性，相当于总指挥。
-- Handler：处理器，完成具体的业务逻辑，相当于 Servlet 或 Action。
-- HandlerMapping：DispatcherServlet 接收到请求之后，通过 HandlerMapping 将不同的请求映射到不同的 Handler。
-- HandlerInterceptor：处理器拦截器，是一个接口，如果需要完成一些拦截处理，可以实现该接口。
-- HandlerExecutionChain：处理器执行链，包括两部分内容：Handler 和 HandlerInterceptor（系统会有一个默认的 HandlerInterceptor，如果需要额外设置拦截，可以添加拦截器）。
-- HandlerAdapter：处理器适配器，Handler 执行业务方法之前，需要进行一系列的操作，包括表单数据的验证、数据类型的转换、将表单数据封装到 JavaBean 等，这些操作都是由 HandlerApater 来完成，开发者只需将注意力集中业务逻辑的处理上，DispatcherServlet 通过 HandlerAdapter 执行不同的 Handler。
-- ModelAndView：装载了模型数据和视图信息，作为 Handler 的处理结果，返回给 DispatcherServlet。
-- ViewResolver：视图解析器，DispatcheServlet 通过它将逻辑视图解析为物理视图，最终将渲染结果响应给客户端。
-
-#### Spring MVC 的工作流程
-
-- 客户端请求被 DisptacherServlet 接收。
-- 根据 HandlerMapping 映射到 Handler。
-- 生成 Handler 和 HandlerInterceptor。
-- Handler 和 HandlerInterceptor 以 HandlerExecutionChain 的形式一并返回给 DisptacherServlet。
-- DispatcherServlet 通过 HandlerAdapter 调用 Handler 的方法完成业务逻辑处理。
-- Handler 返回一个 ModelAndView 给 DispatcherServlet。
-- DispatcherServlet 将获取的 ModelAndView 对象传给 ViewResolver 视图解析器，将逻辑视图解析为物理视图 View。
-- ViewResovler 返回一个 View 给 DispatcherServlet。
-- DispatcherServlet 根据 View 进行视图渲染（将模型数据 Model 填充到视图 View 中）。
-- DispatcherServlet 将渲染后的结果响应给客户端。
-
-![image-20200813091802946](C:\Users\sunpeng.SINO\AppData\Roaming\Typora\typora-user-images\image-20200813091802946.png)
-
-Spring MVC 流程非常复杂，实际开发中很简单，因为大部分的组件不需要开发者创建、管理，只需要通过配置文件的方式完成配置即可，真正需要开发者进行处理的只有 Handler 、View。
-
-1. 创建maven工程，porm.xml
-
-   ```xml
-   <?xml version="1.0" encoding="UTF-8"?>
-   
-   <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-     <modelVersion>4.0.0</modelVersion>
-   
-     <groupId>com.southwind</groupId>
-     <artifactId>aispringMVC</artifactId>
-     <version>1.0-SNAPSHOT</version>
-     <packaging>war</packaging>
-   
-     <name>aispringMVC Maven Webapp</name>
-     <!-- FIXME change it to the project's website -->
-     <url>http://www.example.com</url>
-   
-     <properties>
-       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-       <maven.compiler.source>1.7</maven.compiler.source>
-       <maven.compiler.target>1.7</maven.compiler.target>
-     </properties>
-   
-     <dependencies>
-       <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <version>4.11</version>
-         <scope>test</scope>
-       </dependency>
-   
-       <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-webmvc</artifactId>
-         <version>5.0.2.RELEASE</version>
-       </dependency>
-     </dependencies>
-   
-     <build>
-       <finalName>aispringMVC</finalName>
-       <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-         <plugins>
-           <plugin>
-             <artifactId>maven-clean-plugin</artifactId>
-             <version>3.1.0</version>
-           </plugin>
-           <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
-           <plugin>
-             <artifactId>maven-resources-plugin</artifactId>
-             <version>3.0.2</version>
-           </plugin>
-           <plugin>
-             <artifactId>maven-compiler-plugin</artifactId>
-             <version>3.8.0</version>
-           </plugin>
-           <plugin>
-             <artifactId>maven-surefire-plugin</artifactId>
-             <version>2.22.1</version>
-           </plugin>
-           <plugin>
-             <artifactId>maven-war-plugin</artifactId>
-             <version>3.2.2</version>
-           </plugin>
-           <plugin>
-             <artifactId>maven-install-plugin</artifactId>
-             <version>2.5.2</version>
-           </plugin>
-           <plugin>
-             <artifactId>maven-deploy-plugin</artifactId>
-             <version>2.8.2</version>
-           </plugin>
-         </plugins>
-       </pluginManagement>
-     </build>
-   </project>
-   ```
-
-2. 在webapp->WEB-INF->web.xml中配置DispatcherServlet
-
-   ```xml
-   <!DOCTYPE web-app PUBLIC
-    "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd" >
-   
-   <web-app>
-     <display-name>Archetype Created Web Application</display-name>
-   
-     <servlet>
-       <servlet-name>dispatcherServlet</servlet-name>
-       <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-       <init-param>
-         <param-name>contextConfigLocation</param-name>
-         <param-value>classpath:springmvc.xml</param-value>  <!--读springmvc.xml-->
-       </init-param>
-     </servlet>
-   
-     <servlet-mapping>
-       <servlet-name>dispatcherServlet</servlet-name>
-       <url-pattern>/</url-pattern> <!--拦截所有请求-->
-     </servlet-mapping>
-   
-   </web-app>
-   ```
-
-3. 配置springmvc.xml
-
-   ```xml
-   <?xml version="1.0" encoding="UTF-8"?>
-   <beans xmlns="http://www.springframework.org/schema/beans"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xmlns:context="http://www.springframework.org/schema/context"
-          xmlns:aop="http://www.springframework.org/schema/aop"
-          xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
-          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
-         ">
-   
-       <!--自动扫描，自动生成@Controller等标志的对象，-->
-       <context:component-scan base-package="com.southwind"></context:component-scan>
-   
-       <!--视图解析器，解析@RequestMapping标志的方法-->
-       <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-           <property name="prefix" value="/"></property>
-           <property name="suffix" value=".jsp"></property>
-       </bean>
-   
-   </beans>
-   ```
-
-4. 创建 Handler
-
-   ```java
-   package com.southwind;
-   
-   import org.springframework.stereotype.Controller;
-   import org.springframework.web.bind.annotation.RequestMapping;
-   import org.springframework.web.bind.annotation.RequestMethod;
-   import org.springframework.web.bind.annotation.RequestParam;
-   
-   @Controller       //1.交给IOC 2.控制器的作用
-   public class HelloHandle {
-   
-       @RequestMapping(value = "/index", method = RequestMethod.GET, params = {"name", "id=10"}) //value = "/index"映射网址
-       public String index(@RequestParam("name") String myname, int id){ //参数通过params和@RequestParam对应，没有时通过变量名对应
-           System.out.println("name: "+myname);
-           System.out.println("执行了index...");
-           return "index";       //逻辑视图 "index"结合springmvc.xml的视图解析器，映射到物理视图index.jsp文件
-       }
-   }
-   ```
-
-5. *.jsp文件，webapp功臣会自动创建一个物理视图index.jsp
-
-   ```jsp
-   <html>
-   <body>
-   <h2>Hello World 333!</h2>
-   </body>
-   </html>
-   ```
-
-6. 测试：访问：http:127.0.0.1:8080/index?name=sunpeng&id=10
-
-
-
-Spring MVC 注解
-
-- @Controller
-
-@Controller 在类定义处添加，将该类交个 IoC 容器来管理（结合 springmvc.xml 的自动扫描配置使用），同时使其成为一个控制器，可以接收客户端请求。
-
-- @RequestMapping 
-
-Spring MVC 通过 @RequestMapping 注解将 URL 请求与业务方法进行映射，在 Handler 的类定义处以及方法定义处都可以添加 @RequestMapping ，在类定义处添加，相当于客户端多了一层访问路径。
-
-@RequestMapping (value="网址映射"，method=访问方法，params={"参数1","参数2"})
-
-其中，method访问方法是枚举类型RequestMethod，params要用方法的参数接收，举例：
-
- @RequestMapping(value = "/index", method = RequestMethod.GET, params = {"name", "id=10"})
-
-public String index(@RequestParam("name") String myname, int id){}
-
-
-
-
-
-
-
-
-
-### 一、springMVC
-
-#### 1、什么是MVC？
+### springmvc
 
 ​		MVC是模型(Model)、视图(View)、控制器(Controller)的简写，是一种软件设计规范。就是将业务逻辑、数据、显示分离的方法来组织代码。MVC主要作用是**降低了视图与业务逻辑间的双向偶合**。MVC不是一种设计模式，**MVC是一种架构模式**。当然不同的MVC存在差异。
 
@@ -245,86 +13,6 @@ public String index(@RequestParam("name") String myname, int id){}
 **最典型的MVC就是JSP + servlet + javabean的模式。**
 
 
-
-DAO的全名為Data Access Object
-
-
-
-
-
-### 二、web_Servlet项目
-
-- git@github.com:spsunpeng/javaWeb.git
-
-#### 1、web_Servlet项目
-
-##### 1.1 新建工程
-
-- 方法一：new Project/Model -> Java Enterprise，选择Tomcat，选中Web Application（简单，因为Enterprise是企业版） 
-
-- 方法二：平民版
-
-  - 新建项目：new Project/Model -> Java，选中Web Application 
-
-  - 启动类：file -> settins -> bulid -> Applicaton server -> '+' -> Tomcat Server -> 选择Tomcat 安装的路径
-
-  ![启动服务器tomcat](D:\Git\gitRepository\studyNotes\myNotes\pictures\javaWeb\启动服务器tomcat.png)
-
-  - 导包：servlet.jar、jsp.jar
-
-  ![idea导包方式3](D:\Git\gitRepository\studyNotes\myNotes\pictures\javaWeb\idea导包方式3.png)
-
-##### 1.2 继承HttpServlet
-
-```java
-public class HelloServlet extends HttpServlet {
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getParameter("username");
-        req.getSession().setAttribute("username", username);
-        //转发
-        req.getRequestDispatcher("index.jsp").forward(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
-}
-
-```
-
-##### 1.3 web.xml配置 
-
-```xml
-    <servlet>
-        <servlet-name>helloServlet</servlet-name>
-        <servlet-class>com.mahsibing.Controller.HelloServlet</servlet-class>
-    </servlet>
-    
-    <servlet-mapping>
-        <servlet-name>helloServlet</servlet-name>
-        <url-pattern>/hello</url-pattern>
-    </servlet-mapping>
-```
-
-##### 1.4 index.hsp视图 
-
-```jsp
-<html>
-  <head>
-    <title>$Title$</title>
-  </head>
-  <body>
-  ${username}
-  </body>
-</html>
-```
-
-
-
-### 三、入门demo
 
 #### 1、入门demo
 
@@ -450,52 +138,414 @@ tomcat启动时不能找到prom.xml导入的包，需要为编译后的字节码
 
 
 
-### 四、注解版demo
-
-#### 1、spring.xml
-
-```xml
-<!--自动扫描包，由IOC容器进行控制管理-->
-<context:component-scan base-package="com.mashibing"></context:component-scan>
-
-<bean id="/hello" class="com.mashibing.controller.HelloController"></bean>
-
-<!--视图解析器-->
-<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    <!--配置前缀-->
-    <property name="prefix" value="/WEB-INF/jsp/"></property>
-    <!--配置后缀-->
-    <property name="suffix" value=".jsp"></property>
-</bean>
-```
-
-#### 2、HiController
+#### 2、request
 
 ```java
 @Controller
-public class HiController {
+public class RequestController {
 
-    @RequestMapping(value = "hi", params = {"msg"})
-    public String hi(Map<String, String> map, String msg){ //Map会给视图解析器中的参数赋值
-        map.put("msg", msg);
-        return "hello";
+    @RequestMapping(value = "/params", method = RequestMethod.GET)
+    public String params(String name){
+        return "success";
     }
-}
 
+    //参数必传，如果不穿：400，参数不匹配
+    @RequestMapping(value = "/params2", method = RequestMethod.GET, params = {"name=sunpeng","id"})
+    public String params2(String name){
+        return "success";
+    }
+
+    //参数必传，如果不穿：400，Required String parameter 'name' is not present
+    @RequestMapping(value = "/params3")
+    public String params3(@RequestParam(value = "name", required = true) String name){
+        return "success";
+    }
+
+    //使用对象接受参数
+    @RequestMapping(value = "/body", method = RequestMethod.GET)
+    public String body(String id, Person person){
+        return "success";
+    }
+
+    //调用放参数必须是json格式，且get方法不支持
+    @RequestMapping(value = "/jsonBody", method = RequestMethod.POST)
+    public String jsonBody(@RequestBody(require = true) Person person){
+        return "success";
+    }
+    
+}
 ```
 
-##### 2.1 参数
+#### 3、response
 
- * url：params = {"msg"} 表示请求的url中必须要有msg
- * 方法：String msg 表示方法接受参数
- * 视图：Map<String, String> map; map.put("msg", msg); 表示讲参数放到视图解析器中
- 
+```java
+@Controller
+public class ResponseController {
 
-##### 2.2 头headers 
+    /*
+     * return String
+     * 1.跳转到视图层
+     * 2.如果返回是string类型但没有此静态资源：404，web/string.jsp
+     * 3.如果返回不是string类型：500，类型不匹配
+     */
+    @RequestMapping(value = "/request1", method = RequestMethod.GET)
+    public String response1(){
+        return "success"; 
+    }
 
-可以设置token，浏览器等，比如浏览器
+     /*
+     * return @ResponseBody
+     * 1方法的返回值不在作为界面跳转依据,而已直接作为返回的数据
+     * 2将方法的返回的数据自动使用ObjectMapper转换为JSON
+     */
+    @ResponseBody
+    @RequestMapping(value = "/response2", method = RequestMethod.GET)
+    public String response2(){
+        System.out.println("response2");
+        return "success";
+    }
 
-headers = {"User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"}
+    //请求转发
+    @RequestMapping(value = "/forward")
+    public String forward(){
+        System.out.println("forward");
+        return "forward:WEB-INF/jsp/success.jsp";
+    }
+
+    //重定向
+    @RequestMapping(value = "/redirect")
+    public String redirect(){
+        System.out.println("redirect");
+        return "redirect:index.jsp";
+    }
+
+    //View
+    @RequestMapping(value = "/view")
+    public View viewFun(HttpServletRequest request){
+        System.out.println("view");
+        //View view = new InternalResourceView("/forwardPage.jsp");  //请求转发
+        View view = new RedirectView(request.getContextPath() + "/redirectPage.jsp"); //重定向
+        return view;
+    }
+
+    //ModelAndView
+    @RequestMapping(value = "/mv")
+    public ModelAndView mvFun(HttpServletRequest request){
+        System.out.println("view");
+        ModelAndView mv = new ModelAndView();
+        //请求转发
+        mv.setViewName("forward:/forwardPage.jsp");
+//        mv.setView(new InternalResourceView("/forwardPage.jsp"));
+//        //重定向
+//        mv.setViewName("redirect:/redirectPage.jsp");
+//        mv.setView(new RedirectView(request.getContextPath() + "/redirectPage.jsp"));
+        return mv;
+    }
+
+}
+```
+
+#### 4、rest
+
+```java
+@RestController //@RestController = @Controller + @ResponseBody
+public class RestTypeController {
+
+  //所有参数必传: http://localhost:8090/springmvc_first_war_exploded/rest/params/sunpeng/20
+    @GetMapping("/restParams/{name}/{id}")
+    private String params(@PathVariable("id") int myId, String name){
+        System.out.println("name:"+name+"id:"+myId);
+        return "success";
+    }
+
+    @PostMapping("/restTest")
+    private String post(){
+        System.out.println("post");
+        return "post";
+    }
+}
+```
+
+#### 5、static 静态资源
+
+```xml
+<!--静态资源放行，让静态资源不用通过前端控制器-->
+<mvc:resources mapping="/static/**" location="/static/"></mvc:resources>
+```
+
+#### 6、attribute
+
+##### 6.1 代码
+
+```java
+public class MyInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("MyInterceptor preHandle");
+        /*设置请求和响应的乱码 */
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        //token校验等等
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        System.out.println("MyInterceptor postHandle");
+
+        //过滤返回的敏感字
+        Map<String, Object> model = modelAndView.getModel();
+        String msg = (String)model.get("msg");
+        String newMsg = msg.replace("脏话", "**");
+        model.put("msg", newMsg);
+
+        //新的跳转页面
+//        modelAndView.setViewName("/index.jsp");
+    }
+
+    //无论controller是否出现异常,都会执行的方法，一般来说都做一些资源释放工作
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        System.out.println("MyInterceptor afterCompletion");
+        System.out.println(ex);
+    }
+}
+```
+
+##### 6.2 配置
+
+```xml
+<!--注册拦截器，谁先注册（在上）谁先执行（在外层），-->
+<mvc:interceptors>
+    <mvc:interceptor>
+        <mvc:mapping path="/login"/>
+        <bean id="myInterceptor" class="com.msb.interceptor.MyInterceptor"></bean>
+    </mvc:interceptor>
+
+    <mvc:interceptor>
+        <mvc:mapping path="/login"/>
+        <bean id="myInterceptor2" class="com.msb.interceptor.MyInterceptor2"></bean>
+    </mvc:interceptor>
+</mvc:interceptors>
+```
+
+#### 7、exception
+
+##### 7.1 方法1
+
+```java
+@Controller
+public class ExceptionController {
+
+    @Autowired
+    private ExceptionService exceptionService;
+
+    @GetMapping("/test1")
+    public String text1(){
+        int i = 1/0;
+        return "success";
+    }
+    @GetMapping("/test2")
+    public String text2(){
+        String str = null;
+        int length = str.length();
+        return "success";
+    }
+    @GetMapping("/test3")
+    public String text3(){
+        exceptionService.text3();
+        return "success";
+    }
+
+    /**
+    * 只能处理这个类下中的异常
+    */
+    @ExceptionHandler(value ={ArithmeticException.class,NullPointerException.class} )
+    public ModelAndView handelException(){
+        ModelAndView mv =new ModelAndView();
+        mv.setViewName("error1.jsp");
+        return mv;
+    }
+
+}
+```
+
+##### 7.2 方法2
+
+```java
+@ControllerAdvice
+public class GloableException1 {
+    @ExceptionHandler(value ={ArithmeticException.class,NullPointerException.class} )
+    public ModelAndView handelException(){
+        ModelAndView mv =new ModelAndView();
+        mv.setViewName("error1.jsp");
+        return mv;
+    }
+
+}
+```
+
+##### 7.3 方法3
+
+###### 7.3.1 xml配置
+
+```xml
+<bean id="simpleMappingExceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <property name="exceptionMappings">
+        <props>
+            <prop key="java.lang.ArithmeticException">redirect:/error1.jsp</prop>
+            <prop key="java.lang.NullPointerException">redirect:/error2.jsp</prop>
+        </props>
+    </property>
+</bean>
+```
+
+###### 7.3.2 @bean方法
+
+```java
+@Configuration
+public class GlobalException2 {
+
+    @Bean
+    public SimpleMappingExceptionResolver getSimpleMappingExceptionResolver(){
+        SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
+        Properties prop = new Properties();
+        prop.put("java.lang.NullPointerException","error1.jsp");
+        prop.put("java.lang.ArithmeticException","error2.jsp");
+        resolver.setExceptionMappings(prop);
+        return resolver;
+    }
+
+}
+```
+
+##### 7.4 方法4
+
+```java
+@Configuration
+public class GlobalException3 implements HandlerExceptionResolver {
+    @Override
+    public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
+        ModelAndView mv = new ModelAndView();
+        if(e instanceof NullPointerException){
+            mv.setViewName("/error2.jsp");
+        }else if(e instanceof ArithmeticException){
+            mv.setViewName("/error1.jsp");
+        }
+        /*Map<String, Object> model = mv.getModel(); 
+        model.put("error", e);*/
+        mv.addObject("error",e);
+        return mv;
+    }
+}
+```
+
+#### 8、总结
+
+##### 8.1 springmvc.xml配置
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:mv="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--自动扫描包，由IOC容器进行控制管理-->
+    <context:component-scan base-package="com.msb"></context:component-scan>
+
+
+    <!--配置处理器映射器-->
+    <!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"></bean>-->
+    <!--配置处理器适配器-->
+    <!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean>-->
+    <!--一个注解替换上面的两个配置-->
+    <mvc:annotation-driven/>
+
+   <!--配置视图解析器：加前缀和后缀-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!--静态资源放行，让静态资源不用通过前端控制器-->
+    <mvc:resources mapping="/static/**" location="/static/"></mvc:resources>
+
+    <!--注册拦截器，谁先注册（在上）谁先执行（在外层），-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/login"/>
+            <bean id="myInterceptor" class="com.msb.interceptor.MyInterceptor"></bean>
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/login"/>
+            <bean id="myInterceptor2" class="com.msb.interceptor.MyInterceptor2"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!--异常-->
+	<bean id="simpleMappingExceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.ArithmeticException">redirect:/error1.jsp</prop>
+                <prop key="java.lang.NullPointerException">redirect:/error2.jsp</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>
+```
+
+##### 8.2 web.xml配置
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <!--配置前端控制器-->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <!--需要控制的bean对象-->
+            <param-value>classpath:springmvc.xml</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <!--请求资源：/代表除过jsp文件的所有资源，/*包裹jsp的所有资源-->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!--jsp没有能力发送post/delete请求，此过滤器就是将jsp的post请求转换成post/put/delete请求-->
+    <filter>
+        <filter-name>hiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>hiddenHttpMethodFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
+```
+
+
+
+
+
+
 
 
 
