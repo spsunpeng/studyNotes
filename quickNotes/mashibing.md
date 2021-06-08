@@ -16,7 +16,7 @@
 
   
 
-# 第一阶段：java开篇
+# 一、java开篇
 
 ### 1. java核心
 
@@ -110,7 +110,192 @@ C语言在多个操作系统执行的方式
 
 
 
-# 第三阶段：idea
+
+
+# 二、javaSE基础
+
+### 1、数组
+
+#### 1.1 java与C++的区别
+
+| 数组   | C++                                   | java                                              |
+| ------ | ------------------------------------- | ------------------------------------------------- |
+| 定义   | 内置，本质是一个不能改变指向的指针    | 对象，对C中数组封装而来                           |
+| 初始化 | int  arr[] = {1,2,3};                 | int[] arr = {1,2,3} == new int{1,2,3};  本质是new |
+| 赋值   | arr1 = arr2; 错误，数组名不能改变指向 | arr1 = arr2; 可以，java可以随便指                 |
+| 多维数 | 每一维的长度必须一样                  | 每一维的长度可以不一样                            |
+
+#### 1.2 初始化
+
+初始化:
+
+静态初始化：int[] arr=new int[]{1,2,3,4}   化简为 int[] arr={1,2,3,4}   
+
+动态初始化：int[] arr=new int[5]; 整形的系统默认值为0，浮点为0.0，字符是'\0'，引用类型为NULL
+
+```java
+int[]  ar = new ar[num];
+int[][]  arr=new  arr[numI][];
+int[][][] arrr =new arrr[numI]numJ[][];
+/*
+上述的定义初始化都是合法的，以arr为例子，只需要给出第一维的大小就可以定义，让编译器知道在堆上开辟几个int[]即可，其他维可以后面再初始化，但要修改具体元素时全部维度都必须定义完成。
+*/
+```
+
+#### 1.3 Arrays
+
+```java
+//工具Arrays：扩展数组的功能，里面全是静态函数
+int[] arr = {1,2,3};
+Arrays.tostring(arr)               //配合打印使用
+Arrays.sort(arr)                   //排序
+Arrays.binarySearch(arr,value)     //输出pos
+Arrays.copyOf(arr,length)          //完整复制
+Arrays.copyOfRange(arr, left, right)  //区间复制，左闭右开
+Arrays.equals(arr,arr2)               //判断数组内的值相等不，补足==
+Arrays.fill(arr,value)                //数组全部填充为value
+    
+//系统复制(源，源的起始位置， 目标数组， 目标数组的起始位置， 需要复制的长度)；
+System.arraycopy(src, srcsPos,  des, desPos, length);
+```
+
+
+
+### 2、String
+
+```java
+//new对象
+String str1 = "hello";
+String str3 = new String("hello");  
+char[] c = {'h','e','l','l','o'};
+String str5 = new String(c);
+String str6 = new String(c,0,2);
+
+//改变指向
+s = "hello2"; //改变执行
+s += "world"; //内在是改变了指向，外在表现是尾增
+
+//增删查改，内存不可变，无法增删
+s += "world"; //外在表现是尾增，内在是改变了指向
+s.replace('value1','value2'); //改：把String元素中的1替换成2
+s.chatAt(pos) //查：根据位置查值
+s.indesOf(values) //查：根据值查询位置，没有返回-1
+	
+//判断相等
+equalsIgnoreCase() //通过内容且忽视大小写
+//字符串分割: split
+String s = "hello world sun peng";
+String[] strs = s.split(" ");
+	
+//可变字符串StringBuffer
+s.append("")  //增
+s.insert(pos, 任意类型值)   //插入
+delete(leftPos, rightPos) //删：从left删到right,左闭右开
+```
+
+### 3、IO
+
+#### 3.1 Scanner
+
+```java
+import java.util.Scanner;      
+Scanner sc = new Scanner(System.in);
+int age = sc.nextInt();   //整形
+String name = sc.next();  //字符串
+char sex = sc.next().charAt(0); //字符型
+```
+
+- 与C++一样，space和enter都表示结束
+- UTF8编码：字符占俩个字节，有汉字编码，'\0'是字符第0个
+
+#### 3.2 file
+
+打开关闭
+
+```java
+File f = new File("sp1.txt");
+boolean  f.exists() //判断是否打开成功
+boolean  f.delete() //删除
+boolean  f.isDirectory() //判断是否是目录文件/文件夹
+boolean  f.isFile()  //判断是否是文件
+```
+
+读写
+
+| IO                                                       | 读写                                                         | 备注                                                         |
+| -------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| FileReader  in = new FileReader("file");                 | int  read(); int是读到的数  int  read(char[] buffer) int是读到的个数   -1表示没读到 | int  read(); 返回值是int类型，表示读到的数。  但是reader还是按照char大小读，  inputStream还是按照byte大小读。 |
+| FileWriter  out = new FileWriter("file");                | int  write(int c);    int  write(char[] buffer)  int  write(string buffer) |                                                              |
+| BufferedReader  br = new BufferedReader(FileReader in);  | int  read();  int read(char[] buffer)   string readline();   | int  read();同理                                             |
+| BufferedWriter  bw = new BufferedWriter(FileWriter out); | int  write(int c);    int  write(char[] buffer)  int  write(string buffer) | bw.newLine()  bw.flush()                                     |
+
+FilterInputStream\ FilterOutputStream \BufferedInputStream\BufferedOutputStream按照Byte读取
+
+
+
+### 4、集合
+
+#### 4.1 结构
+
+- Collection    
+
+  - set
+
+    **HashSet** 两者之间
+
+  - list
+
+    - **LinkedList** 改快读慢
+
+    - **ArrayList** 读快改慢
+
+  - Vector
+
+  - **Stack**
+
+  - Queue
+
+    - **LinkedList**
+
+- Map
+
+  - **HashMap**
+
+  - **TreeMap**
+
+#### 4.2 增删查改
+
+| 操作 | set                                      | list                                             | Map                                                          | Stack(Stack是实现类) | Queue(Queue是接口，实现类是LinkendList)                      |
+| ---- | ---------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------ | -------------------- | ------------------------------------------------------------ |
+| 增   | boolean add(E e)                         | boolean  add(E e)  void  add(int index, E e)     | Object  put(Object key, Object value)  如果key已存在，则返回被替换掉的元素  void  putAll(Map t); | E  push(E item);     | boolean  add(E e);  **boolean offer(E e);**队列为空返回null  在队头插入 |
+| 删   | boolean  remove(Object o)  void  clear() | boolean  remove(Object o)  void  clear()         | Object  remove(Object key);  void  clear()                   | E  pop();            | E remove();   **E poll();** 队列为空返回null  获取并删除队头 |
+| 查   | boolean  contains(Object o)              | E  get(int index)  boolean  contains(Object o)   | Object  get(Object key);  boolean  containsKey(Object key);  boolean  containsValue(Object value); | E  peek();           | E  element();  **E peek()**; 队列为空返回null  获取但不移除队头 |
+| 改   |                                          | E  set(int index, E element)  返回被替换掉的元素 | Object  put(Object key, Object value)  如果key已存在，则返回被替换掉的元素 |                      |                                                              |
+| 判空 | boolean  isEmpty()                       | boolean  isEmpty()                               | boolean  isEmpty()                                           | boolean  empty()     | boolean  isEmpty()                                           |
+| 大小 | int  size();                             | int  size();                                     | int  size();                                                 |                      |                                                              |
+
+#### 4.3 遍历Iterator
+
+```java
+public void fun1(Collection c) {
+    Iterator i = c.iterator();       //1、定义迭代器，初始位置为-1
+    while (i.hasNext()){          //2.（p+1） == null 判断有没有下一个
+    if(i.next().equals("aaa")){   //3.p++并返回*p，先++指向下一个，然后在解引用
+        i.remove();             //4.删除
+      }
+    }                          //总结：核心原因是初始为-1，如此循环的思想就是需要的时候再给
+}
+```
+
+- 当程序中有两个i.next()时,会有两次++，程序每一循环都是+2，后一个就和前一个不一样，后一个也需要先判断是否越界，i.hasNext()，所以只是为了*p的使用，那么先要给出Object o = i.next(); 然后就可以反复使用o，而不用担心多次++
+
+#### 4.4 常用算法Collections  
+
+Collections中的算法只对List实现，因为List是有序的数据结构，且都是静态方法。
+
+
+
+# 三、idea
 
 ### 1、设置
 
@@ -143,11 +328,51 @@ C语言在多个操作系统执行的方式
 
 ### 3、调试
 
-- 监视：alt+F8
+#### 3.1 断点调试
+
+![断点调试](pictures\quickNotes\断点调试.png)
+
+```java
+@ControllerAdvice
+public class MyExceptionHandler {
+
+    @ExceptionHandler(value =Exception.class)
+	public String exceptionHandler(Exception e){
+		System.out.println("发生了一个异常"+e);
+       	return e.getMessage();
+    }
+}
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    /**
+     * 处理自定义异常
+     *
+     */
+    @ExceptionHandler(value = DefinitionException.class)
+    @ResponseBody
+    public Result bizExceptionHandler(DefinitionException e) {
+        return Result.defineError(e);
+    }
+
+    /**
+     * 处理其他异常
+     *
+     */
+    @ExceptionHandler(value = Exception.class)
+    @ResponseBody
+    public Result exceptionHandler( Exception e) {
+        return Result.otherError(ErrorEnum.INTERNAL_SERVER_ERROR);
+    }
+}
+```
+
+#### 3.2 监视：alt+F8
 
 
 
-# 第四阶段：面向对象
+# 四、面向对象
 
 **类的组成：属性，方法，构造器，代码块，内部类**
 
@@ -438,9 +663,34 @@ void sort(int *arr, int len, T &fun)
 
 
 
+### 10、C++
+
+#### 10.1 java与C++的区别
+
+| 特性             | java                                                    | C++                                         |
+| ---------------- | ------------------------------------------------------- | ------------------------------------------- |
+| 对象的内存       | People p1 = new People(); 始终在堆中                    | 栈People p1;   堆People *p1 = new People(); |
+| 继承关键字       | extends                                                 | :                                           |
+| 继承权限         | public                                                  | public、private、protected                  |
+| 多重继承         | 单继承、多实现                                          | 支持，且可能会有菱形继承                    |
+| 派生类中访问基类 | 关键字：super                                           | 作用域：类名::                              |
+| 构造器调用构造器 | 一般用this，继承中用super                               | 继承中用初始化列表                          |
+| 多态             | Base b = new Derive(); （java没指针但估计也是指针实现） | Base  *p = new Derive();                    |
+
+#### 10.2 C++多天实现
+
+Base b = new Derive();
+
+1. b有实无名，即"名"(类型)是基类，"实"(内存)是子类。
+2. 那么如果子类的方法或字段中存在public，b能不能访问子类的变量呢？答案是不能，即使实际存在，不知道叫什么，自然也无法访问。
+3. "有实"却无法访问，那有没有"实"又有什么用呢？答案覆盖（基类和子类的同函数名、同参数、兼容返回值的成员方法）和多态（表现为同一个入口却调用不同的方法）。
+4. 编译时，对象在调用成员方法时，编译器会查看对象的内存，调用覆盖的子类方法，当然非覆盖方法它还是调用不了，就和（3）一样。
+5. 如果子类中有一方法继承自基类，同时它还调用了非继承的方法，那么这是不是就间接钻篓了？答案是允许合法。
+6. 通过（5）可以访问到非继承的，但还可以通过强制类型转换访问，如 ((Derive)b).方法。
 
 
-# 第五阶段：javaSE进阶
+
+# 五、javaSE进阶
 
 ### 1. 异常
 
@@ -746,7 +996,306 @@ myMethod.invoke(o，12);
 
 
 
-## 第十五阶段：
+# 六、编译打包运行
+
+### 1. 单jar包
+
+例子：创建一个java项目，编写两个类Welcome.java和Teacher.java，其中类Welcome含有main函数，是程序的入口，并调用Teacher中的greeting。
+
+```java
+package com.sunpeng;
+import com.sunpeng.impl.Teacher;
+public class Welcome {
+    public static void main(String[] args) {
+        Teacher.greeting();
+    }
+}
+```
+
+```java
+package com.sunpeng.impl;
+public class Teacher {
+    public static void greeting(){
+        System.out.printf("Welcome study jar!");
+    }
+}
+```
+
+命令在src目录下运行
+
+#### 1.1 编译
+
+|        | 编译                                                         |
+| ------ | ------------------------------------------------------------ |
+| JVM    | javac com/sunpeng/Welcome.java           编译Welcome时因导入Teacher，所以Teacher并不需要再执行编译命令 |
+| idea   | Build                                                        |
+| maven  | mvn package                              同时编译打包        |
+| gradle | gradle package                           同时编译打包        |
+
+#### 1.2 打包
+
+|        | 编译                                                         |
+| ------ | ------------------------------------------------------------ |
+| JVM    | 1）jar -cvfm welcome.jar META-INF/MANIFEST.MF com/sunpeng/Welcome.class com/sunpeng/impl/Teacher.class |
+| idea   | 2）将需要打包的文件放到target中，然后 jar -cvfm welcome.jar META-INF/MANIFEST.MF * |
+| maven  | mvn package                同时编译打包                      |
+| gradle | gradle package             同时编译打包                      |
+
+```java
+#/MANIFEST.MF文件
+Manifest-Version: 1.0
+Created-By: 1.8.0_231 (Oracle Corporation)
+Main-Class: com.sunpeng.Welcome
+```
+
+#### 1.3 运行
+
+|        | 编译                                                         |
+| ------ | ------------------------------------------------------------ |
+| JVM    | (1) 运行字节码文件：java Welcome     (2) 运行jar文件：java -jar welcome.jar |
+| idea   | Run                                                          |
+| maven  | java -jar welcome.jar                                        |
+| gradle | java -jar welcome.jar                                        |
+
+### 2. 调用jar
+
+例子：模块一：创建一个java项目，编写Teacher.java，含有方法greeting。模块二：创建一个java模块，编写Welcome.java，含有main函数，并调用模块一Teacher中的greeting。
+
+#### 2.1 Teacher编译打包
+
+和第一节的方法一样
+
+|        | 编译                                                         |
+| ------ | ------------------------------------------------------------ |
+| JVM    | (1) 编译 javac com/sunpeng/Welcome.java    (2) 打包 jar -cvf com/sunpeng/impl/Teacher.class |
+| idea   | (1) 编译build  (2)打包 jar -cvf com/sunpeng/impl/Teacher.class |
+| maven  | mvn package                同时编译打包                      |
+| gradle | gradle package             同时编译打包                      |
+
+#### 2.2 编写/识别
+
+welcome识别teacher.jar，实际编写代码时并不需要识别，只需要在编译运行时指明jar包路径即可
+
+|        | 编译                                                         |
+| ------ | ------------------------------------------------------------ |
+| JVM    | 普通编译器根本没有识别功能                                   |
+| idea   | jar包右键-->add a library  ，如果不识别idea就会报错，就没有链接提醒 |
+| maven  | mvn install 导入仓库中，再在Welcome中加入依赖                |
+| gradle | 待补充                                                       |
+
+```xml
+<dependency>
+    <groupId>com.sunpeng</groupId>
+    <artifactId>teacher</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+
+#### 2.3 编译、打包、运行
+
+|      | JVM                                                          |
+| ---- | ------------------------------------------------------------ |
+| 编译 | javac -cp ..\lib\teacher.jar com\sunpeng\Welcome.java -d ..\target |
+| 打包 | jar -cvfm welcome.jar META-INF/MANIFEST.MF *     MANIFEST.MF文件需要添加Class-Path |
+| 运行 | java -jar welcome.jar                                        |
+
+```java
+#/MANIFEST.MF文件
+Manifest-Version: 1.0
+Created-By: 1.8.0_231 (Oracle Corporation)
+Main-Class: com.sunpeng.Welcome
+Class-Path: ../lib/teacher.jar
+```
+
+### 3. 细节补充
+
+#### 3.1 编译
+
+在Terminal中执行javac命令，具体：
+
+javac com/sunpeng/Welcome.java
+
+- 之需要显示地编译Welcome.java即可，因为在导包时会编译Teacher：import com.sunpeng.impl.Teacher;
+- 必须在src目录下执行，因为系统不仅会编译Welcome，也要编译Teacher，所以必须找到Teacher。Teacher导入的路径为：import com.sunpeng.impl.Teacher; com目录在src下，所以必须是src。
+
+#### 3.2 打包
+
+jar -cvf com/sunpeng/Welcome.class com/sunpeng/impl/Teacher.class
+
+打包并生成META-INF/MANIFEST.MF文件，如下
+
+```java
+Manifest-Version: 1.0
+Created-By: 1.8.0_231 (Oracle Corporation)
+```
+
+但是生成的META-INF/MANIFEST.MF也并不知道程序入口，需要添加：
+
+```java
+Main-Class: com.sunpeng.Welcome
+```
+
+将Welcome和Teacher放到一起，并指明程序的入口
+
+然后执行：
+
+jar -cvfm welcome.jar META-INF/MANIFEST.MF com/sunpeng/Welcome.class com/sunpeng/impl/Teacher.class
+
+- -c 表示要创建一个新的jar包，
+- -v 表示创建的过程中在控制台输出创建过程的一些信息，
+- -f 表示给生成的jar包命名
+- -m 表示要定义MANIFEST文件。之后再重新执行
+
+#### 3.3 编译打包
+
+步骤：
+
+1. 新建target
+
+2. javac com/sunpeng/Welcome -d ../target
+
+3. 将META-INF/MANIFEST.MF复制到target中
+
+4. 进入target目录
+5. jar -cvfm welcome.jar META-INF/MANIFEST.MF
+
+此外，可以在命令行确定main函数入口
+
+java -cp welcome.jar com.sunpeng.Welcome
+
+cp表示classpath，后面跟main函数的路径
+
+#### 3.4 查看jar文件目录
+
+jar -tf filename.jar
+
+
+
+
+
+# 七、maven/gradle/groovy
+
+#### 1、IDEA自带maven的settings.xml
+
+IDEA自带maven的settings.xml文件的位置：D:\IntelliJ IDEA 2018.3.6\plugins\maven\lib\maven3\conf
+
+#### 2、 maven
+
+- maven 程序、配置文件(setting.xml)、仓库(repository) 互不相关
+- maven 配置环境变量，但不知道是不是一定要配置
+- idea工程后的setting只对此工程起作用，要想全部工程生效需要在启动页面上设置Configure
+- 工程类型
+  - POM工程：父级工程，子model集成，用作jar包的版本控制
+  - JAR工程：常用于本地工程的调用
+  - WAR工程：发布到服务器上的工程
+
+#### 3、gradle
+
+##### 3.1 下载
+
+地址：https://services.gradle.org/distributions/  -> gradle-4.5-bin.zip
+
+- gradle-x.x-bin.zip  发行版
+
+- gradle-x.x-src.zip　源码
+
+- gradle-x.x-all.zip   全部文件(发行版+源码)
+
+##### 3.2 环境配置
+
+我的电脑-属性- 高级系统设置-环境变量
+
+（1）新建 -》变量名{GRADLE_HOME}，变量值{D:\gradle4.5\gradle-4.5}
+
+（2）path -> 编辑 -》 新建 -》{%GRADLE_HOME%\bin}
+
+##### 3.3 测试
+
+命令提示行
+
+命令：gradle -v 
+
+结果：显示有Gradle 4.5
+
+
+
+#### 4、groovy语言
+
+##### 4.1 没有类也没有main
+
+代码直接写直接执行
+
+##### 4.2 换行已换行符做标志
+
+groovy句末不需要“;”,估计是以换行符作为结尾标志。那么长语句需要换行是时就需要注意。
+
+```groovy
+println("hello grovvy");
+println("hello grovvy")
+println"hello grovvy" //甚至不需要”()“
+```
+
+##### 4.3 集合的添删查改
+
+```groovy
+list<<'c' //增
+```
+
+##### 4.4 groovy是弱类型语言
+
+def i =18 
+
+def s = "ximing"
+
+def list = ['a','b']
+
+def map = ['key1':'value1','key2':'value2']
+
+##### 4.5 函数名与函数指针类型
+
+- 函数指针：作用是当作变量传入使用
+
+- 函数名：作用就是函数调用，即()
+
+- C/C++：函数名等于函数指针
+
+- groovy：函数名单单就是函数名，而函数指针可能即使函数指针，也是函数名
+
+```groovy
+def b1 = {               //1. b1挺像C语言的函数指针，method的参数用的就是函数指针
+	println("hello b1")
+}
+
+def method(){                 //2. 正经函数没有什么好说的
+	println("hello method")
+}
+
+def method1(Closure c){  //3. method1也是正经函数，不过他的形参是函数指针。函数指针的类型名是Closure。
+	c();                 //4. 参数c是函数指针，所以可以用c()方法
+}
+
+b2()                        //5. 直接调用b2();  可以执行，输出hello b1
+method()                  //6. 直接调用method() ；可以执行，输出hello method     
+method1(b1)           //7. 调用method1，参数传入b1。可以执行，输出为hello b1
+method1(method)      //8. 调用method1，参数传入method。不可以执行。
+
+//函数指针的参数传入
+def b2 = {
+v1 ->                      //函数指针的参数。
+	println("hello b2 ${v1}")
+}
+
+def method2(Closure c) {
+	c("mmm");
+}
+method2(b2)
+```
+
+
+
+
+
+# 十五、JVM
 
 ### 1. JVM
 

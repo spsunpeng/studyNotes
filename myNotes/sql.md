@@ -193,9 +193,9 @@ alter table table_name drop index index_name ;
 
 
 
-## Navicat
+## 
 
-### 快捷键
+### Navicat快捷键
 
 | **快捷键**    | **功能**                                                     |
 | ------------- | ------------------------------------------------------------ |
@@ -215,7 +215,7 @@ alter table table_name drop index index_name ;
 
 
 
-## jpa
+### jpa
 
 jpa：是orm框架的规范(解决持久层设计上的差异)，仅定义了一些接口
 
@@ -227,6 +227,129 @@ jdba：是访问数据库的规范(解决各个数据库使用的差异)与实�
 
 
 
-## Druid
+### Druid
 
 Druid是一个JDBC组件
+
+
+
+### jpa的Entity层 与 数据库表
+
+jpa的Entity层         数据库表    启动成功否           结论 
+
+​    无@id                      任意             否                 程序只检查自己的语法，jpa必须要有主键，即使有相应的表
+
+​    @id                          任意             是                 有主键就启动成功，mysql若没有表则建立
+
+@id + @id                   任意             否                  程序只检查自己的语法，即使有相应的数据库表
+
+@id+@id+@IdClass   任意             是                 正确，无论数据库表自己有几个主键
+
+结论：实际中要一一对应，不要因为能启动成功就随意使用，以免后续的增删改查操作发生未知错误。
+
+
+
+
+
+### 设置字段的默认值
+
+alter table users_info alter column role_id set default 1
+
+
+
+
+
+### mysql的varchar(1)
+
+mysql的varchar(1)同时兼容java和C++中的char、char[]、string吗？
+
+
+
+
+
+### jba注解之@Column
+
+@Column(name="columnName", length=32) 
+
+private String columnName;
+
+可以直接映射到表中的字段，创建时生效，但不能修改已创建的表
+
+
+
+### sql不等于
+
+mysql中不等于 <>  和 != 都可以表示不等于，不过 <> 在所有的sql语句中都是通用的。
+
+
+
+
+
+### jps: Specification：cb.and()
+
+cb.and(predicate1, null)
+
+cd.and：and毋庸置疑就是且，但是 predicate1 and null 结果是 predicate1 
+
+cd.or：or毋庸置疑就是或，但是 predicate1 or null 结果是 null
+
+综上所述，Specification认为null表示所有，而非一个没有
+
+
+
+###  JPA：事务
+
+```java
+  @Modifying
+  @Transactional
+  @Query("delete from User u where u.active = false")
+  void deleteInactiveUsers();
+```
+
+- @Modifying的主要作用是声明执行的SQL语句是更新（增删改）操作，（仅仅只是声明）。
+- @Transactional的主要作用是提供事务支持（JPA默认会依赖JDBC默认隔离级别，即默认只读，所以增删改需要此注解支持）
+
+
+
+### 联合主键索引
+
+t_basedata_dictdata (PK: bd_type, bd_code)
+
+```sql
+explain select * from t_basedata_dictdata where bd_code = 1010000 and bd_type = 2;
+explain select * from t_basedata_dictdata where bd_type = 2 and bd_code = 1010000;
+explain select * from t_basedata_dictdata where bd_code = 1010000;
+explain select * from t_basedata_dictdata where bd_type = 2;
+```
+
+![](E:\java\studyNotes\quickNotes\pictures\quickNotes\联合主键索引.png)
+
+
+
+### mysql表的字段与mysql关键字重名
+
+坑：使用Navicat Premium图形化界面建表，没有用mysql语句建表，使得即使重名也能建表成功。
+
+导致：后面再使用Navicat Premium操作表，如增删行不会，不会报错，
+
+但是，使用mysql语句插入，会报错，但由于mysql语句时自己当场写的，这个错还很直接，查看mysql语句总会发现。
+
+但是，使用springboot和jpa和mysql框架时：根本找不到错误再哪里？控制台会报sql语句出错，但这样完全不直观，根本想不通sql哪里出错了。
+
+
+
+### mysql 根据条件删除数据
+
+```sql
+#查询
+select * from t_basedata_dictdata where bd_type=6 and parent_bd_code=-1 and bd_code not in (select bd_code from t_basedata_dictdata where bd_type=7 and parent_bd_code=-1)
+
+#删除
+Delete from t_basedata_dictdata where bd_type=6 and parent_bd_code=-1 and bd_code not in (select bd_code from (select bd_code from t_basedata_dictdata where bd_type=7 and parent_bd_code=-1) bc)
+```
+
+删除的不同点，多包装了一层
+
+(select bd_code from (select bd_code from t_basedata_dictdata where bd_type=7 and parent_bd_code=-1) bc)
+
+将查询到的bd_code重命名为bc，然后再查询。但不明白为社么这么做

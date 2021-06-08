@@ -95,3 +95,149 @@ jmap -heap pid   #查询堆内存
 
 
 
+### 五、环境搭建docker
+
+#### 1.虚拟机安装
+
+- VMware：好像需要破解
+- VirtualBox6.3：好像开源，Oracle的，官网下载
+
+#### 2.linux安装
+
+- CentOS-8.0：好像开源，下载地址：http://mirrors.163.com/【网易镜像地址】
+
+  安装：
+
+  - 虚拟机新建操作系统： 新建操作系统 -》设置内存、存储。
+  - 加载：选择要加载的镜像 -》加载
+  - 操作系统配置：选择存储、root用户设置 -》重启
+  - 个性化设置：等等。
+  - 网络设置：1.网络设置； 2.网络配置文件修改
+
+#### 3.docker安装
+
+##### 3.1 docker安装
+
+```sh
+yum install -y yum-utils device-mapper-persistent-data lvm2 wget
+wget -O /etc/yum.repos.d/docker-ce.repo https://download.docker.com/linux/centos/docker-ce.repo
+sed -i 's+download.docker.com+mirrors.tuna.tsinghua.edu.cn/docker-ce+' /etc/yum.repos.d/docker-ce.repo
+yum -y makecache fast
+yum -y install docker-ce-18.09.9
+```
+
+##### 3.2 docker启动
+
+```sh
+#启动停止虚拟机命令
+systemctl start docker
+systemctl enable docker
+systemctl stop docker
+
+#关闭防火墙
+service firewalld status #查看防火墙状态
+service firewalld stop #关闭防火墙
+```
+
+#### 4.docker容器
+
+##### 4.1.docker配置阿里镜像
+
+- 获取阿里云的容器配置
+
+  - 登录阿里云：https://cr.console.aliyun.com/cn-hangzhou/instances
+
+  - 获取阿里云在docker中配置文件：
+
+    ```json
+    {
+      "registry-mirrors": ["https://h45068lf.mirror.aliyuncs.com"]
+    }
+    ```
+
+- 在虚拟集中配置
+
+  - /etc/docker/daemon.json
+
+    ```json
+    {
+      "registry-mirrors": ["https://h45068lf.mirror.aliyuncs.com"]
+    }
+    ```
+
+    或者直接执行
+
+    ```sh
+    tee /etc/docker/daemon.json <<-'EOF'
+    {
+      "registry-mirrors": ["https://registry.docker-cn.com"]
+    }d
+    EOF
+    ```
+
+  - 重启docker
+
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+
+##### 4.2 拉去镜像
+
+```sh
+docker search 关键字 #查询可以镜像 eg：docker search mysql
+docker pull 镜像名:tag   #拉取镜像 eg：docker pull mysql:5.7
+docker images  #查看所有本地镜像
+docker rmi id #删除指定的本地镜像
+```
+
+##### 4.3 启动容器
+
+```sh
+#创建容器
+docker run -d --name mytomcat -p 8888:8080 tomcat #新建并启动容器
+docker ps #查询容器
+docker rm  容器名或id #删除容器
+#启动容器
+docker start  容器名或id #开启容器
+docker ps -a #查询正在运行的容器
+docker stop  容器名或id #关闭容器
+docker restart  容器名或id #重启容器
+#修改容器配置
+docker exec -it 容器名或id bash #进入容器
+exit #退出
+```
+
+#### 5. centos测速
+
+```sh
+#安装git
+yum -y install git
+#git克隆speedtest
+git clone https://github.com/sivel/speedtest-cli.git
+#进入speedtest-cli
+cd speedtest-cli
+#修改speedtest.py，由于现在一般python都是python3，所以#!/usr/bin/env python -》 #!/usr/bin/env python3
+vi speedtest.py
+#执行speedtest-cli
+./speedtest-cli
+```
+
+可能报错：./speedtest-cli执行失败，没有python
+
+```sh
+#检查python版本
+python -version
+python3 -version
+#安装python3
+dnf install python3
+```
+
+设置全局
+
+```sh
+#增加读写执行权限及移动到全局操作目录
+chmod +rx speedtest.py
+sudo mv speedtest.py /usr/local/bin/speedtest-cli
+sudo chown root:root /usr/local/bin/speedtest-cli
+speedtest.py #任意位置执行
+```
+
