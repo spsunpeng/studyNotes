@@ -12,7 +12,7 @@
 
 **最典型的MVC就是JSP + servlet + javabean的模式。**
 
-
+![springmvc执行流程](pictures\springMVC\springmvc执行流程.png)
 
 #### 1、入门demo
 

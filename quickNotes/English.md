@@ -20,6 +20,7 @@
 | 2    | execute/execution                         | 执行                     | 执行             |
 |      | field                                     | 属性                     | 属性             |
 | 2    | filter                                    | 筛选                     | 过滤器           |
+| 1    | format                                    | 格式                     | 格式             |
 |      | framework                                 | 框架                     | 框架             |
 | 2    | Handler                                   | 处理程序                 | 处理程序         |
 |      | illegal                                   | 非法的                   | 非法的           |
@@ -33,6 +34,7 @@
 | 2    | manager                                   | 经理                     | 管理器           |
 |      | modifier                                  | 修饰符                   | 修饰符           |
 | 1    | MVC                                       | Model/View/Contriller    | 模型/视图/控制器 |
+| 1    | parse                                     | 解析                     | 解析             |
 |      | placeholder                               | 占位符                   | 占位符           |
 |      | properties/property                       | 所有物、财产             | 属性、参数       |
 |      | proxy                                     | 处理                     | 处理             |
@@ -46,6 +48,8 @@
 |      | Terminal                                  | 终端                     | 终端             |
 |      | verify                                    | 校验                     | 校验             |
 |      | Wrapper                                   | 包装器                   | 包装器           |
+
+
 ## 低频
 
 | 频次 | java         | 原意         | 计算机术语  |

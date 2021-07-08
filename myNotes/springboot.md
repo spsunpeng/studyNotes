@@ -1,10 +1,3 @@
-# 遗留
-
-- servlet
-- springmvc
-
-
-
 # 一、以前
 
 ### 1.问题
@@ -160,16 +153,6 @@ public @interface SpringBootConfiguration {
 public @interface AutoConfigurationPackage {
 }
 ```
-
-**springboot 与 spring注解版比较学习**
-
-
-
-
-
-**2020-10-13 14:10:45.601  INFO 41976 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/hello]}" onto public java.lang.String com.atguigu.controller.HelloController.hello(**)
-2020-10-13 14:10:45.604  INFO 41976 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
-2020-10-13 14:10:45.604  INFO 41976 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
 
 
 
@@ -516,7 +499,7 @@ public ServletListenerRegistrationBean listenerRegist(){
 
 
 
-
+互联网高级工程师就业班
 
 
 

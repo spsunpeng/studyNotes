@@ -1,20 +1,13 @@
 # 遗留：
 
-- 使用notepad编写程序编译运行、使用idea创建程序、使用idea创建web程序(整合tomcat)、
-
-- idea集成git -> 9.git
-
-- maven -> 9.maven
-
 - 多态实现工厂模式，代码练习
 
 - 内部类实现lambad表达式，原理和C++比较
 
 - object.hashCode(); 原理和使用
 
-- junit：在java项目中使用
-
   
+
 
 # 一、java开篇
 
@@ -325,6 +318,12 @@ Collections中的算法只对List实现，因为List是有序的数据结构，�
 - 光标到行首/尾：Home / End
 - 上下移动代码：ctrl+shift+上/下
 - alt+数字(小键盘不可用)：显示左侧菜单，如：alt+7显示代码结构，alt+1显示工程
+- 实现/覆写
+  - ctrl + o: 覆写方法
+  - ctrl + i：实现接口中的方法
+- 其他
+  - ctrl + shift + u：大小写转换
+  - ctr + z/Z：回退/取消撤销
 
 ### 3、调试
 

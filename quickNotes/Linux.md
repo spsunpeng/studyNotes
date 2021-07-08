@@ -42,10 +42,11 @@ grep  -参数  "字段"  filename
 - 参数
 
   - -E:  或
-
+  
   - -r ：进入目录搜索
+  
   - -n :  显示行号
-
+  - -A/B/C  number 显示匹配内容以及后/前/前后几行内容
 - 搜索条件
 
   - "word" ： 搜索含有word的，支持汉字、特殊字符、空格
@@ -64,6 +65,8 @@ grep  -参数  "字段"  filename
 
 - grep "word1.*word2" fliename                  含有word1和word2（有word1...word2）
 - grep “word1” fliename grep "word2"        含有word1和word2（有word2的基础上有word1）
+
+- grep -C 5 "word" filename                           含有word以及他前后5行的
 
 
 
