@@ -430,8 +430,6 @@ jdbc.url=jdbc:mysql://127.0.0.1:3306/msb_dongbao
 <bean name="person001" class="com.mashibing.bean.Person" autowire="byName"></bean>
 ```
 
-- 注解的基础
-
 
 
 #### 7. SpEL
@@ -475,13 +473,23 @@ scope：scope="singleton" / "prototype"
 
 ### 三、ioc_注解
 
-#### 1. 使用注解的方式注册bean到IOC容器中
+#### 1、 扫描包
 
-@Component  原意是组件，它是spring最基本的注解，作用是将类注入到bean
+```xml
+<context:component-scan base-package="com.mashibing">
+    <!-- exclude：排除，type="assignable"：类型是类，expression="完全限定名"
+	<context:exclude-filter type="assignable" expression="com.mashibing.bean.Person"></context:exclude-filter>
+	-->
+</context:component-scan>
+```
 
-@Controller @Service @Respository 都是组件的注解，没有区别
+#### 
 
-@RestController 由@Controller + @ResponseBody组成
+#### 2、构建bean
+
+Spring Bean是被实例的，组装的及被Spring 容器管理的Java对象，Spring 容器会自动完成@bean对象的实例化。
+
+@Component  原意是组件，它是spring最基本的注解，作用是将类注入到spring容器
 
 单例@Scope(scopeName="prototype")
 
@@ -493,19 +501,51 @@ scope：scope="singleton" / "prototype"
 @Scope(scopeName="prototype")
 ```
 
-#### 2. 定义扫描包时要包含的类和不要包含的类
+##### 2.1 配置类
 
-```xml
-<context:component-scan base-package="com.mashibing">
-    <!-- exclude：排除，type="assignable"：类型是类，expression="完全限定名"
-	<context:exclude-filter type="assignable" expression="com.mashibing.bean.Person"></context:exclude-filter>
-	-->
-</context:component-scan>
+```java
+@Configuration
+public class MyConfig {
+
+    @Bean
+    public User getUser(){
+        User user = new User();
+        user.setName("sunpeng");
+        return user;
+    }
+
+    @Bean
+    public Person getPerson(User user){
+        return new Person();
+    }
+
+    @Bean(value = "goodStudent")
+    public Student getStudent(){
+        return new Student();
+    }
+}
 ```
 
+##### 2.1 组件
 
+```java
+@Component
+public class User {
+    @Value("${myUser.name}")
+    private String name;
 
-#### 3、使用@AutoWired进行自动注入
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+}
+@Component
+public class Person {
+}
+@Component(value = "goodStudent")
+public class Student {
+}
+```
+
+#### 3、注入
 
 注意：当使用AutoWired注解的时候，自动装配的时候是根据类型实现的。
 
@@ -519,9 +559,30 @@ scope：scope="singleton" / "prototype"
 
 ​				2、如果匹配不上则直接报异常
 
-- @Resource：javac包中的注解，和spring中@AutoWired功能一样
+```java
+@RunWith(SpringJUnit4ClassRunner.class)// 指定测试支持类
+@ContextConfiguration("classpath:ioc.xml")// 指定核心配置文件位置
+public class Test1 {
+    @Autowired
+    private User user;
 
-- 启动类中不能使用@AutoWired，不生效
+    @Autowired
+    private Person person;
+
+    @Autowired
+    @Qualifier(value = "goodStudent")
+    private Student student;
+    
+    @Test
+    public void testConfig(){
+        System.out.println(user);
+        System.out.println(person);
+        System.out.println(student);
+    }
+}
+```
+
+- @Resource：javac包中的注解，和spring中@AutoWire+@Qualifier的功能一样
 
   
 
@@ -1101,6 +1162,286 @@ public void checkout(String username,int id){
     另一方面, PROPAGATION_NESTED 开始一个 "嵌套的" 事务,  它是已经存在事务的一个真正的子事务. 嵌套事务开始执行时,  它将取得一个 savepoint. 如果这个嵌套事务失败, 我们将回滚到此 savepoint. 潜套事务是外部事务的一部分, 只有外部事务结束后它才会被提交. 
     由此可见, PROPAGATION_REQUIRES_NEW 和 PROPAGATION_NESTED 的最大区别在于, PROPAGATION_REQUIRES_NEW 完全是一个新的事务, 而 PROPAGATION_NESTED 则是外部事务的子事务, 如果外部事务 commit, 嵌套事务也会被 commit, 这个规则同样适用于 roll back. 
 ```
+
+
+
+### 五、spring整合测试类
+
+#### 1、依赖
+
+```xml
+<dependencies>
+    <!-- spring -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.3.5</version>
+    </dependency>
+    <!--spring test测试支持包-->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>5.3.5</version>
+    </dependency>
+    <!--Junit4单元测试-->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>compile</scope>
+    </dependency>
+</dependencies>
+```
+
+- 注意spring和spring-test版本必须一样
+
+#### 2、使用
+
+##### 2.1 junit4
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)// 指定测试支持类
+@ContextConfiguration("classpath:ioc.xml")// 指定核心配置文件位置
+public class Test1 {
+    @Autowired
+    private User user;
+    @Test
+    public void testConfig(){
+        System.out.println(user);
+    }
+}
+```
+
+##### 2.2 junit5
+
+```java
+/*使用ExtentWith和ContextConfiguration注解*/
+/*@ExtendWith(SpringExtension.class)
+@ContextConfiguration("classpath:applicationContext.xml")*/
+// 使用复合注解
+@SpringJUnitConfig(locations = "classpath:applicationContext.xml")
+public class Test3 {
+    @Autowired // 注入要获取的bean
+    private  AccountService accountService;
+    @Test
+    public void testTransaction(){
+        int rows = accountService.transMoney(1, 2, 100);
+        System.out.println(rows);
+    }
+}
+```
+
+
+
+### 六、零xml配置
+
+#### 1、xml配置方式
+
+```xml
+applicationContext中,通过AOP实现事务的控制
+
+ <?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+">
+    <context:component-scan base-package="com.msb"/>
+    <!--读取jdbc配置文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <!--配置德鲁伊连接池-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="username" value="${jdbc_username}"></property>
+        <property name="password" value="${jdbc_password}"></property>
+        <property name="url" value="${jdbc_url}"></property>
+        <property name="driverClassName" value="${jdbc_driver}"></property>
+    </bean>
+    <!--配置JDBCTemplate对象,并向里面注入DataSource-->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <!--通过set方法注入连接池-->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <!--配置一个事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--将数据源注入事务管理器-->
+        <property name="dataSource"  ref="dataSource"></property>
+    </bean>
+    <!--配置通知-->
+    <tx:advice id="txAdvice">
+            <!--配置事务参数-->
+            <tx:attributes>
+                <tx:method name="transMoney" isolation="DEFAULT" propagation="REQUIRED"/>
+            </tx:attributes>
+    </tx:advice>
+    <!--配置AOP-->
+    <aop:config>
+        <!--配置切入点-->
+        <aop:pointcut id="pt" expression="execution(* com.msb.service.AccountService.transMoney(..))"/>
+        <!--配置切面-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pt"></aop:advisor>
+    </aop:config>
+</beans>
+```
+
+#### 2、配置类方式
+
+```java
+package com.msb.config;
+import com.alibaba.druid.pool.DruidDataSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import javax.sql.DataSource;
+
+@Configuration  // 配置类标志注解
+@ComponentScan(basePackages = "com.msb") // spring包扫描
+@PropertySource("classpath:jdbc.properties") // 读取属性配置文件
+@EnableTransactionManagement // 开启事务注解
+public class SpringConfig {
+    //参数
+    @Value("${jdbc_driver}")
+    private String driver;
+    @Value("${jdbc_url}")
+    private String url;
+    @Value("${jdbc_username}")
+    private String username;
+    @Value("${jdbc_password}")
+    private String password;
+    /*创建数据库连接池*/
+    @Bean
+    public DruidDataSource getDruidDataSource(){ //返回类型决定bean类型，方法明决定bean的id
+        DruidDataSource dataSource=new DruidDataSource();
+        dataSource.setDriverClassName(driver);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+        return dataSource;
+    }
+    /*创建JdbcTemplate对象*/
+    @Bean
+    public JdbcTemplate getJdbcTemplate(DataSource dataSource){ //根据类型获取
+  //public JdbcTemplate getJdbcTemplate(@Qualifier(value = "getDruidDataSource")DataSource dataSource){ //也可以根据id获取
+        JdbcTemplate jdbcTemplate=new JdbcTemplate();
+        jdbcTemplate.setDataSource(dataSource);
+        return jdbcTemplate;
+    }
+    /*创建事务管理器*/
+    @Bean
+    public PlatformTransactionManager getPlatformTransactionManager(DataSource dataSource){
+        DataSourceTransactionManager transactionManager =new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource);
+        return transactionManager;
+    }
+}
+```
+
+#### 3、注解方式
+
+全局配置
+
+```java
+@ComponentScan(basePackages = "com.msb") // spring包扫描
+@PropertySource("classpath:jdbc.properties") // 读取属性配置文件
+@EnableTransactionManagement // 开启事务注解
+public class SpringConfig {}
+```
+
+bean
+
+```java
+@Component
+public class DruidDataSource{
+    //参数
+    @Value("${jdbc_driver}")
+    private String driver;
+    @Value("${jdbc_url}")
+    private String url;
+    @Value("${jdbc_username}")
+    private String username;
+    @Value("${jdbc_password}")
+    private String password;
+}
+
+@Component //bean类型就是类的类型，bean的id是类型的首字母小写
+//@Component(value="jdbcTemplate01") //参数value可以设置bean的id
+public class JdbcTemplate {
+    @Autowired //根据类型获取
+    @Qualifier(value = "dataSource01") //根据bean的id获取
+    private DataSource dataSource;
+}
+
+@Component
+public class PlatformTransactionManager {
+    @Autowired
+    private DataSource dataSource;
+}
+```
+
+
+
+#### 4、测试
+
+```java
+@Test()
+public void testTransaction3(){
+    ApplicationContext context =new AnnotationConfigApplicationContext(SpringConfig.class);
+    JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class); //根据类型获取
+    JdbcTemplate jdbcTemplate2 = context.getBean(getJdbcTemplate); //根据id获取
+    System.out.println(accountService);
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

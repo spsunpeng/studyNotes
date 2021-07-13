@@ -353,3 +353,13 @@ Delete from t_basedata_dictdata where bd_type=6 and parent_bd_code=-1 and bd_cod
 (select bd_code from (select bd_code from t_basedata_dictdata where bd_type=7 and parent_bd_code=-1) bc)
 
 将查询到的bd_code重命名为bc，然后再查询。但不明白为社么这么做
+
+
+
+### limit
+
+```sql
+select * from table_name LIMIT ?, ?
+#第一个问好表示从第几个开始，第二个问好表示查询几个
+```
+
