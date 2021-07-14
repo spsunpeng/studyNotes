@@ -1412,7 +1412,9 @@ public void testTransaction3(){
 }
 ```
 
+#### 5、总结
 
+配置类方式可以将xml配置更改未java代码，且不用修改原代码。所以，springboot源码中都是使用这个方式，简化了配置。
 
 
 

@@ -503,9 +503,13 @@ public ServletListenerRegistrationBean listenerRegist(){
 
 # 三、马东阳
 
-### springboot
+目前学习到：第12阶段-springboot的使用，第38节-拓展_@ImportResource
 
-#### 1、配置文件
+### springboot配置
+
+#### 1、application
+
+父依赖的引入，使得springboot会默认读取**/application*.yml、**/application*.yam、**/application*.properties
 
 ```xml
 <parent>
@@ -670,9 +674,68 @@ springboot打包可以分为jar、war、pom，其中pom用在父依赖中
 
 
 
+#### 4、参数
+
+##### 4.1 spring读取方式
+
+```java
+@Component
+@PropertySource(value = "classpath:bookConfig.yaml")
+public class Book {
+    @Value("${springboot-base.book.name}")
+    private String name;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+```properties
+springboot-base.book.name=shuixu
+```
+
+##### 4.2 springboot读取方式
+
+```java
+@Component
+@PropertySource(value = "classpath:bookConfig.properties")
+@ConfigurationProperties(prefix = "springboot-base.book")
+public class Book {
+    //@Value("${springboot-base.book.name}")
+    private String name;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+```yaml
+springboot-base:
+  book:
+    name: dsddd
+```
+
+- springboot在spring的基础上，还提供了注解：@ConfigurationProperties
+- springboot在spring的基础上，还支持yaml文件。
+- spring没有默认指定文件，必须指定，springboot默认了指定文件application
+- @PropertySource是sping提供，不支持yaml格式文件，特例是application.yaml，可能是springboot做了转换
+- 对于springboot而言，配置文件有默认application.yaml的和指定的bookConfig.properties。如果两者做了，相同的配置。@Value会使用application.yaml，@ConfigurationProperties会使用bookConfig.properties。
+
+- @ConfigurationProperties不支持大写字母，支持连字符-
+
+
+
 ### 整合web
 
-#### jsp
+#### 1、前端
+
+##### 1.1 jsp
 
 优点：
 1、功能强大，可以写java代码
@@ -682,7 +745,7 @@ springboot打包可以分为jar、war、pom，其中pom用在父依赖中
 缺点：
 性能问题。不支持前后端分离
 
-#### freemarker
+##### 1.2 freemarker
 
 FreeMarker是一个用Java语言编写的模板引擎，它基于模板来生成文本输出。FreeMarker与Web容器无关，即在Web运行时，它并不知道Servlet或HTTP。它不仅可以用作表现层的实现技术，而且还可以用于生成XML，JSP或Java 等。
 目前企业中:主要用Freemarker做静态页面或是页面展示
@@ -698,15 +761,51 @@ FreeMarker是一个用Java语言编写的模板引擎，它基于模板来生成
 1、不是官方标准
 2、用户群体和第三方标签库没有jsp多
 
-#### Thymeleaf
+##### 1.3 Thymeleaf
 
 Thymeleaf是个XML/XHTML/HTML5模板引擎，可以用于Web与非Web应用。
 Thymeleaf的主要目标在于提供一种可被浏览器正确显示的、格式良好的模板创建方式，因此也可以用作静态建模。你可以使用它创建经过验证的XML与HTML模板。相对于编写逻辑或代码，开发者只需将标签属性添加到模板中即可。接下来，这些标签属性就会在DOM（文档对象模型）上执行预先制定好的逻辑。Thymeleaf的可扩展性也非常棒。你可以使用它定义自己的模板属性集合，这样就可以计算自定义表达式并使用自定义逻辑。这意味着Thymeleaf还可以作为模板引擎框架。
 优点：静态html嵌入标签属性，浏览器可以直接打开模板文件，便于前后端联调。springboot官方推荐方案。
 缺点：模板必须符合xml规范
 
-
 VUE: 前后端分离,最多,未来趋势
+
+#### 2、拦截器
+
+##### 2.1 拦截器
+
+和spring一样
+
+```java
+@Component
+public class WebInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("拦截器");
+        return true;
+    }
+}
+```
+
+##### 2.2 拦截器配置
+
+将spring的xml配置改为springboot的配置类
+
+```java
+@Configuration
+public class InterceptorConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private WebInterceptor webInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {       registry.addInterceptor(webInterceptor).addPathPatterns("/**").excludePathPatterns("/hi");
+    }
+}
+```
+
+
 
 ### 整合mybatis
 
@@ -1124,6 +1223,138 @@ class Springboot03AppliactionTests {
     }
 }
 ```
+
+
+
+## 注解
+
+### 1、@Configuration
+
+@Configuration相比@Component仅仅多了参数proxyBeanMethods，作用是类中的方法是否使用代理。
+
+@Configuration从功能上来说，就是表明这个类是配置类。实现就是借助@Component实现。
+
+proxyBeanMethods=false 称之为Lite模式  特点启动快
+
+proxyBeanMethods=true  称之为Full模式  特点依赖spring容器控制bean单例
+
+```java
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component
+public @interface Configuration {
+    @AliasFor(
+        annotation = Component.class
+    )
+    String value() default "";
+
+    boolean proxyBeanMethods() default true;
+}
+```
+
+#### 2、构建bean
+
+```java
+@Configuration(proxyBeanMethods=false)
+//@Component
+//@Import(value = Person.class) //id="com.msb.config.Person" , type=Person.class 可以放到任意位置
+//@EnableConfigurationProperties(value = Person.class) //person-com.msb.config.Person
+//@ImportResource("classpath:beans.xml")
+public class MyConfig {
+    @Bean
+    public Person getPerson(){
+        return new Person();
+    }
+}
+```
+
+方法一：@Configuration
+
+方法二：@Component
+
+方法三：@Bean + @Configuration/@Component
+
+方法四：@Import(value = Person.class)
+
+方法五：@ImportResource("classpath:beans.xml") + beans.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="person" class="com.msb.config.Person">
+        <property name="name" value="jia"></property>
+    </bean>
+</beans>
+```
+
+方法六：@EnableConfigurationProperties(value = Person.class) + @ConfigurationProperties(prefix = "person") + application.yaml
+
+```java
+@ConfigurationProperties(prefix = "person")
+public class Person {
+    private String name;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+```yaml
+person:
+  name: sunpeng
+```
+
+#### 3、@Conditional 条件装配
+
+满足Conditional指定的条件,则进行组件注入
+
+```java
+@Configuration(proxyBeanMethods=false)
+@ConditionalOnClass(value = Person.class)
+public class MyConfig {
+    @Bean
+    @ConditionalOnProperty(name = "person.name", havingValue = "sunpeng")
+    public Person getPerson(){
+        return new Person();
+    }
+}
+```
+
+子类：ctrl + h
+
+![Conditional](pictures\springboot\Conditional.png)
+
+
+
+#### 4、其他注解
+
+@PropertySource("classpath:userConfig.properties")
+
+@Value
+
+@ConfigurationProperties(prefix = "person")
+
+@Autowird
+
+@Qualifier(value = "")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

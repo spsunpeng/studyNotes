@@ -325,6 +325,10 @@ Collections中的算法只对List实现，因为List是有序的数据结构，�
   - ctrl + shift + u：大小写转换
   - ctr + z/Z：回退/取消撤销
 
+- 查看子类：ctrl + h
+
+
+
 ### 3、调试
 
 #### 3.1 断点调试
