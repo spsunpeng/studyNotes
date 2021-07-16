@@ -272,57 +272,6 @@ supplier-access.nmyvirtual.hobby=women    //必须配置
 
 
 
-# 2021-05
-
-#### 1、删除module
-
-先移除再删除
-
-#### 2、yaml文档
-
-- 根据缩进判断等级
-- -代表数组
-
-#### 3、rpc协议
-
-什么是RPC协议？
-RPC是一种远程过程调用的协议，使用这种协议向另一台计算机上的程序请求服务，不需要了解底层网络技术的协议。
-
-在 RPC 中，发出请求的程序是客户程序，而提供服务的程序是服务器。
-
-HTTP是一种超文本传输协议。是WWW浏览器和WWW服务器之间的应用层通讯协议。
-
-RPC协议与HTTP协议的区别
-1、RPC是一种API，HTTP是一种无状态的网络协议。RPC可以基于HTTP协议实现，也可以直接在TCP协议上实现。
-
-2、RPC主要是用在大型网站里面，因为大型网站里面系统繁多，业务线复杂，而且效率优势非常重要的一块，这个时候RPC的优势就比较明显了。
-
-HTTP主要是用在中小型企业里面，业务线没那么繁多的情况下。
-
-3、HTTP开发方便简单、直接。开发一个完善的RPC框架难度比较大。
-
-4、HTTP发明的初衷是为了传送超文本的资源，协议设计的比较复杂，参数传递的方式效率也不高。开源的RPC框架针对远程调用协议上的效率会比HTTP快很多。
-
-5、HTTP需要事先通知，修改Nginx/HAProxy配置。RPC能做到自动通知，不影响上游。
-
-6、HTTP大部分是通过Json来实现的，字节大小和序列化耗时都比Thrift要更消耗性能。RPC，可以基于Thrift实现高效的二进制传输。
-
-
-
-#### 4、学习计划
-
-javaEE -> springmvc -> springboot
-
-数据库/jdbc -> mybatis/jpa  -> springboot
-
-spring -> springboot
-
-spring + springmvc + mybatis/jpa  -> springboot
-
-springboot + 环境/组件 -> springcloud
-
-设计模式/坦克大战项目 -> spring/springmvc/springboot源码
-
 
 
 # 2021-07
@@ -333,62 +282,9 @@ springboot + 环境/组件 -> springcloud
 
 - shift + erter ：换行
 
+#### 2、删除module
 
-
-#### 2、工作经验：yaml格式文件空格
-
-每行前缩进的空格是yaml文件的格式/语法，一定注意。
-
-##### 2.1 复制粘贴不规范导致错误
-
-在复制粘贴keycloak文件时，由于复制粘贴没有考虑空格，导致只有第一行空格正确，其余几行都错误。
-
-![错误复制yaml内容方法](pictures\quickNotes\错误复制yaml内容方法.png)
-
-正确做法为从顶头位置复制，从顶头位置复制/粘贴。
-
-![正确复制yaml内容方法](pictures\quickNotes\正确复制yaml内容方法.png)
-
-##### 2.2 修改文件类型导致错误
-
-由于servicecomb契约文件的原因，需要先将契约文件改为txt文件，程序启动成功后，再改为yaml文件格式，并将打印出来的文件粘贴到契约文件。注意，一定要先改文件类型，再改内容。反之，空格会乱。
-
-
-
-#### 3、日志
-
-日志配置
-
-```properties
-log4j.rootLogger=error,logfile
-log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-log4j.appender.stdout.Target=System.err
-log4j.appender.stdout.layout=org.apache.log4j.SimpleLayout
-log4j.appender.logfile=org.apache.log4j.FileAppender
-log4j.appender.logfile.File=d:/msb.log
-log4j.appender.logfile.layout=org.apache.log4j.PatternLayout
-log4j.appender.logfile.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %l %F %p %m%n
-```
-
-%p：输出日志信息的优先级，即DEBUG，INFO，WARN，ERROR，FATAL。
-
-%d：输出日志时间点的日期或时间，默认格式为ISO8601，也可以在其后指定格式，如：%d{yyyy/MM/dd HH:mm:ss,SSS}。
-
-%r：输出自应用程序启动到输出该log信息耗费的毫秒数。
-
-%t：输出产生该日志事件的线程名。
-
-%l：输出日志事件的发生位置，相当于%c.%M(%F:%L)的组合，包括类全名、方法、文件名以及在代码中的行数。例如
-
-test.TestLog4j.main(TestLog4j.java:10)。
-		%c：输出日志信息所属的类目，通常就是所在类的全名。
-       %M：输出产生日志信息的方法名。
-       %F：输出日志消息产生时所在的文件名称。
-       %L:：输出代码中的行号。
-       %m:：输出代码中指定的具体日志信息。
-       %n：输出一个回车换行符，Windows平台为"rn"，Unix平台为"n"。
-       %x：输出和当前线程相关联的NDC(嵌套诊断环境)，尤其用到像java servlets这样的多客户多线程的应用中。
-       %%：输出一个"%"字符。
+先移除再删除
 
 
 

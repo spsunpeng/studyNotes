@@ -1,40 +1,33 @@
-# 一、雷峰阳
+# 参考资料
 
-### 1.问题
+马东阳：第12阶段-springboot的使用，第38节-拓展_@ImportResource
 
-问1：springboot 简化 spring
+连鹏举：互联网高级工程师就业班
 
-问2：springboot 简化 打包部署
 
-### 2.打包
 
-第一步：添加依赖
+# 一、环境配置
 
-```xml
-<!-- 这个插件，可以将应用打包成一个可执行的jar包；-->
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-    </plugins>
-</build>
-```
 
-第二步：Maven -》 项目名 -》 Lifecycle -》 package【双击】
 
-第三步：测试
+## 1、idea创建项目
 
-​		    运行jar：java -jar name.jar
+可以使用maven或者gradle，不过idea为我们提供了更简单的创建方式Spring Initializr
 
-比较：运行java：javac name.java
+- 新建 -》 project -》Spring Initializr
+- New Project 下选择：
+  - type：Maven Project
+  - packaging：jar（自动打包的打包方式）
+  - java Version：8
+  - package：包
 
-​				   java name
+- 选择需要的依赖
 
-### 3.场景启动器
 
-#### 3.1 prom：parent
+
+## 2、依赖
+
+### 2.1 springboot-parent
 
 父项目一般用于依赖的版本管理
 
@@ -42,482 +35,30 @@
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.9.RELEASE</version>
+    <version>2.5.2</version>
+    <relativePath/> <!-- lookup parent from repository -->
 </parent>
+```
 
+spring-boot-starter-parent 中包括 spring-boot-dependencies 和 一些其他配置
+
+#### 2.1.1 spring-boot-dependencies 
+
+```xml
 他的父项目是
 <parent>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-dependencies</artifactId>
-  <version>1.5.9.RELEASE</version>
-  <relativePath>../../spring-boot-dependencies</relativePath>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-dependencies</artifactId>
+    <version>2.5.2</version>
 </parent>
 他来真正管理Spring Boot应用里面的所有依赖版本；
 ```
 
-1. spring-boot-starter-parent，表示spring-boot-starter的所以要父项目
-2. 父项目一般做依赖管理
-3. spring-boot-starter-parent 依赖 spring-boot-dependencies
-4. spring-boot-dependencies才是真正所有依赖的版本管理，所以它又叫版本仲裁
-5. 所以后面导入的依赖不需要写版本；（没有在dependencies里面管理的依赖自然需要声明版本号）
+spring-boot-dependencies管理依赖的版本，所以它又叫版本仲裁
 
-#### 3.2 启动器（依赖）
+#### 2.1.2 其他
 
-比如：导入spring-boot-starter-web，它就不用写版本号
-
-```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-```
-
-1. spring-boot-starter：场景启动器，将所有工程场景都抽取出来，做成一个个场景启动器
-2. spring-boot-starter-web：web场景启动器，导入所有web需要的依赖，对比以前，简化各种各样的依赖导入
-3. spring-boot-dependencies: 版本仲裁，web需要多个依赖，它解决了版本的兼容问题(记得我遇到过springdata、mybatis、mysql间不兼容问题)
-
-
-
-### 4.主程序类/主入口类
-
-```java
-/**
- *  @SpringBootApplication 来标注一个主程序类，说明这是一个Spring Boot应用
- */
-@SpringBootApplication
-public class HelloWorldMainApplication {
-
-    public static void main(String[] args) {
-
-        // Spring应用启动起来
-        SpringApplication.run(HelloWorldMainApplication.class,args);
-    }
-}
-```
-
-@**SpringBootApplication**:    Spring Boot应用标注在某个类上说明这个类是SpringBoot的主配置类，SpringBoot就应该运行这个类的main方法来启动SpringBoot应用；
-
-**SpringBootApplication**新加入，没有就会报错，那么之前的main有什么缺陷吗？
-
-```java
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@SpringBootConfiguration
-@EnableAutoConfiguration
-@ComponentScan(
-    excludeFilters = {@Filter(
-    type = FilterType.CUSTOM,
-    classes = {TypeExcludeFilter.class}
-), @Filter(
-    type = FilterType.CUSTOM,
-    classes = {AutoConfigurationExcludeFilter.class}
-)}
-```
-
-@SpringBootConfiguration：springboot的配置类
-
-​		@Configuration：配置类标注这个注解，简化以前的配置文件，配置类也是容器的一个组件：@Component
-
-```java
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Configuration
-public @interface SpringBootConfiguration {
-}
-```
-
-@EnableAutoConfiguration：开启在自动配置
-
-​	@AutoConfigurationPackage：自动配置包
-
-```
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@AutoConfigurationPackage
-@Import({EnableAutoConfigurationImportSelector.class})
-```
-
-@Import({Registrar.class})
-
-```java
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@Import({Registrar.class})
-public @interface AutoConfigurationPackage {
-}
-```
-
-
-
-# 2020.10.14
-
-#### 1.springboot：创建
-
-1. idea: 创建maven工程
-
-2. prom: 导入依赖
-
-3. 创建启动类:
-
-   ```java
-   @SpringBootApplication
-   public class HelloWorldMainApplication {
-       public static void main(String[] args) {
-           SpringApplication.run(HelloWorldMainApplication.class, args);
-       }
-   }
-   ```
-
-4. 开发
-
-#### 2.springboot：快速创建
-
-- 新建 -》 project -》Spring Initializr
-
-- New Project 下选择：
-
-![](\图片\快速创建springboot.png)
-
-​	type：Maven Project
-
-​	Packaging：jar（自动打包的打包方式）
-
-​	java Version：8
-
-​	Package：项目路径（系统会自动创建Application，放在此目录下）
-
-#### 3、IDEA：使用 Spring Initializer快速创建项目
-
-IDE都支持使用Spring的项目创建向导快速创建一个Spring Boot项目；
-
-选择我们需要的模块；向导会联网创建Spring Boot项目；
-
-默认生成的Spring Boot项目；
-
-- 主程序已经生成好了，我们只需要我们自己的逻辑
-- resources文件夹中目录结构
-  - static：保存所有的静态资源； js css  images；以前springWeb工程静态资源是保存在Web中，而springboot没有web文件夹
-  - templates：保存所有的模板页面；（Spring Boot默认jar包使用嵌入式的Tomcat，默认不支持JSP页面）；可以使用模板引擎（freemarker、thymeleaf）；
-  - application.properties：Spring Boot应用的配置文件；可以修改一些默认设置；
-
-
-
-4.语法
-
-- 空格缩进
-- 键值对间 ": "
-
-
-
-#### 5.springboot：注解
-
-- 自动注入免去了bean的配置，但是设置值还是需要配置
-
-  @ConfigurationProperties(prefix = "person") ： 表示在全局配置文件（application.xml 或 application.properties）中属于person的
-
-  举例：
-
-  ```java
-  @PropertySource(value = {"classpath:person.properties"})
-  @Component
-  @ConfigurationProperties(prefix = "person")
-  public class Person {
-  
-      private String lastName;
-      private Integer age;
-      private Boolean boss;
-      private Date birth;
-  
-      private Map<String, Object> maps;
-      private List<Object> lists;
-      private Dog dog;
-  }
-      
-  ```
-
-```yml
-
-server:
-  port: 8081
-
-person:
-  lastName: hello
-  age: 18
-  boss: false
-  birth: 2017/12/12
-  maps: {k1: v1,k2: 12}
-  lists:
-    - lisi
-    - zhaoliu
-  dog:
-    name: 小狗
-    age: 12
-```
-
-```properties
-server.port=8081
-
-person.last-name=张三
-person.age=15
-person.birth=2017/12/13
-person.boss=false
-person.maps.k1=v1
-person.maps.k2=12
-person.lists=a,b,c
-person.dog.name=dog
-person.dog.age=12
-```
-
-- @ConfigurationProperties(prefix = "person") 仅识别全局的，配置内容必须放到application中，导致application臃肿，所以：
-
-  @PropertySource(value = {"classpath:person.properties"}) 可以改变访问路径
-
-- 但springboot仍然提供了spring配置文件支持
-
-```xml
-<bean id="helloWorldService" class="com.atguigu.springboot.service.HelloWorldService"></bean>
-```
-
-​	但仅这样，springboot不会识别的，还需要加入注解：@ImportResource(locations = {"classpath:beans.xml"})
-
-```java
-//@ImportResource(locations = {"classpath:beans.xml"})
-@SpringBootApplication
-public class SpringBoot01HelloworldQuickApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(SpringBoot01HelloworldQuickApplication.class, args);
-    }
-
-}
-```
-
-- 但一般不建议这样使用：而是使用 @Configuration 和 @Bean
-
-  ```java
-  @Configuration
-  public class MyAppConfig {
-  
-      //将方法的返回值添加到容器中；容器中这个组件默认的id就是方法名
-      @Bean
-      public HelloWorldService helloWorldService02(){
-          return new HelloWorldService();
-      }
-  }
-  ```
-
-
-
-# 2020.10.19
-
-#### 1.jar执行
-
-- 打包：package
-- 执行：在idea的Terminal执行
-
-E:\IDEAProject\spring-boot-02\target>java -jar spring-boot-02-0.0.1-SNAPSHOT.jar --spring.config.location=C:\Users\sunpeng.SINO\Desktop\application.properties
-
-#### 2.加载顺序
-
-- 本地：
-
-/config/application.properties
-
-/application.properties
-
-/classfile/config/application.properties
-
-/classfile/application.properties
-
-- 运维：
-
-/命令行（参数）：如： --server.port=8087
-
-/命令行（加载外部文件）：如：--spring.config.location=C:\Users\sunpeng.SINO\Desktop\application.properties
-
-/classfile/config
-
-/classfile/
-
-没有/config/application.properties和/application.properties，因为打jar包只会打包：src、External Libraries
-
-![](\图片\打jar包.png)
-
-
-
-# 二、连鹏举
-
-互联网高级工程师就业班
-
-### 1、rest风格
-
-rest是一种设计模式，指从资源的角度去考虑问题，而非操作的角度，体现在url上就是有post、get等之分。
-
-
-
-### 2、springboot项目打包执行
-
-```xml
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-    </plugins>
-</build>
-```
-
-如果没有spring-boot-maven-plugin组件依赖，那么打包时就没有下面红框中的文件，在cmd中执行时（java -jar），会报错：没有主文件
-
-![spring-booot-maven-plugin](pictures\springboot\spring-booot-maven-plugin.png)
-
-### 3、springboot与spring
-
-#### 3.1 yaml文件
-
-springboot推荐使用yaml文件，spring不能识别yaml文件，只能用properties
-
-#### 3.2 外部文件
-
-spring在使用外部配置文件时，需要在ioc.xml文件中声明。
-
-```xml
-<context:property-placeholder location="classpath:userConfig.properties"></context:property-placeholder>
-```
-
-### 4、配置文件优先级
-
-file:./config/   >   file:./   >   classpath:./config/   >  classfile:./
-
-### 5、配置文件与环境
-
-application.yml
-
-application-dev.yml
-
-application-sit.yml
-
-```yaml
-spring:
-  profiles:
-    active: sit
-```
-
-### 6、springboot整合servlet
-
-#### 6.1 http
-
-```java
-@WebServlet(name = "myServlet",urlPatterns = "/servlet")
-public class HelloServlet extends HttpServlet {
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("123");
-        super.doGet(req, resp);
-    }
-}
-```
-
-```java
-@ServletComponentScan
-```
-
-#### 6.2 过滤器
-
-```java
-@WebFilter(filterName = "MyFilter", urlPatterns = "/*")
-public class MyFilter implements Filter {
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println("init");
-    }
-
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("doFilter");
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
-
-    @Override
-    public void destroy() {
-        System.out.println("destroy");
-    }
-}
-```
-
-```java
-    @Bean
-    public ServletRegistrationBean<HelloServlet> getServletRegistrationBean(){
-        ServletRegistrationBean<HelloServlet> bean = new ServletRegistrationBean<>(new HelloServlet());
-        ArrayList<String> url = new ArrayList<>();
-        url.add("/helloServlet");
-        bean.setUrlMappings(url);
-        bean.setLoadOnStartup(1);
-        return bean;
-    }
-```
-
-#### 6.3 监听器
-
-```java
-public class MyListen implements HttpSessionListener {
-
-    public static int online=0;
-
-    @Override
-    public void sessionCreated(HttpSessionEvent se) {
-        online++;
-        System.out.println("创建+1");
-    }
-
-    @Override
-    public void sessionDestroyed(HttpSessionEvent se) {
-        System.out.println("销毁-1");
-    }
-}
-```
-
-```java
-@Bean
-public ServletListenerRegistrationBean listenerRegist(){
-    ServletListenerRegistrationBean srb = new ServletListenerRegistrationBean();
-    srb.setListener(new MyListen());
-    System.out.println("listener");
-    return srb;
-}
-```
-
-
-
-
-
-# 三、马东阳
-
-目前学习到：第12阶段-springboot的使用，第38节-拓展_@ImportResource
-
-### springboot配置
-
-#### 1、application
-
-父依赖的引入，使得springboot会默认读取**/application*.yml、**/application*.yam、**/application*.properties
-
-```xml
-<parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.4.5</version>
-</parent>
-```
+spring-boot-starter-parent 的配置中，会默认读取配置文件 application.yaml/yml/properties
 
 ```xml
 <build>
@@ -543,9 +84,11 @@ public ServletListenerRegistrationBean listenerRegist(){
 </build>
 ```
 
-properties 优先级高于 yaml，而非覆盖。
 
-#### 2、启动器
+
+### 2.2 启动类 start
+
+启动器就是把相关的依赖组合在一起，由springboot官方或者第三方提供
 
 ```xml
 <!--名字在后，spring提供的启动器，spring整合第三方-->
@@ -561,13 +104,13 @@ properties 优先级高于 yaml，而非覆盖。
 </dependency>
 ```
 
-#### 3、打包
 
-springboot打包可以分为jar、war、pom，其中pom用在父依赖中
 
-##### 3.1 jar
+### 2.3 插件
 
-###### 3.1.1 依赖
+#### 2.3.1 打包工具
+
+依赖中可以定义打包工具
 
 ```xml
 <!--默认打jar包-->
@@ -586,68 +129,78 @@ springboot打包可以分为jar、war、pom，其中pom用在父依赖中
 </build>
 ```
 
-###### 3.1.2 打包
+springboot打包可以分为jar、war、pom，其中pom用在父依赖中
 
-- maven打包
+#### 3.3.2 打包
 
 ![maven打包](pictures\springboot\maven打包.png)
 
-- 打包结果
+#### 3.3.3 打包结果
 
-  ![springboot打包结果](pictures\springboot\springboot打包结果.png)
+![spring-booot-maven-plugin](pictures\springboot\spring-booot-maven-plugin.png)
 
-##### 3.2 war
+如果没有spring-boot-maven-plugin组件依赖，那么打包时就没有下面红框中的文件，在cmd中执行时（java -jar），会报错：没有主文件。
+
+#### 3.3.4 执行
+
+受3.3.3的打包结果影响，可能不成功
+
+```sh
+#cmd
+java -jar name.jar
+#idea-Terminal
+E:\IDEAProject\spring-boot-02\target>java -jar spring-boot-02-0.0.1-SNAPSHOT.jar --spring.config.location=C:\Users\sunpeng.SINO\Desktop\application.properties
+```
+
+#### 3.3.5 war
 
 由于springboot集成了tomcat，所以运行web程序时用jar包即可。如果非要打war包，按照如下步骤：
 
 - 依赖
 
-  - 排除web启动中自动依赖的tomcat插，再加入单独的tomcat依赖（仅在编译时生效）。
+  需要排除web启动中自动依赖的tomcat插，再加入单独的tomcat依赖（仅在编译时生效）。
 
-    ```xml
-    <!--配置SpringBoot的web启动器-->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-        <!--排除web启动中自动依赖的tomcat插件-->
-        <exclusions>
-            <exclusion>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-tomcat</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
-    <!--
-        手动依赖tomcat插件，但是表明项目打包时该依赖不会被打进去，目的主要是保证开发阶段本地SpringBoot
-        项目可以正常运行
-    -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-tomcat</artifactId>
-        <!--打包的时候可以不用包进去，别的设施会提供。事实上该依赖理论上可以参与编译，测试，运行等周期。
-            相当于compile，但是打包阶段做了exclude操作-->
-        <scope>provided</scope>
-    </dependency>
-    ```
-
-  - 打包插件
-
-    ```xml
-    <!--默认打jar包-->
-    <packaging>war</packaging>
-    <!--打包插件-->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    ```
+  ```xml
+  <!--war包-->
+  <packaging>war</packaging>
+  
+  <!--配置SpringBoot的web启动器-->
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <!--排除web启动中自动依赖的tomcat插件-->
+      <exclusions>
+          <exclusion>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-tomcat</artifactId>
+          </exclusion>
+      </exclusions>
+  </dependency>
+  <!--
+      手动依赖tomcat插件，但是表明项目打包时该依赖不会被打进去，目的主要是保证开发阶段本地SpringBoot
+      项目可以正常运行
+  -->
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <!--打包的时候可以不用包进去，别的设施会提供。事实上该依赖理论上可以参与编译，测试，运行等周期。
+          相当于compile，但是打包阶段做了exclude操作-->
+      <scope>provided</scope>
+  </dependency>
+  
+  <!--打包插件一样-->
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-maven-plugin</artifactId>
+              <configuration>
+                  <fork>true</fork>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>
+  ```
 
 - 启动类
 
@@ -668,36 +221,233 @@ springboot打包可以分为jar、war、pom，其中pom用在父依赖中
   }
   ```
 
-- 打包
-
-  用maven-package打包，然后放到tomcat下运行。
 
 
 
-#### 4、参数
-
-##### 4.1 spring读取方式
+## 3、启动类
 
 ```java
-@Component
-@PropertySource(value = "classpath:bookConfig.yaml")
-public class Book {
-    @Value("${springboot-base.book.name}")
-    private String name;
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
+/*@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan("com.msb")*/
+@SpringBootApplication
+public class SpringbootBaseApplication {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(SpringbootBaseApplication.class, args);
+/*        String[] beanDefinitionNames = context.getBeanDefinitionNames();
+        for (int i = 0; i < beanDefinitionNames.length; i++) {
+            System.out.println(beanDefinitionNames[i]);
+        }*/
+        Person bean = context.getBean(Person.class);
+        System.out.println(bean);
     }
 }
 ```
 
-```properties
-springboot-base.book.name=shuixu
+### 3.1 @SpringBootApplication
+
+@SpringBootApplication = @SpringBootConfiguration + @EnableAutoConfiguration + @ComponentScan("com.msb")
+
+### 3.2 获取容器
+
+```java
+//springboot
+ConfigurableApplicationContext context = SpringApplication.run(SpringbootBaseApplication.class, args);
+//spring
+ApplicationContext context = new ClassPathXmlApplicationContext("ioc.xml");
 ```
 
-##### 4.2 springboot读取方式
+springboot和spring一样，在初始化时加载容器，扫描包构建bean。spring根据开发者的xml文件构建bean，而springboot会加载其他组件的配置类，大大简化了程序的开发。
+
+
+
+## 4、配置
+
+|          | spring                              | springboot                               |
+| -------- | ----------------------------------- | ---------------------------------------- |
+| 格式     | xml、properties                     | xml、properties、yaml                    |
+| 外部文件 | context:property-placeholder(备注1) | @PropertySource（备注2）                 |
+| 默认     | 无，获取容器时需要指定配置文件      | application.yaml、application.properties |
+| 注意     | 无                                  | **springboot中的spring注解都不支持yaml** |
+
+- 备注1：spring配置文件中引入其他配置文件
+
+```xml
+<context:property-placeholder location="classpath:userConfig.properties"></context:property-placeholder>
+```
+
+- 备注2：  springboot中引入非默认配置文件
+
+```java
+@PropertySource(value = "classpath:bookConfig.properties")
+```
+
+
+
+### 4.1 application配置文件
+
+#### 4.1.1 优先级
+
+- 本地：/config/*  大于  /* 大于  /classfile/config/*  大于  /classfile/*
+
+- 运维：命令行(参数)  >  命令行(外部配置文件)  > 本地
+  - 参数：  --server.port=8087
+  - 外部配置文件：--spring.config.location=C:\Users\sunpeng.SINO\Desktop\application.properties
+
+- properties  >   yaml  优先而非覆盖
+
+#### 4.1.2 环境配置
+
+公司中往往有多个环境，比如dev、sit、uat，且各个环境的配置不一样。这时在application-dev.yml、application-sit.yml存入个性化配置，在application.yml中配置使用那个配置文件。
+
+```yaml
+spring:
+  profiles:
+    active: sit
+```
+
+
+
+### 4.2 yaml
+
+#### 4.2.1 格式
+
+- 根据缩进判断等级
+- 连字符 - 代表数组
+
+#### 4.2.2 注意
+
+每行前缩进的空格是yaml文件的格式/语法，一定注意。
+
+##### 4.2.2.1 复制粘贴不规范
+
+在复制粘贴keycloak文件时，由于复制粘贴没有考虑空格，导致只有第一行空格正确，其余几行都错误。
+
+![错误复制yaml内容方法](pictures\springboot\错误复制yaml内容方法.png)
+
+正确做法为从顶头位置复制，从顶头位置复制/粘贴。
+
+![正确复制yaml内容方法](pictures\springboot\正确复制yaml内容方法.png)
+
+##### 4.2.2.2 修改文件类型
+
+由于servicecomb契约文件的原因，需要先将契约文件改为txt文件，程序启动成功后，再改为yaml文件格式，并将打印出来的文件粘贴到契约文件。注意，一定要先改文件类型，再改内容。反之，空格会乱。
+
+### 
+
+# 二、bean
+
+springboot可以认为是spring的简化配置版，springboot所使用的注解还是沿用spring的。不同点是springboot在启动时自动装配了一些配置。
+
+## 1、启动
+
+@SpringBootApplication注解在启动时会自动扫描包。而spring需要xml配置自动扫描包，并在启动容器启动时传入配置文件。实际@SpringBootApplication的扫包是由@ComponentScan完成，spring也可以使用此注解
+
+```java
+//包扫描
+@ComponentScan(basePackages = "com.msb")
+//通过注解获取容器
+@Test
+public void testTransaction3(){
+    ApplicationContext context =new AnnotationConfigApplicationContext(SpringConfig.class);
+}
+```
+
+
+
+## 2、IOC 构建bean
+
+### 2.1 构建bean
+
+```java
+@Configuration(proxyBeanMethods=false)
+//@Component
+//@Import(value = Person.class) //id="com.msb.config.Person" , type=Person.class 可以放到任意位置
+//@EnableConfigurationProperties(value = Person.class) //person-com.msb.config.Person
+//@ImportResource("classpath:beans.xml")
+public class MyConfig {
+    @Bean
+    public Person getPerson(){
+        return new Person();
+    }
+}
+```
+
+- @Component(value="bean_id")
+
+  默认bean_id=类的首字母小写，参数value可以修改
+
+- @Configuration(proxyBeanMethods=false)
+
+  @Configuration = @Component + proxyBeanMethods
+
+  false 称之为Lite模式  特点启动快；true 称之为Full模式  特点依赖spring容器控制bean单例
+
+  ```java
+  @Target({ElementType.TYPE})
+  @Retention(RetentionPolicy.RUNTIME)
+  @Documented
+  @Component
+  public @interface Configuration {
+      @AliasFor(
+          annotation = Component.class
+      )
+      String value() default "";
+  
+      boolean proxyBeanMethods() default true;
+  }
+  ```
+
+- @Bean(value="bean_id") + @Configuration/@Component
+
+  - 这种bean的创建方法就如同工厂模式
+
+  - 默认bean_id=方法名，参数value可以修改
+
+- @Import(value = Person.class)
+
+  bean_id = 全路径名，比如："com.msb.config.Person"
+
+- @ImportResource("classpath:beans.xml") + beans.xml
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+      <bean id="person" class="com.msb.config.Person">
+          <property name="name" value="jia"></property>
+      </bean>
+  </beans>
+  ```
+
+  bean_id = xml文件中bean标签的id
+
+- @EnableConfigurationProperties(value = Person.class) + @ConfigurationProperties(prefix = "person") + application.yaml
+
+  ```java
+  @ConfigurationProperties(prefix = "person")
+  public class Person {
+      private String name;
+      public String getName() {
+          return name;
+      }
+      public void setName(String name) {
+          this.name = name;
+      }
+  }
+  ```
+
+  ```yaml
+  person:
+    name: sunpeng
+  ```
+
+  它的主要用途是这只参数，而非构建bean
+
+  bean_id = 类名首字母小写 + 全路径名，比如：person-com.msb.config.Person
+
+### 2.2 参数
 
 ```java
 @Component
@@ -716,9 +466,7 @@ public class Book {
 ```
 
 ```yaml
-springboot-base:
-  book:
-    name: dsddd
+springboot-base.book.name=shuixu
 ```
 
 - springboot在spring的基础上，还提供了注解：@ConfigurationProperties
@@ -726,16 +474,215 @@ springboot-base:
 - spring没有默认指定文件，必须指定，springboot默认了指定文件application
 - @PropertySource是sping提供，不支持yaml格式文件，特例是application.yaml，可能是springboot做了转换
 - 对于springboot而言，配置文件有默认application.yaml的和指定的bookConfig.properties。如果两者做了，相同的配置。@Value会使用application.yaml，@ConfigurationProperties会使用bookConfig.properties。
+- @ConfigurationProperties不支持大写字母，支持连字符 - 
+- @Component可以替换为@EnableConfigurationProperties(value = Person.class) ，这样这个注解可以放到任意类上。
 
-- @ConfigurationProperties不支持大写字母，支持连字符-
+## 3、DI 依赖注入
+
+```java
+@Configuration(proxyBeanMethods = false)
+public class DIConfig {
+    @Bean
+    public Address getAddress(){
+        return new Address();
+    }
+    @Bean(value = "student")
+    public Student getStudent(Address address){ //通过bean_type获取，加注解也可以通过id获取
+        return new Student(address);
+    }
+}
+```
+
+```java
+public class DIService {
+    
+    @Autowired
+    @Qualifier(value = "getAddress") //通过bean_id获取
+    private Address address;
+    
+    @Autowired //通过bean_type获取
+    private Student student;
+}
+```
 
 
 
-### 整合web
+## 4、@Conditional 条件装配
 
-#### 1、前端
+满足Conditional指定的条件,则进行组件注入
 
-##### 1.1 jsp
+```java
+@Configuration(proxyBeanMethods=false)
+@ConditionalOnClass(value = Person.class)
+public class MyConfig {
+    @Bean
+    @ConditionalOnProperty(name = "person.name", havingValue = "sunpeng")
+    public Person getPerson(){
+        return new Person();
+    }
+}
+```
+
+查看Conditional的子类（查看子类快捷键 ctrl + h）
+
+![Conditional](pictures\springboot\Conditional.png)
+
+
+
+## 5、bean相关注解总结
+
+| 注解                                                 | 解释                             | 提供商     |
+| ---------------------------------------------------- | -------------------------------- | ---------- |
+| Bean对象                                             |                                  |            |
+| @Component                                           | id=类名首字母小写                | spring     |
+| @Configuration(proxyBeanMethods=false)               | id=类名首字母小写，标识配置类    | spring     |
+| @Bean                                                | id=方法名                        | spring     |
+| @Import(value = Person.class)                        | id=全限定名                      | spring     |
+| @ImportResource("classpath:beans.xml")               | id=xml中配置                     | spring     |
+|                                                      |                                  |            |
+| Bean参数，需要@Component/@Configuration配合          |                                  | spring     |
+| @Value(value="")                                     | 配置参数                         | spring     |
+| @ConfigurationProperties(prefix = "person")          | 配置参数：key是前缀+字段         | spring     |
+| @PropertySource("classpath:preson.properties")       | 修改默认位置文件                 | springboot |
+| @EnableConfigurationProperties(value = Person.class) | 替代@Component，可在配置类上配置 | spring     |
+|                                                      |                                  |            |
+| DI                                                   |                                  |            |
+| @Autowird                                            | 根据类型注入                     | spring     |
+| @Qualifier(value = "bean_id")                        | 根据id注入                       | spring     |
+| @Resource                                            | 两种都支持，但不用               | java       |
+|                                                      |                                  |            |
+| 其他                                                 |                                  |            |
+| @Conditional                                         | 条件                             | spring     |
+| @ConditionalOnClass(value = Person.class)            | 是否有Person.class               | springboot |
+|                                                      |                                  |            |
+
+## 6、bean_接口
+
+见本文四-1
+
+## 7、bean_泛型
+
+见spring-三-4
+
+
+
+# 三、web
+
+## 1、整合servlet
+
+应该也可以认为时整合springmvc吧
+
+### 1.1 http
+
+```java
+@WebServlet(name = "myServlet",urlPatterns = "/servlet")
+public class HelloServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("123");
+        super.doGet(req, resp);
+    }
+}
+```
+
+```java
+@ServletComponentScan
+```
+
+### 1.2 过滤器
+
+```java
+@WebFilter(filterName = "MyFilter", urlPatterns = "/*")
+public class MyFilter implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("init");
+    }
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("doFilter");
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+    @Override
+    public void destroy() {
+        System.out.println("destroy");
+    }
+}
+```
+
+```java
+    @Bean
+    public ServletRegistrationBean<HelloServlet> getServletRegistrationBean(){
+        ServletRegistrationBean<HelloServlet> bean = new ServletRegistrationBean<>(new HelloServlet());
+        ArrayList<String> url = new ArrayList<>();
+        url.add("/helloServlet");
+        bean.setUrlMappings(url);
+        bean.setLoadOnStartup(1);
+        return bean;
+    }
+```
+
+### 1.3 监听器
+
+```java
+public class MyListen implements HttpSessionListener {
+    public static int online=0;
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        online++;
+        System.out.println("创建+1");
+    }
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        System.out.println("销毁-1");
+    }
+}
+```
+
+```java
+@Bean
+public ServletListenerRegistrationBean listenerRegist(){
+    ServletListenerRegistrationBean srb = new ServletListenerRegistrationBean();
+    srb.setListener(new MyListen());
+    System.out.println("listener");
+    return srb;
+}
+```
+
+## 2、整合springmvc
+
+### 2.1 拦截器
+
+和spring一样
+
+```java
+@Component
+public class WebInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("拦截器");
+        return true;
+    }
+}
+```
+
+将spring的xml配置改为springboot的配置类
+
+```java
+@Configuration
+public class InterceptorConfig implements WebMvcConfigurer {
+    @Autowired
+    private WebInterceptor webInterceptor;
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {       registry.addInterceptor(webInterceptor).addPathPatterns("/**").excludePathPatterns("/hi");
+    }
+}
+```
+
+## 3、整合前端
+
+### 3.1 jsp
 
 优点：
 1、功能强大，可以写java代码
@@ -745,7 +692,7 @@ springboot-base:
 缺点：
 性能问题。不支持前后端分离
 
-##### 1.2 freemarker
+### 3.2 freemarker
 
 FreeMarker是一个用Java语言编写的模板引擎，它基于模板来生成文本输出。FreeMarker与Web容器无关，即在Web运行时，它并不知道Servlet或HTTP。它不仅可以用作表现层的实现技术，而且还可以用于生成XML，JSP或Java 等。
 目前企业中:主要用Freemarker做静态页面或是页面展示
@@ -761,59 +708,24 @@ FreeMarker是一个用Java语言编写的模板引擎，它基于模板来生成
 1、不是官方标准
 2、用户群体和第三方标签库没有jsp多
 
-##### 1.3 Thymeleaf
+### 3.3 Thymeleaf
 
 Thymeleaf是个XML/XHTML/HTML5模板引擎，可以用于Web与非Web应用。
 Thymeleaf的主要目标在于提供一种可被浏览器正确显示的、格式良好的模板创建方式，因此也可以用作静态建模。你可以使用它创建经过验证的XML与HTML模板。相对于编写逻辑或代码，开发者只需将标签属性添加到模板中即可。接下来，这些标签属性就会在DOM（文档对象模型）上执行预先制定好的逻辑。Thymeleaf的可扩展性也非常棒。你可以使用它定义自己的模板属性集合，这样就可以计算自定义表达式并使用自定义逻辑。这意味着Thymeleaf还可以作为模板引擎框架。
 优点：静态html嵌入标签属性，浏览器可以直接打开模板文件，便于前后端联调。springboot官方推荐方案。
 缺点：模板必须符合xml规范
 
+### 3.4 VUE
+
 VUE: 前后端分离,最多,未来趋势
 
-#### 2、拦截器
+### 
 
-##### 2.1 拦截器
+# 四、db
 
-和spring一样
+## 1、接口的注入
 
-```java
-@Component
-public class WebInterceptor implements HandlerInterceptor {
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("拦截器");
-        return true;
-    }
-}
-```
-
-##### 2.2 拦截器配置
-
-将spring的xml配置改为springboot的配置类
-
-```java
-@Configuration
-public class InterceptorConfig implements WebMvcConfigurer {
-
-    @Autowired
-    private WebInterceptor webInterceptor;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {       registry.addInterceptor(webInterceptor).addPathPatterns("/**").excludePathPatterns("/hi");
-    }
-}
-```
-
-
-
-### 整合mybatis
-
-ctrl + alt + shift + h : 调整idea编译检查的级别
-
-#### 1、接口的注入
-
-##### 1.1 dao层的接口需要注入
+### 1.1 dao层的接口需要注入
 
 一般的接口是我们自己实现，接口都有自己的实现类，注入时会注入实现类。但是dao层的类我我们定义接口，mybatis/jpa自动实现，那么在编译如何让它通过。
 
@@ -825,7 +737,7 @@ public interface AccountMapper {
 }
 ```
 
-###### 1.1.1 mybatis
+#### 1.1.1 mybatis
 
 ```java
 //在启动类上添加注释，使编译时通过
@@ -835,7 +747,7 @@ public interface AccountMapper {
 @Mapper  //mybatis实现
 ```
 
-###### 1.1.2 jpa
+#### 1.1.2 jpa
 
 ```java
 //继承JpaRepository
@@ -844,7 +756,7 @@ public interface AccountMapper extends JpaRepository<Account, Long>{
 }
 ```
 
-##### 1.2 接口多种实现时的注入
+### 1.2 接口多种实现时的注入
 
 当接口有多个实现时
 
@@ -859,7 +771,7 @@ public class Woman implements Person {
 }
 ```
 
-###### 1.2.1 单独注入一个
+#### 1.2.1 单独注入一个
 
 ```java
 public class PersonService{
@@ -868,7 +780,7 @@ public class PersonService{
 }
 ```
 
-###### 1.2.2 注入多个
+#### 1.2.2 注入多个
 
 ```java
 //注入一个
@@ -889,9 +801,9 @@ public class Woman implements Person {
 }
 ```
 
-#### 2、配置
+## 2、配置
 
-##### 2.1 application.yaml
+### 2.1 application.yaml
 
 ```yaml
 spring:
@@ -905,7 +817,7 @@ mybatis:
   type-aliases-package: com.msb.entity
 ```
 
-##### 2.2 Mapper.xml
+### 2.2 Mapper.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -915,9 +827,9 @@ mybatis:
 </mapper>
 ```
 
-#### 3、分页（整合PageHelper）
+## 3、分页（整合PageHelper）
 
-##### 3.1 依赖
+### 3.1 依赖
 
 ```xml
 <dependency>
@@ -927,7 +839,7 @@ mybatis:
 </dependency>
 ```
 
-##### 3.2 使用
+### 3.2 使用
 
 ```java
 //提前调用分页方法
@@ -944,9 +856,9 @@ System.out.println("总记录数"+pi.getTotal());
 System.out.println("当前页数据"+pi.getList());
 ```
 
-#### 4、连接池（整合druid）
+## 4、连接池（整合druid）
 
-##### 4.1 依赖
+### 4.1 依赖
 
 ```xml
 <!--数据库连接池-->
@@ -957,7 +869,7 @@ System.out.println("当前页数据"+pi.getList());
 </dependency>
 ```
 
-##### 4.2 配置
+### 4.2 配置
 
 ```yaml
 spring:
@@ -1012,9 +924,54 @@ spring:
 
 
 
-### 整合logback
 
-#### 模板
+
+# 五、其他
+
+## 1、junit
+
+依赖使用spring-boot-starter-test启动器，启动时只需要使用springboot提供的注解@SpringBootTest。
+
+依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+使用
+
+```java
+package com.msb;
+import com.msb.pojo.Emp;
+import com.msb.service.EmpService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import java.util.List;
+
+@SpringBootTest(classes = Springboot03Application.class)
+class Springboot03AppliactionTests {
+    @Autowired
+    private EmpService empService;
+    @Test
+    public void testFindAll() {
+        List<Emp> list = empService.findAll();
+        list.forEach(System.out::println);
+    }
+}
+```
+
+
+
+
+
+## 2、logback
+
+### 2.1 模板
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -1072,7 +1029,7 @@ spring:
 </configuration>
 ```
 
-#### 1、整合
+### 2.2 整合
 
 ![springboot整合logback](pictures\springboot\springboot整合logback.png)
 
@@ -1085,7 +1042,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(Class clazz);
 //接口（协议）都是slf4j，springboot默认实现是logback
 ```
 
-#### 2、日志级别
+### 2.3 日志级别
 
 xml格式
 
@@ -1109,9 +1066,9 @@ logging.level.root=info
 logging.level.com.msb.mapper=DEBUG
 ```
 
-#### 3、输出格式
+### 2.4 输出格式
 
-##### 3.1 打印方式
+#### 2.4.1 打印方式
 
 日志输出不仅有控制台打印，还可以写入文件，存入数据库
 
@@ -1122,7 +1079,8 @@ logging.level.com.msb.mapper=DEBUG
     <appender-ref ref="DB" />           <!--存库-->
 </root>
 ```
-##### 3.2 日志格式
+
+#### 2.4.1 日志格式
 
 ```properties
 log4j.rootLogger=error,logfile
@@ -1157,9 +1115,17 @@ test.TestLog4j.main(TestLog4j.java:10)。
 
 
 
-### 自动部署
 
-#### 1、导入依赖
+
+
+
+## 3、热部署
+
+### 3.1 配置
+
+需要三步配置：导入依赖、修改idea自动编译、修改Reigstry
+
+导入依赖
 
 
 ```xml
@@ -1170,179 +1136,25 @@ test.TestLog4j.main(TestLog4j.java:10)。
         <optional>true</optional>
     </dependency>
 ```
-#### 2、修改idea自动编译
+
+修改idea自动编译
 
 <img src="pictures\springboot\idea自动编译.png" alt="idea自动编译" style="zoom:75%;" />
 
-#### 3、修改Reigstry
-
-Ctrl+Shift+Alt+/，然后点击弹出框中Registry
+修改Reigstry：Ctrl+Shift+Alt+/，然后点击弹出框中Registry
 
 ![idea注册](pictures\springboot\idea注册.png)
 
-#### 4、使用
+### 3.2 使用
 
 - 前端页面修改很方便，修改的部分直接编译到字节文件上。
 - 后端代码修改不是很快捷，服务还是要重启，只不过系统帮我们重启而已。
 
 
 
-## 整合junit
-
-依赖使用spring-boot-starter-test启动器，启动时只需要使用springboot提供的注解@SpringBootTest。
-
-1、依赖
-
-```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-test</artifactId>
-    <scope>test</scope>
-</dependency>
-```
-
-2、使用
-
-```java
-package com.msb;
-import com.msb.pojo.Emp;
-import com.msb.service.EmpService;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import java.util.List;
-
-@SpringBootTest(classes = Springboot03Application.class)
-class Springboot03AppliactionTests {
-    @Autowired
-    private EmpService empService;
-    @Test
-    public void testFindAll() {
-        List<Emp> list = empService.findAll();
-        list.forEach(System.out::println);
-    }
-}
-```
+#### 
 
 
-
-## 注解
-
-### 1、@Configuration
-
-@Configuration相比@Component仅仅多了参数proxyBeanMethods，作用是类中的方法是否使用代理。
-
-@Configuration从功能上来说，就是表明这个类是配置类。实现就是借助@Component实现。
-
-proxyBeanMethods=false 称之为Lite模式  特点启动快
-
-proxyBeanMethods=true  称之为Full模式  特点依赖spring容器控制bean单例
-
-```java
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Component
-public @interface Configuration {
-    @AliasFor(
-        annotation = Component.class
-    )
-    String value() default "";
-
-    boolean proxyBeanMethods() default true;
-}
-```
-
-#### 2、构建bean
-
-```java
-@Configuration(proxyBeanMethods=false)
-//@Component
-//@Import(value = Person.class) //id="com.msb.config.Person" , type=Person.class 可以放到任意位置
-//@EnableConfigurationProperties(value = Person.class) //person-com.msb.config.Person
-//@ImportResource("classpath:beans.xml")
-public class MyConfig {
-    @Bean
-    public Person getPerson(){
-        return new Person();
-    }
-}
-```
-
-方法一：@Configuration
-
-方法二：@Component
-
-方法三：@Bean + @Configuration/@Component
-
-方法四：@Import(value = Person.class)
-
-方法五：@ImportResource("classpath:beans.xml") + beans.xml
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="person" class="com.msb.config.Person">
-        <property name="name" value="jia"></property>
-    </bean>
-</beans>
-```
-
-方法六：@EnableConfigurationProperties(value = Person.class) + @ConfigurationProperties(prefix = "person") + application.yaml
-
-```java
-@ConfigurationProperties(prefix = "person")
-public class Person {
-    private String name;
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-}
-```
-
-```yaml
-person:
-  name: sunpeng
-```
-
-#### 3、@Conditional 条件装配
-
-满足Conditional指定的条件,则进行组件注入
-
-```java
-@Configuration(proxyBeanMethods=false)
-@ConditionalOnClass(value = Person.class)
-public class MyConfig {
-    @Bean
-    @ConditionalOnProperty(name = "person.name", havingValue = "sunpeng")
-    public Person getPerson(){
-        return new Person();
-    }
-}
-```
-
-子类：ctrl + h
-
-![Conditional](pictures\springboot\Conditional.png)
-
-
-
-#### 4、其他注解
-
-@PropertySource("classpath:userConfig.properties")
-
-@Value
-
-@ConfigurationProperties(prefix = "person")
-
-@Autowird
-
-@Qualifier(value = "")
 
 
 
